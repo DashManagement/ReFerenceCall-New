@@ -13,6 +13,7 @@ LastEditors: michael
 # import uvicorn
 from fastapi import FastAPI
 from routers import User
+from routers import Verify
 from routers import Fund
 from routers import ReferenceCall
 
@@ -55,6 +56,9 @@ app.add_middleware(
 
 # 用户路由
 app.include_router(User.router)
+
+# 发送邮件验证码和验证路由
+app.include_router(Verify.router)
 
 # 基金路由
 app.include_router(Fund.router)
