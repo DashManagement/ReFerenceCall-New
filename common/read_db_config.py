@@ -16,27 +16,27 @@ readConfig = ConfigParser()
 
 
 # 加载远程数据库配置变量
-readConfig.read('./config/database.ini')
-host = readConfig.get('remote_config', 'host')
-port = readConfig.getint('remote_config', 'port')
-user = readConfig.get('remote_config', 'user')
-password = readConfig.get('remote_config', 'password')
-db = readConfig.get('remote_config', 'db')
-prefix = readConfig.get('remote_config', 'prefix')
-collection_name = readConfig.get('remote_config', 'collection')
+# readConfig.read('./config/database.ini')
+# host = readConfig.get('remote_config', 'host')
+# port = readConfig.getint('remote_config', 'port')
+# user = readConfig.get('remote_config', 'user')
+# password = readConfig.get('remote_config', 'password')
+# db = readConfig.get('remote_config', 'db')
+# prefix = readConfig.get('remote_config', 'prefix')
+# collection_name = readConfig.get('remote_config', 'collection')
 
 # 组合远程数据库地址
-mongo_url = f"mongodb://{user}:{password}@{host}:{port}/{db}"
+# mongo_url = f"mongodb://{user}:{password}@{host}:{port}/{db}"
 
 # 加载 本地 localhost 数据库配置变量
-# readConfig.read('./config/database.ini')
-# host = readConfig.get('localhost_config', 'host')
-# port = readConfig.getint('localhost_config', 'port')
-# user = readConfig.get('localhost_config', 'user')
-# password = readConfig.get('localhost_config', 'password')
-# db = readConfig.get('localhost_config', 'db')
-# prefix = readConfig.get('localhost_config', 'prefix')
-# collection_name = readConfig.get('localhost_config', 'collection')
+readConfig.read('./config/database.ini')
+host = readConfig.get('localhost_config', 'host')
+port = readConfig.getint('localhost_config', 'port')
+user = readConfig.get('localhost_config', 'user')
+password = readConfig.get('localhost_config', 'password')
+db = readConfig.get('localhost_config', 'db')
+prefix = readConfig.get('localhost_config', 'prefix')
+collection_name = readConfig.get('localhost_config', 'collection')
 
 # 加载 服务器 server 数据库配置变量
 # readConfig.read('./config/database.ini')
@@ -49,10 +49,10 @@ mongo_url = f"mongodb://{user}:{password}@{host}:{port}/{db}"
 # collection_name = readConfig.get('remote_config', 'collection')
 
 # 组合本地数据库地址
-# mongo_url = f"mongodb://{host}:{port}"
+mongo_url = f"mongodb://{host}:{port}"
 
 # 组合远程数据库地址
-mongo_url = f"mongodb://{user}:{password}@{host}:{port}"
+# mongo_url = f"mongodb://{user}:{password}@{host}:{port}"
 
 # 远程数据库地址 mongoClient 示例
 # emote_client = MongoClient('mongodb://dash:dashmima!@118.193.47.247:8088/dash')

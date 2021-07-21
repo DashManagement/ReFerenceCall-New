@@ -62,7 +62,9 @@ class Base:
         condition = {"id":company_id, "company_id":company_id, "describe":"0"}
         field = {'id':1, 'company_id':1, 'fund_name':1, 'company_icon':1, 'base_info':1, 'company_info':1, '_id':0}
         company_info = await dbo.findOne(condition, field)
-
+        print(company_info)
+        print(123123)
+        print(company_id)
         if company_info is None:
             return False
 

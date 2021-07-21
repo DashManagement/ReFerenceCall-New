@@ -18,13 +18,13 @@ class ReferenceCall:
 
 
     # 添加公司
-    async def addCompany(self, uid, company_id):
-        return await companyCurd.addCompany(uid, company_id)
+    async def addManyCompany(self, uid, company_id):
+        return await companyCurd.addManyCompany(uid, company_id)
 
 
     # 添加单个公司
     async def addCompany(self, uid, company_id):
-        return await companyCurd.addCompany(uid, company_id)
+        return await companyCurd.addCompany(uid, company_id[0])
 
 
     # 添加多个公司
