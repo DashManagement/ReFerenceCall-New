@@ -26,7 +26,16 @@ appMasterSecret = 'ei0ycynmvzhqybdxcgwa5zbmrxuwingo'
 deviceToken = 'DEC3C97AB50F958395E0F799037C1FAF5F71CCE0869307F57785FC6C7BC78DD2'
 
 
-# android
+class UMengPushAPI(object):
+    def __init__(self, appKey, appMasterSecret):
+        self.androidUnicast = AndroidUnicast(appKey, appMasterSecret)
+        self.iosUnicast = IOSUnicast(appKey, appMasterSecret)
+
+    def sendUnicast(title, content, platForm, deviceToken):
+        return 1
+        # android
+
+
 def sendAndroidUnicast():
     unicast = AndroidUnicast(appKey, appMasterSecret)
     unicast.setDeviceToken(deviceToken)

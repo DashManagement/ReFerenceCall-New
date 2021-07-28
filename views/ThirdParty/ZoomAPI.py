@@ -5,6 +5,7 @@ Date: 2021-07-26 17:33:13
 LastEditTime: 2021-07-27 11:42:23
 LastEditors: fanshaoqiang
 '''
+from pydantic import BaseModel
 import jwt
 import requests
 import json
@@ -17,6 +18,16 @@ from datetime import date, datetime
 API_KEY = 'g4tJbBqaT4mrAWtEoJaWlw'
 API_SEC = 'lU4TtnLsqQx8rcOLijqhlMLZBFx00IK0ZA4A'
 defaultDuration = "60"
+
+
+class MeetingModel(BaseModel):
+    fundName: str
+    fromUserName: str
+    toUserName: str
+    fromEmail: str = None
+    toEmail: str = None
+    meetingTime: str = None
+    meetingZone: str = None
 
 
 class ZoomAPI:
@@ -84,14 +95,15 @@ class ZoomAPI:
         # a token and meeting details
 
     # 返回参数里面有会议ID, 会议连接和会议密码
-    def createMeeting(self, time="1 "):
+    def createMeeting(self,  meetingModel: MeetingModel):
         headers = {'authorization': 'Bearer %s' % self.generateToken(),
                    'content-type': 'application/json'}
-        topic = self.generateTopic("Fund I", "fanshaoqiang", "Gary")
+        topic = self.generateTopic(
+            meetingModel.fundName, meetingModel.fromUserName, meetingModel.toUserName)
         timeNow = datetime.now()
         timeNow = timeNow.strftime("%y-%m-%d T %H:%M:%S")
         meetingdetails = self.generateMeetingDetail(
-            topic, timeNow, "Asia/Shanghai")
+            topic, meetingModel.meetingTime, meetingModel.meetingZone)
         r = requests.post(
             f'https://api.zoom.us/v2/users/me/meetings',
             headers=headers, data=json.dumps(meetingdetails))
@@ -118,3 +130,4 @@ class ZoomAPI:
 # testZoom = ZoomAPI(API_KEY, API_SEC)
 # testZoom.createMeeting()
 # generateToken()
+zoomapi = ZoomAPI(API_KEY, API_SEC)
