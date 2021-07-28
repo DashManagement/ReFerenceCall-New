@@ -65,7 +65,7 @@ class LoginInfo:
     # 查找用户的基本信息 
     async def findUserBaseInfo(self):
         # 连接数据库
-        dbo.resetInitConfig('referencecall', 'users')
+        dbo.resetInitConfig('test', 'users')
 
         # 条件 - 用户名 - 返回字段 全部
         condition = {'account': self.account}
@@ -102,7 +102,7 @@ class LoginInfo:
 
     # 更新用户登陆次数 + 1， 默认 0， 当为 1 的时候为首次登陆
     async def updateLoginNum(self):
-        dbo.resetInitConfig('referencecall', 'users')
+        dbo.resetInitConfig('test', 'users')
         condition = {'account': self.account}
         set_field = {'$set':{'last_login_time':common.getTime()}, '$inc':{'login_num':1}}
         updateOne = await dbo.updateOne(condition, set_field)
