@@ -37,7 +37,7 @@ class AndroidNotification(UmengNotification):
             else:
                 self.rootJson["payload"] = payloadJson
             if "body" in payloadJson:
-                apsJson = payloadJson["body"]
+                bodyJson = payloadJson["body"]
             else:
                 payloadJson["body"] = bodyJson
             bodyJson[key] = value
