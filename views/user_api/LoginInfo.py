@@ -45,6 +45,10 @@ class LoginInfo:
         if self.password != user_info['password']:
             return {'code':203, 'message':'登陆密码错误'}
 
+        # 判断邮箱是否验证
+        if user_info['is_email_verify'] != '1':
+            return {'code':205, 'message':'邮箱未认证'}
+
         # 判断更新次数 - 这一条可以抹掉或者不提示
         if await self.updateLoginNum() is False:
             return {'code':206, 'message':'更新登陆次数失败'}
@@ -65,12 +69,13 @@ class LoginInfo:
     # 查找用户的基本信息 
     async def findUserBaseInfo(self):
         # 连接数据库
-        dbo.resetInitConfig('referencecall', 'users')
+        dbo.resetInitConfig('test', 'users')
 
         # 条件 - 用户名 - 返回字段 全部
         condition = {'account': self.account}
         field = {'_id': 0}
         data = await dbo.findOne(condition, field)
+
         # logger.info(data)
         return data
 
@@ -85,14 +90,17 @@ class LoginInfo:
 
         data = {
             "uid": user_info['id'],
+            "userToken": user_info['userToken'],
+            "platForm": user_info['platForm'],
+            "localTimeZone": user_info['localTimeZone'],
             "web_token": web_token,
             "account": user_info['account'],
             "head_portrait": user_info['head_portrait'],
             "company_icon": user_info['company_icon'],
-            "fund_type": user_info['fund_type'],
-            "fund_name": user_info['fund_name'],
+            "company_type": user_info['company_type'],
+            "company_name": user_info['company_name'],
             "company_address": user_info['company_address'],
-            "username": user_info['user_name'],
+            "username": user_info['name'],
             "login_num": num,
             "last_login_time": user_info['last_login_time']
         }
@@ -102,7 +110,7 @@ class LoginInfo:
 
     # 更新用户登陆次数 + 1， 默认 0， 当为 1 的时候为首次登陆
     async def updateLoginNum(self):
-        dbo.resetInitConfig('referencecall', 'users')
+        dbo.resetInitConfig('test', 'users')
         condition = {'account': self.account}
         set_field = {'$set':{'last_login_time':common.getTime()}, '$inc':{'login_num':1}}
         updateOne = await dbo.updateOne(condition, set_field)

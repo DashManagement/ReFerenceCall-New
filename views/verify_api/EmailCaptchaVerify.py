@@ -34,7 +34,7 @@ class EmailCaptchaVerify():
         self.way = way
         self.verify_type = verify_type
         self.email = email_str
-        self.uid = uid
+        self.uid = int(uid)
         self.verify = verify
         self.company_id = ''
 
@@ -95,7 +95,7 @@ class EmailCaptchaVerify():
         update_admin_user = await self.updateUserIsAdminStatus()
         if self.data['code'] != 200:
             return update_admin_user    
-        
+
         # logger.info(123123)
         return self.data
 
@@ -134,9 +134,10 @@ class EmailCaptchaVerify():
     # 注册码验证 - 判断用户是否存在
     async def isUserInfo(self):
 
-        dbo.resetInitConfig('test', 'lp_gp')
+        dbo.resetInitConfig('test', 'users')
         condition = {'id':self.uid, 'is_email_verify':'0'}
-        field = {'id':1, 'email':1, 'company_id':1, '_id':0}
+        field = {'id':1, 'email':1, '_id':0}
+        print(condition)
         user_result = await dbo.findOne(condition, field)
         logger.info(user_result)
         # 判断用户是否存在
@@ -145,7 +146,7 @@ class EmailCaptchaVerify():
             self.data['message'] = '不存在的用户 或 已经注册验证过'
             return self.data
 
-        self.company_id = user_result['company_id']
+        self.company_id = user_result['id']
 
         return self.data
 
@@ -153,16 +154,16 @@ class EmailCaptchaVerify():
     # 修改密码验证 - 判断用户是否存在 并设置 self.uid 为当前用户根据 email 查询到的 id
     async def isUserEmailInfo(self):
 
-        dbo.resetInitConfig('test', 'lp_gp')
+        dbo.resetInitConfig('test', 'users')
         condition = {'email':self.email}
         field = {'id':1, 'email':1, '_id':0}
         user_result = await dbo.findOne(condition, field)
-        
+
         # 判断用户是否存在
         if user_result is None:
             self.data['code'] = 201
             self.data['message'] = '不存在的用户'
-    
+
         # 判断验证方式如果为 4， 修改密码的验证方式：则赋值全局 uid，为返回值
         if self.verify_type == '4':
             self.uid = user_result['id']
@@ -203,7 +204,7 @@ class EmailCaptchaVerify():
             logger.info(common.getTime())
             self.data['message'] = '验证邮件已过期 请重新发送'
             return self.data
-    
+
         return self.data
 
 
@@ -228,7 +229,7 @@ class EmailCaptchaVerify():
     # 更改用户表 注册邮箱是否已经验证
     async def updateUserEmailVerifyStatus(self):
 
-        dbo.resetInitConfig('test', 'lp_gp')
+        dbo.resetInitConfig('test', 'users')
         condition = {'id':self.uid, 'is_email_verify':'0'}
         set_field = {'$set':{'is_email_verify':'1'}}
         user_update_result = await dbo.updateOne(condition, set_field)
@@ -244,7 +245,7 @@ class EmailCaptchaVerify():
     # 更改用户表 验证人身份是否为公司第一个注册的人
     async def updateUserIsAdminStatus(self):
 
-        dbo.resetInitConfig('test', 'lp_gp')
+        dbo.resetInitConfig('test', 'users')
 
         # 查找公司是否已经存在管理员
         condition = {'company_id':self.company_id, 'is_admin':'1'}
@@ -278,7 +279,7 @@ class EmailCaptchaVerify():
                 return self.data
 
             '''更新用户第三方ID信息'''
-            dbo.resetInitConfig('test', 'lp_gp')
+            dbo.resetInitConfig('test', 'users')
             condition = {'id':self.uid}
             set_field = {'$set':{
                 'w_account':thirdParty_user['accid'], 

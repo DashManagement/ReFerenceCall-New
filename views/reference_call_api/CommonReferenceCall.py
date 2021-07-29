@@ -44,7 +44,7 @@ class CommonReferenceCall:
     # 验证用户是否已经添加过此公司
     async def userIsAddCompany(self, uid='', company_id=''):
 
-        dbo.resetInitConfig('referencecall', 'reference_call_company')
+        dbo.resetInitConfig('test', 'reference_call_company')
         condition= {'uid':int(uid), 'rc_company_id':int(company_id)}
         field = {'_id':0}
         if await dbo.findOne(condition, field) is None:

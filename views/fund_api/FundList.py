@@ -32,8 +32,8 @@ class FundList:
     # 返回基金公司列表
     async def getFundList(self):
 
-        # 连接数据库 - 切换到 dash_test 数据库的 lp_gp 表
-        dbo.resetInitConfig('test', 'lp_gp')
+        # 连接数据库 - 切换到 dash_test 数据库的 users 表
+        dbo.resetInitConfig('test', 'users')
 
         condition = {"$where": "this.id == this.company_id", "describe":"0"}
         field = {'id':1, 'company_id':1, 'fund_name':1, 'company_icon':1, 'base_info':1, 'company_info':1, '_id':0}

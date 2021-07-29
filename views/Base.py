@@ -21,7 +21,7 @@ class Base:
     async def verifyUser(self, uid=''):
 
         # 连接数据库
-        dbo.resetInitConfig('referencecall', 'users')
+        dbo.resetInitConfig('test', 'users')
 
         # 条件 - 用户名 - 返回字段 全部
         condition = {'id': uid}
@@ -38,7 +38,7 @@ class Base:
     async def verifyUserReturnInfo(self, uid=''):
 
         # 连接数据库
-        dbo.resetInitConfig('referencecall', 'users')
+        dbo.resetInitConfig('test', 'users')
 
         # 条件 - 用户名 - 返回字段 全部
         condition = {'id': uid}

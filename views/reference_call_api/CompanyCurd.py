@@ -51,13 +51,13 @@ class CompanyCurd:
     async def addUserReferenceCall(self, user_info, company_info):
 
         # 获取自增 ID
-        get_id_result = await dbo.getNextIdtoUpdate('reference_call_company', db='referencecall')
+        get_id_result = await dbo.getNextIdtoUpdate('reference_call_company', db='test')
         if get_id_result['action'] == False:
             logger.info('获取 id 自增失败')
             return False
         print(user_info)
         # 连接数据库集合
-        dbo.resetInitConfig('referencecall', 'reference_call_company')
+        dbo.resetInitConfig('test', 'reference_call_company')
 
         document = {
             'id': get_id_result['update_id'],

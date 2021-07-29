@@ -22,25 +22,21 @@ class ReferenceCall:
     async def addManyCompany(self, uid, company_id):
         return await companyCurd.addManyCompany(uid, company_id)
 
-    # 添加单个公司
 
+    # 添加单个公司
     async def addCompany(self, uid, company_id):
         return await companyCurd.addCompany(uid, company_id[0])
 
-    # 添加多个公司
-
-    async def addManyCompany(self):
-        pass
 
     # 删除单个公司
-
     async def deleteCompany(self):
         pass
 
-    # 删除多个公司
 
+    # 删除多个公司
     async def deleteManyCompany(self):
         pass
+
 
     def testCreateZoomMeeting(self):
         meetingTest = MeetingModel(
