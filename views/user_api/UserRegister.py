@@ -28,12 +28,12 @@ class UserRegister:
 
         self.account = account
         self.password = password
-        self.email = email
+        self.email = account
         self.fund_type = fund_type
         self.fund_name = fund_name
         self.company_address = company_address
         self.user_name = user_name
-        
+
         return await self.resultData()
 
 
@@ -71,20 +71,20 @@ class UserRegister:
 
 
     # 查找用户基金公司是否存在 - 不存在返回 false，存在返回公司 id，公司名称 fund_name， 管理员 id
-    async def isFund(self):
+    # async def isFund(self):
 
-        # 连接数据库
-        dbo.resetInitConfig('test', 'users')
+    #     # 连接数据库
+    #     dbo.resetInitConfig('test', 'users')
 
-        # 条件 - 查找 基金公司名称 fund_name 和 有管理权限 is_admin 的用户 - 返回字段 全部
-        condition = {'fund_name': self.fund_name}
-        field = {'_id': 0}
-        result = await dbo.findOne(condition, field)
+    #     # 条件 - 查找 基金公司名称 fund_name 和 有管理权限 is_admin 的用户 - 返回字段 全部
+    #     condition = {'fund_name': self.fund_name}
+    #     field = {'_id': 0}
+    #     result = await dbo.findOne(condition, field)
 
-        if result is None:
-            return False
-        
-        return result
+    #     if result is None:
+    #         return False
+
+    #     return result
 
 
     # 添加用户
@@ -101,22 +101,32 @@ class UserRegister:
 
         document = {
             'id': get_id_result['update_id'],
-            'email': self.email,
+            'userToken': "-",
+            'platForm': "-",
+            'localTimeZone': "-",
+            'name': "-",
+            'alias': "-",
+            'head_portrait': "-",
+            'position': "-",
+            'working_fixed_year': "-",
+            'company_name': "-",
+            'company_alias': "-",
+            'company_icon': "-",
+            'company_introduction': "-",
+            'company_create_time': "-",
+            'company_type': "-",
+            'company_main_business': "-",
+            'company_address': "-",
+            'email': self.account,
             'account': self.account,
             'password': self.password,
-            'fund_name': self.fund_name,
-            'fund_type': 1,
-            'company_address': self.company_address,
-            'user_name': self.user_name,
-            'head_portrait': 1,
-            'company_icon': 1,
-            'company_info': 1,
+            'is_email_verify': "0",
             'login_num': 0,
-            'reg_time': common.getTime(),
             'last_login_time': 0,
-            "update_time" : 1
+            "create_time": common.getTime(),
+            "update_time" : common.getTime()
         }
-        
+
         insert_result = await dbo.insert(document)
         logger.info(insert_result.inserted_id)
 
@@ -133,7 +143,7 @@ class UserRegister:
         }
 
         return data
-        
+
 
 
 

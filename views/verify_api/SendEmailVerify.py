@@ -85,7 +85,7 @@ class SendEmilVerify():
     # 判断 email 是否存在
     async def isUserEmail(self):
 
-        dbo.resetInitConfig('test', 'lp_gp')
+        dbo.resetInitConfig('test', 'users')
 
         # 判断是 - 注册发送验证码，还是 - 修改密码发送验证码    1 注册， 2 修改密码
         # if self.verify_type == '1':
@@ -149,7 +149,7 @@ class SendEmilVerify():
         # 插入验证记录信息
         '''下面的ID应该用自增的ID - 暂时还没获取它'''
         # 获取 id 自增记录
-        get_id_result = await dbo.getNextIdtoUpdate('friend_verify_log')
+        get_id_result = await dbo.getNextIdtoUpdate('email_verify')
         if get_id_result['action'] == False:
             return '获取 id 自增值失败'
         # logger.info(123123123)
