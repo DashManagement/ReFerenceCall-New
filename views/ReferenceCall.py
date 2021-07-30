@@ -25,7 +25,11 @@ class ReferenceCall:
 
     # 添加单个公司
     async def addCompany(self, uid, company_id):
-        return await companyCurd.addCompany(uid, company_id[0])
+        
+        if len(company_id) > 1 :
+            return await companyCurd.addManyCompany(uid, company_id)
+        else:
+            return await companyCurd.addCompany(uid, company_id[0])
 
 
     # 删除单个公司
