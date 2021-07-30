@@ -2,7 +2,7 @@
 Description: 
 Author: fanshaoqiang
 Date: 2021-07-26 17:33:13
-LastEditTime: 2021-07-27 11:42:23
+LastEditTime: 2021-07-30 17:06:58
 LastEditors: fanshaoqiang
 '''
 from pydantic import BaseModel
@@ -101,7 +101,7 @@ class ZoomAPI:
         topic = self.generateTopic(
             meetingModel.fundName, meetingModel.fromUserName, meetingModel.toUserName)
         timeNow = datetime.now()
-        timeNow = timeNow.strftime("%y-%m-%d T %H:%M:%S")
+        timeNow = timeNow.strftime("%Y-%m-%dT%H:%M:%S")
         meetingdetails = self.generateMeetingDetail(
             topic, meetingModel.meetingTime, meetingModel.meetingZone)
         r = requests.post(
