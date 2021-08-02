@@ -33,8 +33,8 @@ class ReferenceCall:
 
 
     # 删除单个公司
-    async def deleteCompany(self):
-        pass
+    async def deleteCompany(self, id, uid):
+        return await companyCurd.deleteCompany(id, uid)
 
 
     # 删除多个公司
@@ -42,10 +42,24 @@ class ReferenceCall:
         pass
 
 
+    # 志愿者已经添加的公司列表接口
+    async def companyList(self, uid):
+        return await companyCurd.companyList(uid)
+
+
+    # 按公司查看 reference_call 的志愿者列表
+    async def companyVolunteersList(self, id, company_id):
+        return await companyCurd.companyVolunteersList(id, company_id)
+
+
     def testCreateZoomMeeting(self):
         meetingTest = MeetingModel(
             fundName="123", fromUserName="fanshaoqiang", toUserName="123")
         zoomapi.createMeeting(meetingTest)
+
+
+
+
 
 
 referenceCall = ReferenceCall()
