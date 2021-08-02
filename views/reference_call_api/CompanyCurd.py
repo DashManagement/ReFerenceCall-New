@@ -125,7 +125,14 @@ class CompanyCurd:
             field = {'_id':0}
             result = await dbo.findOne(condition, field)
             result['insert_id'] = value['id']
-            data['data'].append(result)
+            data['data'].append({
+                'insert_id': value['id'],
+                'company_id':result['company_id'],
+                'company_name':result['fund_name'],
+                'company_info':result['company_info'],
+                'company_icon':result['company_icon'],
+                'create_time':result['reg_time']
+            })
 
         return data
 
