@@ -14,7 +14,7 @@ from views.search_api.GeneralSearch import generalSearch
 from views.search_api.HotSearch import hotSearch
 
 
-# 用户接口类
+# 搜索接口类
 class Search:
 
 
@@ -27,7 +27,8 @@ class Search:
     async def hotSearch(self, id):
         return await hotSearch.returnHotSearchList(id)
 
-    
+
+
 
 
 
