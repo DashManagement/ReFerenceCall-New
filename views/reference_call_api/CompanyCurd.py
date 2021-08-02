@@ -18,10 +18,10 @@ class CompanyCurd:
 
     # 添加多个公司
     async def addManyCompany(self, uid='', company_id=''):
-
+        
         messages = []
         for value in company_id:
-            messages.push(self.addCompany(uid, value))
+            messages.append(await self.addCompany(uid, value))
 
         return messages
 
@@ -33,12 +33,12 @@ class CompanyCurd:
         data_result = await commonReferenceCall.verifyUserAndCompany(uid, company_id)
         if data_result['action'] is False:
             return data_result['message']
-        
+
         # 验证是否用户已经添加过此公司
         is_add = await commonReferenceCall.userIsAddCompany(uid, company_id)
         if is_add is True:
-            return {'code':200, 'message':'已经添加此公司'}
-        
+            return {'code':200, 'message':'已经添加此公司', 'company_id':company_id}
+
         # 添加用户的 reference call 公司
         add_result = await self.addUserReferenceCall(data_result['user_info'], data_result['company_info'])
         if add_result is False:
@@ -64,8 +64,8 @@ class CompanyCurd:
             'uid': user_info['id'],
             'email': user_info['email'],
             'head_portrait': user_info['head_portrait'],
-            'user_name': user_info['user_name'],
-            'fund_name': user_info['fund_name'],
+            'user_name': user_info['name'],
+            'fund_name': user_info['company_name'],
             'company_icon': user_info['company_icon'],
             'rc_company_id': int(company_info['id']),
             'rc_fund_name': company_info['fund_name'],
@@ -83,7 +83,7 @@ class CompanyCurd:
             return False
 
         return True
-        
+
 
 
 
