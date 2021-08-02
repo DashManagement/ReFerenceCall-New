@@ -109,7 +109,7 @@ class CompanyCurd:
         dbo.resetInitConfig('test', 'reference_call_company')
 
         condition = {'uid':uid}
-        field = {'rc_company_id':1, '_id':0}
+        field = {'id':1, 'rc_company_id':1, '_id':0}
         company_list = await dbo.getData(condition, field)
 
         if len(company_list) == 0:
@@ -124,6 +124,7 @@ class CompanyCurd:
             condition = {'id':str(value['rc_company_id']), 'company_id':str(value['rc_company_id'])}
             field = {'_id':0}
             result = await dbo.findOne(condition, field)
+            result['insert_id'] = value['id']
             data['data'].append(result)
 
         return data
