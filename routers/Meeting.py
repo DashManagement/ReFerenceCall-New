@@ -13,13 +13,14 @@ from fastapi import APIRouter
 # 自己创建的包
 from views.Meeting import meeting
 from models.MeetingModel import SendRequestModel
-
+from models.MeetingModel import VolunteerReplyRequestModel
+from models.MeetingModel import RequesterRequestModel
 
 # 创建 APIRouter 实例
 router = APIRouter()
 
 
-# 添加 referencecall 一个或多个公司，根据 company_id 参数的 列表长度是 1个或是 N个 为参考
+# 预约会议 - 预约者第一次发送请求
 @router.post('/api/meeting/send_request')
 async def sendRequest(send_request: SendRequestModel):
     ''' 
@@ -48,3 +49,7 @@ async def sendRequest(send_request: SendRequestModel):
     )
 
 
+# 预约会议 - 志愿者回复请求
+@router.post('/api/meeting/volunteer_reply_request')
+async def volunteerReplyRequest(volunteer_reply_request: VolunteerReplyRequestModel):
+    return 123

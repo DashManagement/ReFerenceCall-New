@@ -8,7 +8,7 @@ LastEditors: michael
 # coding=utf-8
 
 # 加载自己创建的包
-from views.meeting_api.MeetingOperation import meetingOperation
+from views.meeting_api.MeetingFirstMeetingRequest import meetingFirstMeetingRequest
 
 
 # Meeting 会议接口类
@@ -17,7 +17,7 @@ class Meeting:
 
     # 第一次预约会议
     async def sendRequest(self, id, volunteers_id, request_type, reservation_company_id, reservation_company_name):
-        return await meetingOperation.firstMeetingRequest(id, volunteers_id, request_type, reservation_company_id, reservation_company_name)
+        return await meetingFirstMeetingRequest.construct(id, volunteers_id, request_type, reservation_company_id, reservation_company_name)
 
 
 
