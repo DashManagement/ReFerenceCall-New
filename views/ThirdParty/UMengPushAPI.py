@@ -2,7 +2,7 @@
 Description: 
 Author: fanshaoqiang
 Date: 2021-07-27 11:52:52
-LastEditTime: 2021-07-27 11:52:54
+LastEditTime: 2021-08-03 11:47:47
 LastEditors: fanshaoqiang
 '''
 '''
@@ -22,6 +22,8 @@ from views.ThirdParty.umessage.pushclient import PushClient
 from views.ThirdParty.umessage.iospush import *
 from views.ThirdParty.umessage.androidpush import *
 from views.ThirdParty.umessage.errorcodes import UMPushError, APIServerErrorCode
+from enum import Enum, unique
+from config.log_config import logger
 appKey = '60dd7be426a57f1018425555'
 androidKey = '60fa83e0999517176d7a95c6'
 appMasterSecret = 'ei0ycynmvzhqybdxcgwa5zbmrxuwingo'
@@ -29,13 +31,61 @@ deviceToken = 'DEC3C97AB50F958395E0F799037C1FAF5F71CCE0869307F57785FC6C7BC78DD2'
 androidMasterSecret = 'rzggvkq7bhwhahetw8mweaxnc7d8mjyx'
 
 
-class UMengPushAPI(object):
-    def __init__(self, appKey, appMasterSecret):
-        self.androidUnicast = AndroidUnicast(appKey, appMasterSecret)
-        self.iosUnicast = IOSUnicast(appKey, appMasterSecret)
+@unique
+class PlatForm(Enum):
+    platform_IOS = 0
+    platform_Android = 1
 
-    def sendUnicast(title, content, platForm, deviceToken):
-        return 1
+
+class UMengPushAPI(object):
+    def __init__(self):
+
+        self.pushClient = PushClient()
+
+    def generatePushContent(self, isReplay):
+        if isReplay:
+            return "You got a replay."
+        else:
+            return "You got a request."
+
+    def sendUnicast(self, title, content, platForm, deviceToken):
+        logger.info(f"params is {title}, {content}, {platForm},{deviceToken}")
+        if platForm == PlatForm.platform_IOS:
+            self.iosUnicast = IOSUnicast(appKey, appMasterSecret)
+            self.iosUnicast.setAppKey(appKey)
+            self.iosUnicast.setDeviceToken(deviceToken)
+            self.iosUnicast.setAlert(title)
+            self.iosUnicast.setBadge(1)
+            self.iosUnicast.setCustomizedField(title, content)
+            # unicast.setProductionMode()
+            self.iosUnicast.setTestMode()
+            # pushClient = PushClient()
+            ret = self.pushClient.send(self.iosUnicast)
+            logger.info(f"ret is {ret}")
+            return ret.status_code
+        elif platForm == PlatForm.platform_Android:
+            self.androidUnicast = AndroidUnicast(
+                androidKey, androidMasterSecret)
+            self.androidUnicast.setAppKey(androidKey)
+            self.androidUnicast.setDeviceToken(deviceToken)
+            self.androidUnicast.setTicker("Android unicast ticker")
+            self.androidUnicast.setTitle(title)
+            self.androidUnicast.setText(content)
+            self.androidUnicast.goAppAfterOpen()
+            self.androidUnicast.setDisplayType(
+                AndroidNotification.DisplayType.notification)
+            self.androidUnicast.setTestMode()
+            logger.info(f"self.appKey is {self.androidUnicast.appKey}")
+            logger.info(self.androidUnicast.getPostBody())
+            # pushClient = PushClient()
+            ret = self.pushClient.send(self.androidUnicast)
+            # retJson = json.JSONDecoder(ret)
+            logger.info(f"ret is {ret.text},{ret.status_code}")
+            return ret.status_code
+        # print(2)
+        # self.androidUnicast
+
+        # return 1
         # android
 
 
@@ -46,7 +96,7 @@ def sendAndroidUnicast():
     unicast.setTitle("中文的title")
     unicast.setText("Android unicast text")
     unicast.goAppAfterOpen()
-    unicast.setDisplayType(AndroidNotification.DisplayType.NOTIFICATION)
+    unicast.setDisplayType(AndroidNotification.DisplayType.notification)
     unicast.setTestMode()
     pushClient = PushClient()
     pushClient.send(unicast)
@@ -58,7 +108,7 @@ def sendAndroidBroadcast():
     broadcast.setTitle("中文的title")
     broadcast.setText("Android broadcast text")
     broadcast.goAppAfterOpen()
-    broadcast.setDisplayType(AndroidNotification.DisplayType.NOTIFICATION)
+    broadcast.setDisplayType(AndroidNotification.DisplayType.notification)
     broadcast.setTestMode()
     # Set customized fields
     broadcast.setExtraField("test", "helloworld")
@@ -168,8 +218,9 @@ def printResult(ret):
                   (errorcode, APIServerErrorCode.errorMessage(errorcode)))
 
 
-if __name__ == '__main__':
-    # sendIOSUnicast()
-    # sendIOSBroadcast()
-    # sendIOSGroupcast()
-    sendIOSUnicast()
+testUmengapi = UMengPushAPI()
+
+testUmengapi.sendUnicast(
+    "title", "123", PlatForm.platform_Android, "AiBTRwWUzGJ4Y13iiwPuv9tptgIlGEOkch2wQM48WC48")
+testUmengapi.sendUnicast("ios title", "123", PlatForm.platform_IOS,
+                         "DEC3C97AB50F958395E0F799037C1FAF5F71CCE0869307F57785FC6C7BC78DD2")
