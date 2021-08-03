@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-07-08 10:16:20
-LastEditTime: 2021-07-30 10:30:38
+LastEditTime: 2021-07-30 10:54:40
 LastEditors: fanshaoqiang
 '''
 # coding=utf-8
@@ -13,7 +13,7 @@ import motor.motor_asyncio
 import pymongo
 
 readConfig = ConfigParser()
-debug = 0
+debug = 1
 if debug == 0:
     # 加载远程数据库配置变量
     readConfig.read('./config/database.ini')
