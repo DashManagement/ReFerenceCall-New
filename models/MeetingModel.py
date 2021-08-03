@@ -25,7 +25,7 @@ class VolunteerReplyRequestModel(BaseModel):
     id: str
     session_id: str
     request_type: str
-    volunteer_reply_time: int = 0
+    time: int = 0
 
 
 # 预约会议 - 请求者回复请求的验证模型
@@ -33,6 +33,6 @@ class RequesterRequestModel(BaseModel):
     id: str
     session_id: str
     request_type: str
-    requester_agree_time: int = 0
+    time: int = 0
 
 

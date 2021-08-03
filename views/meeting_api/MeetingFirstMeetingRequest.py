@@ -9,11 +9,10 @@ LastEditors: michael
 # coding=utf-8
 
 # 加载自己创建的包
-from pydantic.tools import T
 from views.Base import *
 from config.log_config import logger
 
-# meeting 会议操作类
+# meeting 第一次预约会议
 class MeetingFirstMeetingRequest:
 
 
@@ -118,18 +117,19 @@ class MeetingFirstMeetingRequest:
 
         document = {
             'id': get_id_result['update_id'],
-            'reservation_company_id': reservation_company_id,
+            'reservation_company_id': int(reservation_company_id),
             'reservation_company_name': reservation_company_name,
-            'start_id': id,
-            'end_id': volunteers_id,
+            'start_id': int(id),
+            'end_id': int(volunteers_id),
             'session_id': get_session_id_result['update_id'],
-            'current_id': id,
+            'current_id': int(id),
             'current_content': "-",
-            'request_type': request_type,
+            'request_type': int(request_type),
             'volunteer_reply_time': "-",
             'requester_agree_time': "-",
             'national_area_code': "-",
             'national_area_name': "-",
+            'request_num': 1,
             'is_create_meeting': 0,
             "create_time": common.getTime(),
             #此处需要一个预约过期时间，后面补上。也有可能不需要

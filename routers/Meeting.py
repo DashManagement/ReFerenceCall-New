@@ -24,10 +24,10 @@ router = APIRouter()
 @router.post('/api/meeting/send_request')
 async def sendRequest(send_request: SendRequestModel):
     ''' 
-    id	是	string	请求者 id
-    volunteers_id	是	list	志愿者 id
-    request_type	是	string	请求类型：1 请求者发送预约请求
-    reservation_company_id	是	string	预约沟通的公司id
+    id	                        是	string	请求者 id
+    volunteers_id	            是	list	志愿者 id
+    request_type	            是	string	请求类型：1 请求者发送预约请求
+    reservation_company_id	    是	string	预约沟通的公司id
     reservation_company_name	是	string	预约沟通的公司名称
     非测试数据：
     {
@@ -52,4 +52,24 @@ async def sendRequest(send_request: SendRequestModel):
 # 预约会议 - 志愿者回复请求
 @router.post('/api/meeting/volunteer_reply_request')
 async def volunteerReplyRequest(volunteer_reply_request: VolunteerReplyRequestModel):
-    return 123
+    ''' 
+    id	            是	string	        志愿者 id
+    session_id	    是	list	        会话 id
+    request_type	是	string	        请求类型：2 志愿者回复请求时间，4 志愿者拒绝，没有预约时间
+    time	        否	string	        志愿者回复预订的时间
+    非测试数据：
+    {
+        "id": 1,
+        "session_id": 2,
+        "request_type": 1,
+        "time": 2323
+    }
+    '''
+
+    params = volunteer_reply_request.__dict__
+    return await meeting.volunteerReplyRequest(
+        params['id'], 
+        params['session_id'], 
+        params['request_type'], 
+        params['time']
+    )
