@@ -91,7 +91,8 @@ class Dbo:
     async def findOne(self, condition={}, field={'_id':0}):
         return await self.collection.find_one(condition, field)
 
-    async def del_one(self, condition={}):
+    # 删除一条数据
+    async def deleteOne(self, condition={}):
         return await self.collection.delete_one(condition)
 
     # 查询一条数据，一参

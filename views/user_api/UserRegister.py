@@ -101,6 +101,7 @@ class UserRegister:
 
         document = {
             'id': get_id_result['update_id'],
+            'is_reservation': 1,
             'userToken': "-",
             'platForm': "-",
             'localTimeZone': "-",

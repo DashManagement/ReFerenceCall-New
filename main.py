@@ -16,6 +16,8 @@ from routers import User
 from routers import Verify
 from routers import Fund
 from routers import ReferenceCall
+from routers import Search
+from routers import Meeting
 
 from starlette.middleware.cors import CORSMiddleware
 
@@ -65,3 +67,9 @@ app.include_router(Fund.router)
 
 # Reference Call 路由
 app.include_router(ReferenceCall.router)
+
+# 搜索路由
+app.include_router(Search.router)
+
+# 搜索路由
+app.include_router(Meeting.router)
