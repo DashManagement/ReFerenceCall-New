@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2020-07-27 10:48:20
-LastEditTime: 2021-08-04 12:06:34
+LastEditTime: 2021-08-04 12:15:14
 LastEditors: fanshaoqiang
 '''
 # coding=utf-8
@@ -16,7 +16,7 @@ from models.ReferenceCallModel import AddCompanyModel
 from models.ReferenceCallModel import DeleteCompanyModel
 from models.ReferenceCallModel import CompanyListModel
 from models.ReferenceCallModel import CompanyVolunteersListModel
-
+from config.log_config import logger
 # 创建 APIRouter 实例
 router = APIRouter()
 
