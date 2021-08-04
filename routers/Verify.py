@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2020-12-21 14:48:20
-LastEditTime: 2021-05-19 15:35:51
+LastEditTime: 2021-08-04 11:12:05
 LastEditors: fanshaoqiang
 '''
 # coding=utf-8
@@ -13,6 +13,7 @@ from fastapi import APIRouter
 # 自己创建的包
 from views.Verify import verify
 from models.VerifyModel import VerifyModel
+from config.log_config import logger
 
 
 # 创建 APIRouter 实例
@@ -49,5 +50,5 @@ async def emailOrVerify(verify_params: VerifyModel):
     }
     1. 其它参数发送请看文档
     '''
-    
+    logger.info(f"verify_params is {verify_params}")
     return await verify.judgeRequest(verify_params.__dict__)
