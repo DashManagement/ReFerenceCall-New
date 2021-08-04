@@ -2,8 +2,8 @@
 @Description:
 @Author: michael
 @Date: 2020-07-27 10:48:20
-LastEditTime: 2020-07-27 20:00:00
-LastEditors: michael
+LastEditTime: 2021-08-04 12:06:34
+LastEditors: fanshaoqiang
 '''
 # coding=utf-8
 
@@ -77,4 +77,5 @@ async def companyVolunteersList(company_volunteers_list: CompanyVolunteersListMo
     '''
 
     params = company_volunteers_list.__dict__
+    logger.info(f"params is {params}")
     return await referenceCall.companyVolunteersList(int(params['id']), int(params['company_id']))

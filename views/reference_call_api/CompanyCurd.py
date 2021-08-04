@@ -2,8 +2,8 @@
 @Description:
 @Author: michael
 @Date: 2021-07-27 10:10:20
-LastEditTime: 2021-07-27 20:00:00
-LastEditors: michael
+LastEditTime: 2021-08-04 12:07:27
+LastEditors: fanshaoqiang
 '''
 # coding=utf-8
 
@@ -13,20 +13,21 @@ from config.log_config import logger
 from views.reference_call_api.CommonReferenceCall import commonReferenceCall
 
 # reference call 对于 公司的 增/删/改/查/操作
-class CompanyCurd:
 
+
+class CompanyCurd:
 
     # 添加多个公司
     async def addManyCompany(self, uid='', company_id=''):
-        
+
         messages = []
         for value in company_id:
             messages.append(await self.addCompany(uid, value))
 
         return messages
 
-
     # 添加单个 公司
+
     async def addCompany(self, uid='', company_id=''):
 
         # 验证是否有此用户和需要添加的公司 - 返回用户和公司信息
@@ -37,7 +38,7 @@ class CompanyCurd:
         # 验证是否用户已经添加过此公司
         is_add = await commonReferenceCall.userIsAddCompany(uid, company_id)
         if is_add is True:
-            return {'code':200, 'message':'已经添加此公司', 'company_id':company_id}
+            return {'code': 200, 'message': '已经添加此公司', 'company_id': company_id}
 
         # 添加用户的 reference call 公司
         add_result = await self.addUserReferenceCall(data_result['user_info'], data_result['company_info'])
@@ -46,8 +47,8 @@ class CompanyCurd:
 
         return {'code': 200}
 
-
     # 添加用户的 reference call 公司
+
     async def addUserReferenceCall(self, user_info, company_info):
 
         # 获取自增 ID
@@ -85,70 +86,72 @@ class CompanyCurd:
 
         return True
 
-
     # 删除单个公司
+
     async def deleteCompany(self, id, uid):
 
         dbo.resetInitConfig('test', 'reference_call_company')
 
         # 删除一条数据
-        condition = {'id':id, 'uid':uid}
+        condition = {'id': id, 'uid': uid}
         await dbo.deleteOne(condition)
 
         # 查询这条数据是否存在
-        condition = {'id':id, 'uid':uid}
-        field = {'_id':0}
+        condition = {'id': id, 'uid': uid}
+        field = {'_id': 0}
         if await dbo.findOne(condition, field) is None:
             return {'code': 200}
         return {'code': 201, 'message': '删除失败'}
 
-
     # 志愿者已经添加的公司列表接口
+
     async def companyList(self, uid):
-        
+
         dbo.resetInitConfig('test', 'reference_call_company')
 
-        condition = {'uid':uid}
-        field = {'id':1, 'rc_company_id':1, '_id':0}
+        condition = {'uid': uid}
+        field = {'id': 1, 'rc_company_id': 1, '_id': 0}
         company_list = await dbo.getData(condition, field)
 
         if len(company_list) == 0:
-            return {'code': 201, 'message':'此用户没有数据'}
+            return {'code': 201, 'message': '此用户没有数据'}
 
         data = {}
         data['code'] = 200
         data['data'] = []
 
         for value in company_list:
-            dbo.resetInitConfig('test','lp_gp')
-            condition = {'id':str(value['rc_company_id']), 'company_id':str(value['rc_company_id'])}
-            field = {'_id':0}
+            dbo.resetInitConfig('test', 'lp_gp')
+            condition = {'id': str(value['rc_company_id']), 'company_id': str(
+                value['rc_company_id'])}
+            field = {'_id': 0}
             result = await dbo.findOne(condition, field)
             result['insert_id'] = value['id']
             data['data'].append({
                 'insert_id': value['id'],
-                'company_id':result['company_id'],
-                'company_name':result['fund_name'],
-                'company_info':result['company_info'],
-                'company_icon':result['company_icon'],
-                'create_time':result['reg_time']
+                'company_id': result['company_id'],
+                'company_name': result['fund_name'],
+                'company_info': result['company_info'],
+                'company_icon': result['company_icon'],
+                'create_time': result['reg_time']
             })
 
         return data
 
-
     # 按公司查看 reference_call 的志愿者列表
+
     async def companyVolunteersList(self, id, company_id):
 
         data = {
-            'company_info':{},
-            'volunteers_list':[]
+            'company_info': {},
+            'volunteers_list': []
         }
 
         # 查询公司信息
         dbo.resetInitConfig('test', 'lp_gp')
-        condition = {"id":str(company_id), "company_id":str(company_id), "describe":"0"}
-        field = {"id":1, "fund_name":1, "company_info":1, '_id':0}
+        condition = {"id": str(company_id), "company_id": str(
+            company_id), "describe": "0"}
+        field = {"id": 1, "fund_name": 1, "company_info": 1, '_id': 0}
         company_info = await dbo.findOne(condition, field)
 
         if company_info is None:
@@ -159,7 +162,7 @@ class CompanyCurd:
         # 查询志愿者列表
         dbo.resetInitConfig('test', 'reference_call_company')
         condition = {'rc_company_id': company_id}
-        field = {'uid':1, '_id':0}
+        field = {'uid': 1, '_id': 0}
 
         # field = {'uid':1, 'is_reservation':1, 'user_name':1, 'fund_name':1, 'company_icon':1, 'company_introduction':1, 'create_time':1, 'update_time':1, '_id':0}
         company_volunteers_list = await dbo.getData(condition, field)
@@ -167,18 +170,13 @@ class CompanyCurd:
         # 查询日愿者详细信息
         dbo.resetInitConfig('test', 'users')
         for value in company_volunteers_list:
-            condition = {'id':int(value['uid'])}
-            filed = {'id':1, 'is_reservation':1, 'name':1, 'company_name':1, 'company_icon':1, 'company_introduction':1, 'create_time':1, 'update_time':1, '_id':0}
+            condition = {'id': int(value['uid'])}
+            filed = {'id': 1, 'is_reservation': 1, 'name': 1, 'company_name': 1, 'company_icon': 1,
+                     'company_introduction': 1, 'create_time': 1, 'update_time': 1, '_id': 0}
             result = await dbo.findOne(condition, filed)
             data['volunteers_list'].append(result)
-
-        return {'code':200, 'data':data}
-
-
-
-
-
-
+        logger.info(f"data is {data}")
+        return {'code': 200, 'data': data}
 
 
 companyCurd = CompanyCurd()
