@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-07-08 10:16:20
-LastEditTime: 2021-08-04 10:32:12
+LastEditTime: 2021-08-04 12:33:40
 LastEditors: fanshaoqiang
 '''
 # coding=utf-8
@@ -49,8 +49,9 @@ class UserRegister:
     async def resultData(self):
 
         # 判断用户是否存在
-        if await self.isUser() is True:
-            return {'code': 206, 'message': '用户已注册'}
+        result = await self.isUser()
+        if result is not False:
+            return {'code': 206, 'message': '用户已注册', 'data': result}
 
         # 添加用户
         adduser_result = await self.addUser()
@@ -68,13 +69,12 @@ class UserRegister:
 
         # 条件 - 用户名 - 返回字段 全部
         condition = {'account': self.account}
-        field = {'is_email_verify': 1, 'is_admim': 1,
-                 'is_auditing': 1, '_id': 0}
+        field = {'_id': 0}
         result = await dbo.findOne(condition, field)
 
         # 用户存在的时候
         if result is not None:
-            return True
+            return result
 
         return False
 

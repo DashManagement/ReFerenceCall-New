@@ -47,7 +47,7 @@ class LoginInfo:
 
         # 判断邮箱是否验证
         if user_info['is_email_verify'] != '1':
-            return {'code':205, 'message':'邮箱未认证'}
+            return {'code':205, 'message':'邮箱未认证', 'uid':user_info['id']}
 
         # 判断更新次数 - 这一条可以抹掉或者不提示
         if await self.updateLoginNum() is False:
@@ -76,7 +76,7 @@ class LoginInfo:
         field = {'_id': 0}
         data = await dbo.findOne(condition, field)
 
-        # logger.info(data)
+        logger.info(data)
         return data
 
 

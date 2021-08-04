@@ -73,3 +73,29 @@ async def volunteerReplyRequest(volunteer_reply_request: VolunteerReplyRequestMo
         params['request_type'], 
         params['time']
     )
+
+
+# 预约会议 - 请求者回复志愿者
+@router.post('/api/meeting/requester_request')
+async def requesterRequest(requester_request: RequesterRequestModel):
+    ''' 
+    id	            是	string	        志愿者 id
+    session_id	    是	list	        会话 id
+    request_type	是	string	        请求类型：2 志愿者回复请求时间，4 志愿者拒绝，没有预约时间
+    time	        否	string	        志愿者回复预订的时间
+    非测试数据：
+    {
+        "id": 1,
+        "session_id": 2,
+        "request_type": 1,
+        "time": 2323
+    }
+    '''
+
+    params = requester_request.__dict__
+    return await meeting.requesterRequest(
+        params['id'], 
+        params['session_id'], 
+        params['request_type'], 
+        params['time']
+    )
