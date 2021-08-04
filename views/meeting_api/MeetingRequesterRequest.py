@@ -57,9 +57,17 @@ class MeetingRequesterRequest:
 
         if self.request_type == 3:
             self.time = common.getTime()
-            return await self.acceptBookingTime(two_request_result)
+            # 添加请求者同意记录
+            if await self.acceptBookingTime(two_request_result) is False:
+                return {'code':202, 'message':'请求者接受志愿者预约时间失败'}
+            # 在会议列表中添加一条待处理的会议记录
+            if await self.addMeetingRecord(two_request_result) is False:
+                return {'code':203, 'message':'在会议列表中添加会议记录失败'}
+
+            return {'code':200}
 
         if self.request_type == 5:
+            # 添加请求者拒绝记录
             return await self.returnRefused(two_request_result)
 
 
@@ -99,9 +107,9 @@ class MeetingRequesterRequest:
 
         # 判断添加记录是否成功
         if insert_result.inserted_id is None:
-            return {'code':202, 'message':'请求者接受志愿者预约时间失败'}
+            return False
 
-        return {'code':200}
+        return True
 
 
     # 请求者回复 - 拒绝
@@ -206,14 +214,50 @@ class MeetingRequesterRequest:
         condition = {'start_id':self.id, 'session_id':self.session_id, 'status':1}
         field = {'_id':0}
         result = await dbo.findOne(condition, field)
-
+        
         if result is not None:
             return False
 
         return True
 
 
+    # 在会议列表中 - 添加一条会议记录
+    async def addMeetingRecord(self, two_request_result):
 
+        # 获取自增 ID
+        get_id_result = await dbo.getNextIdtoUpdate('meeting_list', db='test')
+        if get_id_result['action'] == False:
+            logger.info('获取 id 自增失败')
+            return {'code':209, 'message':'获取 id 自增失败'}
+
+        dbo.resetInitConfig('test', 'meeting_list')
+        document = {
+            'id':get_id_result['update_id'],
+            'reservation_company_id':two_request_result['reservation_company_id'],
+            'reservation_company_name':two_request_result['reservation_company_name'],
+            'session_id':self.session_id,
+            'start_id':self.id,
+            'end_id':two_request_result['end_id'],
+            'meeting_pass':"-",
+            'national_area_code':"-",
+            'national_area_name':"-",
+            'is_start':0,
+            'start_time':0,
+            'is_cancel':0,
+            'cancel_time':0,
+            'status':1,
+            'create_time':common.getTime(),
+            'update_time':common.getTime()
+        }
+
+        insert_result = await dbo.insert(document)
+        logger.info(insert_result.inserted_id)
+
+        # 判断添加记录是否成功
+        if insert_result.inserted_id is None:
+            return False
+
+        return True
 
 
 

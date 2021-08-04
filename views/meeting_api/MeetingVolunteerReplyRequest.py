@@ -186,31 +186,6 @@ class MeetingVolunteerReplyRequest:
     # 查询已经预约成功的会议中是否有未结束的会议 - 如果有则返回需要先完成已经预约成功的会议
     async def isUnexecutedMeeting(self):
         
-        # # 获取自增 ID
-        # get_id_result = await dbo.getNextIdtoUpdate('meeting_list', db='test')
-        # if get_id_result['action'] == False:
-        #     logger.info('获取 id 自增失败')
-        #     return {'code':209, 'message':'获取 id 自增失败'}
-
-        # dbo.resetInitConfig('test', 'meeting_list')
-        # document = {
-        #     'id':get_id_result['update_id'],
-        #     'reservation_company_id':1,
-        #     'reservation_company_name':1,
-        #     'session_id':1,
-        #     'start_id':1,
-        #     'end_id':1,
-        #     'meeting_pass':1,
-        #     'national_area_code':1,
-        #     'national_area_name':1,
-        #     'is_start':1,
-        #     'start_time':1,
-        #     'is_cancel':1,
-        #     'cancel_time':1,
-        #     'create_time':1,
-        #     'update_time':1
-        # }
-        # await dbo.insert(document)
         dbo.resetInitConfig('test', 'meeting_list')
         condition = {'end_id':self.id, 'session_id':self.session_id, 'status':1}
         field = {'_id':0}
