@@ -45,7 +45,6 @@ class UserRegister:
         return await self.resultData()
 
     # 返回注册响应数据
-
     async def resultData(self):
 
         # 判断用户是否存在
@@ -95,11 +94,10 @@ class UserRegister:
     #     return result
 
     # 添加用户
-
     async def addUser(self):
 
         # 获取自增 ID
-        get_id_result = await dbo.getNextIdtoUpdate('users', db='test')
+        get_id_result = await dbo.getNextIdtoUpdate('lp_gp', db='test')
         if get_id_result['action'] == False:
             logger.info('获取 id 自增失败')
             return False
@@ -152,6 +150,12 @@ class UserRegister:
         }
 
         return data
+
+
+
+
+
+
 
 
 userRegister = UserRegister()
