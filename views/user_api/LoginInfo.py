@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-07-09 10:16:20
-LastEditTime: 2021-08-04 16:27:51
+LastEditTime: 2021-08-04 16:59:08
 LastEditors: fanshaoqiang
 '''
 
@@ -12,7 +12,8 @@ LastEditors: fanshaoqiang
 from views.Base import *
 from views.JwtOperation import jwtOperation
 from views.Fund import fund
-from views.ReferenceCall import referenceCall
+# from views.ReferenceCall import referenceCall
+from views.reference_call_api.CompanyCurd import companyCurd
 from config.log_config import logger
 
 
@@ -57,7 +58,11 @@ class LoginInfo:
 
         user_info = await self.returnUserInfo(user_info)
         # TODO调整为用户作为志愿者的基金列表
-        fund_list = await referenceCall.companyList(user_info['uid'])
+        fund.fundList(user_info['uid'])
+        fund_list_ret = await companyCurd.companyList(user_info['uid'])
+        fund_list = []
+        if fund_list_ret.get('code') == 200:
+            fund_list = fund_list_ret.get('data')
         data = {
             'code': 200,
             'data': {
