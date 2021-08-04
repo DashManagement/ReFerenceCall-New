@@ -2,8 +2,8 @@
 @Description:
 @Author: michael
 @Date: 2021-07-08 10:16:20
-LastEditTime: 2021-07-08 20:00:00
-LastEditors: michael
+LastEditTime: 2021-08-04 10:32:12
+LastEditors: fanshaoqiang
 '''
 # coding=utf-8
 
@@ -22,9 +22,14 @@ class UserRegister:
     fund_name = ''
     company_address = ''
     user_name = ''
+    userToken = ''
+    platForm = ''
+    localTimeZone = ''
 
     # 返回登陆后的首页信息 lp/gp
-    async def returnUserRegister(self, account='', password='', email='', fund_type='', fund_name='', company_address='', user_name=''):
+
+    async def returnUserRegister(self, account='', password='', email='', fund_type='', fund_name='',
+                                 company_address='', user_name='', userToken='', platForm='', timeZone=''):
 
         self.account = account
         self.password = password
@@ -33,26 +38,29 @@ class UserRegister:
         self.fund_name = fund_name
         self.company_address = company_address
         self.user_name = user_name
+        self.userToken = userToken
+        self.platForm = platForm
+        self.localTimeZone = timeZone
 
         return await self.resultData()
 
-
     # 返回注册响应数据
+
     async def resultData(self):
 
         # 判断用户是否存在
         if await self.isUser() is True:
-            return {'code':206, 'message':'用户已注册'}
+            return {'code': 206, 'message': '用户已注册'}
 
         # 添加用户
         adduser_result = await self.addUser()
         if adduser_result is False:
-            return {'code':203, 'message':'添加用户失败'}
+            return {'code': 203, 'message': '添加用户失败'}
 
-        return {'code':200, 'data':adduser_result}
-
+        return {'code': 200, 'data': adduser_result}
 
     # 查找用户名称是否存在
+
     async def isUser(self):
 
         # 连接数据库
@@ -60,7 +68,8 @@ class UserRegister:
 
         # 条件 - 用户名 - 返回字段 全部
         condition = {'account': self.account}
-        field = {'is_email_verify':1, 'is_admim':1, 'is_auditing':1, '_id': 0}
+        field = {'is_email_verify': 1, 'is_admim': 1,
+                 'is_auditing': 1, '_id': 0}
         result = await dbo.findOne(condition, field)
 
         # 用户存在的时候
@@ -68,7 +77,6 @@ class UserRegister:
             return True
 
         return False
-
 
     # 查找用户基金公司是否存在 - 不存在返回 false，存在返回公司 id，公司名称 fund_name， 管理员 id
     # async def isFund(self):
@@ -86,8 +94,8 @@ class UserRegister:
 
     #     return result
 
-
     # 添加用户
+
     async def addUser(self):
 
         # 获取自增 ID
@@ -102,9 +110,9 @@ class UserRegister:
         document = {
             'id': get_id_result['update_id'],
             'is_reservation': 1,
-            'userToken': "-",
-            'platForm': "-",
-            'localTimeZone': "-",
+            'userToken': self.userToken,
+            'platForm': self.platForm,
+            'localTimeZone': self.localTimeZone,
             'name': "-",
             'alias': "-",
             'head_portrait': "-",
@@ -125,7 +133,7 @@ class UserRegister:
             'login_num': 0,
             'last_login_time': 0,
             "create_time": common.getTime(),
-            "update_time" : common.getTime()
+            "update_time": common.getTime()
         }
 
         insert_result = await dbo.insert(document)
@@ -144,12 +152,6 @@ class UserRegister:
         }
 
         return data
-
-
-
-
-
-
 
 
 userRegister = UserRegister()

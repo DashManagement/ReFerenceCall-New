@@ -2,8 +2,8 @@
 @Description:
 @Author: michael
 @Date: 2021-07-08 10:16:20
-LastEditTime: 2021-07-08 20:00:00
-LastEditors: michael
+LastEditTime: 2021-08-04 10:26:15
+LastEditors: fanshaoqiang
 '''
 
 # coding=utf-8
@@ -21,10 +21,12 @@ class UserRegisterModel(BaseModel):
     fund_type: str = 1
     company_address: str = 1
     user_name: str
+    userToken: str
+    platForm: str
+    localTimeZone: str
 
 
 # 用户登陆验证模型
 class UserLoginModel(BaseModel):
     account: EmailStr
     password: str
-
