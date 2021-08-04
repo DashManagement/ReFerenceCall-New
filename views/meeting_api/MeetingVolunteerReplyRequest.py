@@ -137,13 +137,13 @@ class MeetingVolunteerReplyRequest:
         # 查看是否已经成功创建会议 或者 拒绝了创建会议
         condition = {'session_id':self.session_id}
         field = {'_id':0}
-        sort = [('id',1)]
-        num = 1
+        sort = [('id',-1)]
+        num = 0
         length = 1
         result = await dbo.findSort(condition, field, sort, num, length)
 
         if len(result) == 1:
-
+            
             data['action'] = False
             if result[0]['is_create_meeting'] == 1:
                 data['data'] = {'code': 201, 'message': '已经成功创建会议，不能再次回复请求者预约时间'}
