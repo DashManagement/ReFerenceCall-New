@@ -2,7 +2,7 @@
 Description: 
 Author: fanshaoqiang
 Date: 2021-07-27 11:52:52
-LastEditTime: 2021-08-03 11:47:47
+LastEditTime: 2021-08-04 12:08:56
 LastEditors: fanshaoqiang
 '''
 '''
@@ -218,9 +218,9 @@ def printResult(ret):
                   (errorcode, APIServerErrorCode.errorMessage(errorcode)))
 
 
-testUmengapi = UMengPushAPI()
+# testUmengapi = UMengPushAPI()
 
-testUmengapi.sendUnicast(
-    "title", "123", PlatForm.platform_Android, "AiBTRwWUzGJ4Y13iiwPuv9tptgIlGEOkch2wQM48WC48")
-testUmengapi.sendUnicast("ios title", "123", PlatForm.platform_IOS,
-                         "DEC3C97AB50F958395E0F799037C1FAF5F71CCE0869307F57785FC6C7BC78DD2")
+# testUmengapi.sendUnicast(
+#     "title", "123", PlatForm.platform_Android, "AiBTRwWUzGJ4Y13iiwPuv9tptgIlGEOkch2wQM48WC48")
+# testUmengapi.sendUnicast("ios title", "123", PlatForm.platform_IOS,
+#                          "DEC3C97AB50F958395E0F799037C1FAF5F71CCE0869307F57785FC6C7BC78DD2")
