@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-08-02 10:16:20
-LastEditTime: 2021-08-02 20:00:00
+LastEditTime: 2021-08-04 20:00:00
 LastEditors: michael
 '''
 
@@ -56,7 +56,7 @@ class MeetingRequesterRequest:
             return {'code':203, 'message':'没有志愿者回复记录'}
 
         if self.request_type == 3:
-            self.time = common.getTime()
+            self.time = time
             # 添加请求者同意记录
             if await self.acceptBookingTime(two_request_result) is False:
                 return {'code':204, 'message':'请求者接受志愿者预约时间失败'}
@@ -101,7 +101,7 @@ class MeetingRequesterRequest:
             'current_content': "-",
             'request_type': self.request_type,
             'volunteer_reply_time': "-",
-            'requester_agree_time': two_request_result['volunteer_reply_time'],
+            'requester_agree_time': self.time,
             'national_area_code': "-",
             'national_area_name': "-",
             'request_num': 3,
@@ -252,10 +252,11 @@ class MeetingRequesterRequest:
             'meeting_pass':"-",
             'national_area_code':"-",
             'national_area_name':"-",
-            'is_start':0,
+            'meeting_time':two_request_result['volunteer_reply_time'],
+            'meeting_status':0,
             'start_time':0,
-            'is_cancel':0,
             'cancel_time':0,
+            'overdue_time':0,
             'status':1,
             'create_time':common.getTime(),
             'update_time':common.getTime()
