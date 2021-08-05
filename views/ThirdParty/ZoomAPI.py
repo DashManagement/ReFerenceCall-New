@@ -2,7 +2,7 @@
 Description: 
 Author: fanshaoqiang
 Date: 2021-07-26 17:33:13
-LastEditTime: 2021-07-30 17:40:20
+LastEditTime: 2021-08-05 12:25:22
 LastEditors: fanshaoqiang
 '''
 from pydantic import BaseModel
@@ -114,7 +114,8 @@ class ZoomAPI:
         meetingInfo = json.loads(r.text)
 
         if meetingInfo.get("id") == None:
-            return {"Join_URL": None, "Meeting_ID": None, "Meeting_Pwd": None}
+            return None
+            # return {"Join_URL": None, "Meeting_ID": None, "Meeting_Pwd": None}
         join_URL = meetingInfo["join_url"]
         meeting_ID = meetingInfo.get("id")
         meetingPassword = meetingInfo.get("password")

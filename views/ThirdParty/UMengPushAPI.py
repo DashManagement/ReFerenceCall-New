@@ -2,7 +2,7 @@
 Description: 
 Author: fanshaoqiang
 Date: 2021-07-27 11:52:52
-LastEditTime: 2021-08-05 11:34:51
+LastEditTime: 2021-08-05 15:20:21
 LastEditors: fanshaoqiang
 '''
 '''
@@ -51,11 +51,11 @@ class UMengPushAPI(object):
 
     # 通过发送者的ID和志愿者的ID和是否是请求来发送Push
     # 如果isRequest为真，那应该寻找volunteerID相关的信息
-    def sendUnicastByUserID(self, fromUserID, volunteerID, isRequest):
+    async def sendUnicastByUserID(self, fromUserID, volunteerID, isRequest):
         sendUid = fromUserID
         if isRequest:
             sendUid = volunteerID
-        basicUserInfo = base.getUserPushInfo(sendUid)
+        basicUserInfo = await base.getUserPushInfo(sendUid)
         if basicUserInfo != None:
             title = "New request." if isRequest else "New replay."
             content = "You got a new request." if isRequest else "You got a new replay."
