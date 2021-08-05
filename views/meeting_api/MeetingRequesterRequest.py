@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-08-02 10:16:20
-LastEditTime: 2021-08-05 18:53:14
+LastEditTime: 2021-08-05 19:22:11
 LastEditors: fanshaoqiang
 
 '''
@@ -63,7 +63,7 @@ class MeetingRequesterRequest:
             return {'code': 203, 'message': '没有志愿者回复记录'}
 
         if self.request_type == 3:
-            self.time = time
+            self.time = selectTime
             # 添加请求者同意记录
             if await self.acceptBookingTime(two_request_result) is False:
                 return {'code': 204, 'message': '请求者接受志愿者预约时间失败'}
