@@ -25,6 +25,7 @@ class MeetingVolunteerReplyRequest:
         self.id = int(id)
         self.session_id = int(session_id)
         self.request_type = int(request_type)
+        self.time = time
 
         is_perform_step_two = await self.isPerformStepTwo()
         if is_perform_step_two['action'] is False:
@@ -38,11 +39,16 @@ class MeetingVolunteerReplyRequest:
             return {'code':202, 'message':'没有被请求记录'}
 
         if self.request_type == 2:
-            self.time = common.getTime()
             return await self.returnBookingTime(first_request_result)
 
         if self.request_type == 4:
-            return await self.returnRefused(first_request_result)
+
+            result = await self.returnRefused(first_request_result)
+            if result['code'] == 200:
+                # 志愿者已经 同意/拒绝 会议，将本次 session_id 相关的记录 status 都改为 0
+                await self.updateSessionId()
+
+            return result
 
 
     # 志愿者回复 - 预约时间
@@ -53,7 +59,7 @@ class MeetingVolunteerReplyRequest:
         if get_id_result['action'] == False:
             logger.info('获取 id 自增失败')
             return {'code':209, 'message':'获取 id 自增失败'}
-
+        
         dbo.resetInitConfig('test', 'reservation_meeting')
         document = {
             'id': get_id_result['update_id'],
@@ -71,6 +77,7 @@ class MeetingVolunteerReplyRequest:
             'national_area_name': "-",
             'request_num': 2,
             'is_create_meeting': 0,
+            'status':1,
             "create_time": common.getTime(),
             #此处需要一个预约过期时间，后面补上。也有可能不需要
             "update_time" : common.getTime()
@@ -112,6 +119,7 @@ class MeetingVolunteerReplyRequest:
             'national_area_name': "-",
             'request_num': 2,
             'is_create_meeting': 2,
+            'status':1,
             "create_time": common.getTime(),
             #此处需要一个预约过期时间，后面补上。也有可能不需要
             "update_time" : common.getTime()
@@ -143,7 +151,7 @@ class MeetingVolunteerReplyRequest:
         result = await dbo.findSort(condition, field, sort, num, length)
 
         if len(result) == 1:
-            
+
             data['action'] = False
             if result[0]['is_create_meeting'] == 1:
                 data['data'] = {'code': 201, 'message': '已经成功创建会议，不能再次回复请求者预约时间'}
@@ -171,9 +179,7 @@ class MeetingVolunteerReplyRequest:
     async def findFirstMeetingRequest(self):
 
         dbo.resetInitConfig('test', 'reservation_meeting')
-        # print(self.id, self.session_id)
-        # print(type(self.id), type(self.session_id))
-        condition = {'end_id':self.id, 'session_id':self.session_id, 'request_num':1, 'is_create_meeting':0}
+        condition = {'end_id':self.id, 'session_id':self.session_id, 'request_num':1, 'is_create_meeting':0, 'status':1}
         field = {'_id':0}
         result = await dbo.findOne(condition, field)
 
@@ -197,7 +203,15 @@ class MeetingVolunteerReplyRequest:
         return True
 
 
+    # 志愿者已经 同意/拒绝 会议，将本次 session_id 相关的记录 status 都改为 0
+    async def updateSessionId(self):
 
+        dbo.resetInitConfig('test', 'reservation_meeting')
+        condition = {'session_id':self.session_id}
+        set_fields = {'$set':{'status':0}}
+        result = await dbo.updateAll(condition, set_fields)
+        '''此条记录记入日志 - 不作其它处理'''
+        logger.info('update all meeting status = 0')
 
 
 

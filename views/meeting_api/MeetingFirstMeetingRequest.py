@@ -22,7 +22,7 @@ class MeetingFirstMeetingRequest:
         dbo.resetInitConfig('test','reservation_meeting')
 
         # 查找是否已经有未完成的预约会议
-        condition = {'start_id': id, 'end_id': volunteers_id, 'is_create_meeting':0}
+        condition = {'start_id': id, 'end_id': volunteers_id, 'is_create_meeting':0, 'status':1}
         field = {'_id':0}
         is_meeting_result = await dbo.findOne(condition, field)
 
@@ -33,9 +33,12 @@ class MeetingFirstMeetingRequest:
             if await self.is_users(id, volunteers_id) is False:
                 return {'code':201, 'message': '用户不存在'}
 
-            # 查询预约沟通的公司是否存在
-            # if await self.is_company(reservation_company_id) is False:
-            #     return {'code':202, 'message': '被预约的公司不存在'}
+            if await self.isUnexecutedMeeting(id, volunteers_id, reservation_company_id) is False:
+                return {'code': 202, 'message': '请先完成已经预约的会议'}
+
+            first_request_result = await self.findFirstMeetingRequest(id, volunteers_id, reservation_company_id)
+            if first_request_result is True:
+                return {'code':206, 'message':'已经向该志愿者发送过预约会议邀请，不能再次发送，请等待志愿者回复。'}
 
             # 查询预约沟通的公司是否有此志愿者
             if await self.is_company_and_volunteer(volunteers_id, reservation_company_id) is False:
@@ -71,23 +74,9 @@ class MeetingFirstMeetingRequest:
         return False
 
 
-    # 查询预约沟通的公司是否存在
-    # async def is_company(self, company_id):
-
-    #     dbo.resetInitConfig('test','lp_gp')
-    #     condition = {'company_id': company_id}
-    #     field = {'id':1, '_id':0}
-    #     result = await dbo.findOne(condition, field)
-
-    #     if result is None:
-    #         return False
-
-    #     return True
-
-
     # 查询预约沟通的公司是否有此志愿者
     async def is_company_and_volunteer(self, volunteers_id, reservation_company_id):
-        print(volunteers_id, reservation_company_id)
+
         dbo.resetInitConfig('test','reference_call_company')
         condition = {'uid':int(volunteers_id), 'rc_company_id': int(reservation_company_id)}
         field = {'id':1, '_id':0}
@@ -110,7 +99,7 @@ class MeetingFirstMeetingRequest:
         # 获取 session_id 自增 ID
         get_session_id_result = await dbo.getNextIdtoUpdate('session_id', db='test')
         if get_id_result['action'] == False:
-            logger.info('获取 id 自增失败')
+            logger.info('获取 session_id 自增失败')
             return False
 
         dbo.resetInitConfig('test','reservation_meeting')
@@ -131,6 +120,7 @@ class MeetingFirstMeetingRequest:
             'national_area_name': "-",
             'request_num': 1,
             'is_create_meeting': 0,
+            'status':1,
             "create_time": common.getTime(),
             #此处需要一个预约过期时间，后面补上。也有可能不需要
             "update_time" : common.getTime()
@@ -146,6 +136,32 @@ class MeetingFirstMeetingRequest:
         return True
 
 
+    # 查询 请求者第一次发送请求时的预议会议记录
+    async def findFirstMeetingRequest(self, id, volunteers_id, reservation_company_id):
+
+        dbo.resetInitConfig('test', 'reservation_meeting')
+        condition = {'start_id':int(id), 'end_id':int(volunteers_id), 'reservation_company_id':int(reservation_company_id), 'request_num':1, 'is_create_meeting':0, 'status':1}
+        field = {'_id':0}
+        result = await dbo.findOne(condition, field)
+
+        if result is None:
+            return False
+
+        return True
+
+
+    # 查询已经预约成功的会议中是否有未结束的会议 - 如果有则返回需要先完成已经预约成功的会议
+    async def isUnexecutedMeeting(self, id, volunteers_id, reservation_company_id):
+        
+        dbo.resetInitConfig('test', 'meeting_list')
+        condition = {'start_id':int(id), 'end_id':int(volunteers_id),  'reservation_company_id':int(reservation_company_id), 'status':1}
+        field = {'_id':0}
+        result = await dbo.findOne(condition, field)
+
+        if result is not None:
+            return False
+
+        return True
 
 
 

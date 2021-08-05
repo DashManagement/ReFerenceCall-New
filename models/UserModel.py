@@ -9,7 +9,6 @@ LastEditors: fanshaoqiang
 # coding=utf-8
 
 from pydantic import BaseModel, EmailStr
-from typing import List
 
 
 # 用户注册验证模型
