@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-08-02 10:16:20
-LastEditTime: 2021-08-05 16:07:28
+LastEditTime: 2021-08-05 16:45:08
 LastEditors: fanshaoqiang
 '''
 
@@ -129,10 +129,15 @@ class MeetingRequesterRequest:
         if insert_result.inserted_id is None:
             return False
 
+        logger.info(
+            f"  会议创建成功 给用户{self.id} 和 志愿者{two_request_result['end_id']} 发push")
+        await umengPushApi.sendUnicastByUserID(
+            two_request_result['end_id'], self.id, False)
+        await umengPushApi.sendUnicastByUserID(
+            self.id, two_request_result['end_id'], False)
         return True
 
     # 请求者回复 - 拒绝
-    # TODO by fsq 添加Push操作
 
     async def returnRefused(self, two_request_result):
 
@@ -260,7 +265,7 @@ class MeetingRequesterRequest:
         if meetingInfo == None:
             logger.info('Zoom创建会议失败')
             return {'code': 210, 'message': 'Zoom创建会议失败'}
-
+        logger.info(f"zoom 创建成功 {meetingInfo.get('Meeting_ID')}")
         dbo.resetInitConfig('test', 'meeting_list')
         document = {
             'id': get_id_result['update_id'],
@@ -304,21 +309,25 @@ class MeetingRequesterRequest:
         logger.info('update all meeting status = 0')
 
     async def getMeetingModelFromTwoResult(self, two_request_result):
-        meetingModel = MeetingModel()
-        meetingModel.fundName = two_request_result['reservation_company_name']
+
+        fundName = two_request_result['reservation_company_name']
         sendUserInfo = await base.getUserPushInfo(
             self.id)
         toUserInfo = await base.getUserPushInfo(
             two_request_result['end_id'])
-        meetingModel.fromUserName = sendUserInfo.get("userName")
-        meetingModel.fromEmail = sendUserInfo.get("userEmail")
-        meetingModel.toUserName = toUserInfo.get("userName")
-        meetingModel.toEmail = toUserInfo.get("userEmail")
-        meetingModel.meetingZone = sendUserInfo.get("localTimeZone")
+        fromUserName = sendUserInfo.get("userName")
+        fromEmail = sendUserInfo.get("userEmail")
+        toUserName = toUserInfo.get("userName")
+        toEmail = toUserInfo.get("userEmail")
+        meetingZone = sendUserInfo.get("localTimeZone")
         # TODO 临时给个时间，需要从two_request_result里面获取
         timeNow = datetime.now()
         timeNow = timeNow.strftime("%Y-%m-%dT%H:%M:%S")
-        meetingModel.meetingTime = timeNow
+        meetingTime = timeNow
+
+        meetingModel = MeetingModel(
+            fundName=fundName, fromUserName=fromUserName, toEmail=toEmail, toUserName=toUserName,
+            fromEmail=fromEmail, meetingZone=meetingZone, meetingTime=meetingTime)
         return meetingModel
 
 
