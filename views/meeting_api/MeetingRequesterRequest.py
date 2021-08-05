@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-08-02 10:16:20
-LastEditTime: 2021-08-05 16:45:08
+LastEditTime: 2021-08-05 18:36:00
 LastEditors: fanshaoqiang
 '''
 
@@ -12,6 +12,7 @@ LastEditors: fanshaoqiang
 from views.Base import *
 from views.ThirdParty.UMengPushAPI import umengPushApi
 from views.ThirdParty.ZoomAPI import *
+import time
 from config.log_config import logger
 
 # meeting 预约会议 - 请求者回复请求
@@ -41,11 +42,12 @@ class MeetingRequesterRequest:
     request_type = ''
     time = ''
 
-    async def construct(self, id='', session_id='', request_type='', time=''):
+    async def construct(self, id='', session_id='', request_type='', selectTime=''):
 
         self.id = int(id)
         self.session_id = int(session_id)
         self.request_type = int(request_type)
+        logger.info(f"time is {selectTime}")
 
         if await self.isUnexecutedMeeting() is False:
             return {'code': 202, 'message': '请先完成已经预约的会议'}
@@ -65,7 +67,7 @@ class MeetingRequesterRequest:
             if await self.acceptBookingTime(two_request_result) is False:
                 return {'code': 204, 'message': '请求者接受志愿者预约时间失败'}
             # 在会议列表中添加一条待处理的会议记录
-            if await self.addMeetingRecord(two_request_result) is False:
+            if await self.addMeetingRecord(two_request_result, selectTime) is False:
                 return {'code': 205, 'message': '在会议列表中添加会议记录失败'}
 
             # 请求者已经 同意/拒绝 会议，将本次 session_id 相关的记录 status 都改为 0
@@ -129,12 +131,6 @@ class MeetingRequesterRequest:
         if insert_result.inserted_id is None:
             return False
 
-        logger.info(
-            f"  会议创建成功 给用户{self.id} 和 志愿者{two_request_result['end_id']} 发push")
-        await umengPushApi.sendUnicastByUserID(
-            two_request_result['end_id'], self.id, False)
-        await umengPushApi.sendUnicastByUserID(
-            self.id, two_request_result['end_id'], False)
         return True
 
     # 请求者回复 - 拒绝
@@ -253,14 +249,14 @@ class MeetingRequesterRequest:
 
     # 在会议列表中 - 添加一条会议记录
 
-    async def addMeetingRecord(self, two_request_result):
+    async def addMeetingRecord(self, two_request_result, selectTime):
 
         # 获取自增 ID
         get_id_result = await dbo.getNextIdtoUpdate('meeting_list', db='test')
         if get_id_result['action'] == False:
             logger.info('获取 id 自增失败')
             return {'code': 209, 'message': '获取 id 自增失败'}
-        meetingModel = await self.getMeetingModelFromTwoResult(two_request_result)
+        meetingModel = await self.getMeetingModelFromTwoResult(two_request_result, selectTime)
         meetingInfo = zoomapi.createMeeting(meetingModel)
         if meetingInfo == None:
             logger.info('Zoom创建会议失败')
@@ -294,7 +290,12 @@ class MeetingRequesterRequest:
         # 判断添加记录是否成功
         if insert_result.inserted_id is None:
             return False
-
+            logger.info(
+                f"  会议创建成功 给用户{self.id} 和 志愿者{two_request_result['end_id']} 发push")
+        await umengPushApi.sendUnicastByUserID(
+            two_request_result['end_id'], self.id, False)
+        await umengPushApi.sendUnicastByUserID(
+            self.id, two_request_result['end_id'], False)
         return True
 
     # 请求者已经 同意/拒绝 会议，将本次 session_id 相关的记录 status 都改为 0
@@ -308,7 +309,7 @@ class MeetingRequesterRequest:
         '''此条记录记入日志 - 不作其它处理'''
         logger.info('update all meeting status = 0')
 
-    async def getMeetingModelFromTwoResult(self, two_request_result):
+    async def getMeetingModelFromTwoResult(self, two_request_result, selectTime):
 
         fundName = two_request_result['reservation_company_name']
         sendUserInfo = await base.getUserPushInfo(
@@ -320,14 +321,20 @@ class MeetingRequesterRequest:
         toUserName = toUserInfo.get("userName")
         toEmail = toUserInfo.get("userEmail")
         meetingZone = sendUserInfo.get("localTimeZone")
-        # TODO 临时给个时间，需要从two_request_result里面获取
-        timeNow = datetime.now()
-        timeNow = timeNow.strftime("%Y-%m-%dT%H:%M:%S")
-        meetingTime = timeNow
+
+        startTime = selectTime[0]
+        endTime = selectTime[1]
+        duration = int((endTime-startTime)/60)
+        startTime = datetime.fromtimestamp(
+            startTime).strftime("%Y-%m-%dT%H:%M:%S")
+        endTime = datetime.fromtimestamp(
+            endTime).strftime("%Y-%m-%dT%H:%M:%S")
+        logger.info(f"startTime is {startTime}, endTime is {endTime}")
+        meetingTime = startTime
 
         meetingModel = MeetingModel(
             fundName=fundName, fromUserName=fromUserName, toEmail=toEmail, toUserName=toUserName,
-            fromEmail=fromEmail, meetingZone=meetingZone, meetingTime=meetingTime)
+            fromEmail=fromEmail, meetingZone=meetingZone, meetingTime=meetingTime, duration=duration)
         return meetingModel
 
 
