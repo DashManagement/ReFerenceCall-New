@@ -15,6 +15,7 @@ from views.Meeting import meeting
 from models.MeetingModel import SendRequestModel
 from models.MeetingModel import VolunteerReplyRequestModel
 from models.MeetingModel import RequesterRequestModel
+from models.MeetingModel import MeetingListModel
 
 # 创建 APIRouter 实例
 router = APIRouter()
@@ -99,3 +100,22 @@ async def requesterRequest(requester_request: RequesterRequestModel):
         params['request_type'], 
         params['time']
     )
+
+
+# 会议列表相关操作
+@router.post('/api/meeting/meeting_list')
+async def meetingList(meeting_list: MeetingListModel):
+    ''' 
+    id	            是	string  	    请求者 id
+    request_type	是	string	        请求类型：1 我的 my request，2 其它的 other request
+    data_num	    是	string	        数据类型：1 显示 3条，2 显示 30条
+    非测试数据：
+    {
+        "id": 1,
+        "request_type": 2,
+        "data_num": 1
+    }
+    '''
+
+    params = meeting_list.__dict__
+    return await meeting.getMeetingList(params['id'], params['request_type'], params['check_type'], params['data_num'])

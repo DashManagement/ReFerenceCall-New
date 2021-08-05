@@ -2,8 +2,10 @@
 @Description:
 @Author: michael
 @Date: 2021-08-02 10:16:20
-LastEditTime: 2021-08-05 11:37:24
+
+LastEditTime: 2021-08-05 18:58:27
 LastEditors: fanshaoqiang
+
 '''
 
 # coding=utf-8
@@ -34,7 +36,9 @@ class MeetingFirstMeetingRequest:
             '''如果没有未完成预约会议，则添加一条预约信息'''
 
             # 查询请求者和志愿者是否存在
-            if await self.is_users(id, volunteers_id) is False:
+
+            users_info = await self.is_users(id, volunteers_id)
+            if users_info is False:
                 return {'code': 201, 'message': '用户不存在'}
 
             if await self.isUnexecutedMeeting(id, volunteers_id, reservation_company_id) is False:
@@ -50,7 +54,7 @@ class MeetingFirstMeetingRequest:
                 return {'code': 203, 'message': '被预约的公司不存在'}
 
             # 添加一条预约信息
-            insert_result = await self.insertFirstMeetingRequest(id, volunteers_id, request_type, reservation_company_id, reservation_company_name)
+            insert_result = await self.insertFirstMeetingRequest(id, volunteers_id, request_type, reservation_company_id, reservation_company_name, users_info)
             if insert_result is False:
                 return {'code': 204, 'message': '预约记录添加失败'}
             logger.info(f"用户{id} 第一次向{volunteers_id} 请求refCall")
@@ -67,14 +71,13 @@ class MeetingFirstMeetingRequest:
     # 查询请求者和志愿者是否存在
 
     async def is_users(self, id, volunteers_id):
-
         dbo.resetInitConfig('test', 'users')
         condition = {'$or': [{'id': int(id)}, {'id': int(volunteers_id)}]}
-        field = {'id': 1, '_id': 0}
+        field = {'_id': 0}
         result = await dbo.getData(condition, field)
 
         if int(len(result)) == 2:
-            return True
+            return result
 
         return False
 
@@ -94,7 +97,7 @@ class MeetingFirstMeetingRequest:
 
     # 添加第一次预约会议的请求记录
 
-    async def insertFirstMeetingRequest(self, id, volunteers_id, request_type, reservation_company_id, reservation_company_name):
+    async def insertFirstMeetingRequest(self, id, volunteers_id, request_type, reservation_company_id, reservation_company_name, users_info):
 
         # 获取自增 ID
         get_id_result = await dbo.getNextIdtoUpdate('reservation_meeting', db='test')
@@ -107,6 +110,15 @@ class MeetingFirstMeetingRequest:
         if get_id_result['action'] == False:
             logger.info('获取 session_id 自增失败')
             return False
+        # 获取 start_id 和 end_id 的用户信息
+        start_user_info = ''
+        end_user_info = ''
+        for value in users_info:
+            # logger.info(value)
+            if value['id'] == int(id):
+                start_user_info = value
+            else:
+                end_user_info = value
 
         dbo.resetInitConfig('test', 'reservation_meeting')
 
@@ -114,9 +126,19 @@ class MeetingFirstMeetingRequest:
             'id': get_id_result['update_id'],
             'reservation_company_id': int(reservation_company_id),
             'reservation_company_name': reservation_company_name,
-            'start_id': int(id),
-            'end_id': int(volunteers_id),
             'session_id': get_session_id_result['update_id'],
+            'start_id': int(id),
+            'start_user_name': start_user_info['name'],
+            'start_head_portrait': start_user_info['head_portrait'],
+            'start_working_fixed_year': start_user_info['working_fixed_year'],
+            'start_company_name': start_user_info['company_name'],
+            'start_company_icon': start_user_info['company_icon'],
+            'end_id': int(volunteers_id),
+            'end_user_name': end_user_info['name'],
+            'end_head_portrait': end_user_info['head_portrait'],
+            'end_working_fixed_year': end_user_info['working_fixed_year'],
+            'end_company_name': end_user_info['company_name'],
+            'end_company_icon': end_user_info['company_icon'],
             'current_id': int(id),
             'current_content': "-",
             'request_type': int(request_type),

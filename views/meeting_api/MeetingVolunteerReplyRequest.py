@@ -2,7 +2,8 @@
 @Description:
 @Author: michael
 @Date: 2021-08-02 10:16:20
-LastEditTime: 2021-08-05 15:47:44
+
+LastEditTime: 2021-08-05 18:56:20
 LastEditors: fanshaoqiang
 '''
 
@@ -64,7 +65,7 @@ class MeetingVolunteerReplyRequest:
     # 志愿者回复 - 预约时间
 
     async def returnBookingTime(self, first_request_result):
-
+        print(first_request_result)
         # 获取自增 ID
         get_id_result = await dbo.getNextIdtoUpdate('reservation_meeting', db='test')
         if get_id_result['action'] == False:
@@ -76,9 +77,19 @@ class MeetingVolunteerReplyRequest:
             'id': get_id_result['update_id'],
             'reservation_company_id': first_request_result['reservation_company_id'],
             'reservation_company_name': first_request_result['reservation_company_name'],
-            'start_id': first_request_result['start_id'],
-            'end_id': self.id,
             'session_id': self.session_id,
+            'start_id': first_request_result['start_id'],
+            'start_user_name': first_request_result['start_user_name'],
+            'start_head_portrait': first_request_result['start_head_portrait'],
+            'start_working_fixed_year': first_request_result['start_working_fixed_year'],
+            'start_company_name': first_request_result['start_company_name'],
+            'start_company_icon': first_request_result['start_company_icon'],
+            'end_id': self.id,
+            'end_user_name': first_request_result['end_user_name'],
+            'end_head_portrait': first_request_result['end_head_portrait'],
+            'end_working_fixed_year': first_request_result['end_working_fixed_year'],
+            'end_company_name': first_request_result['end_company_name'],
+            'end_company_icon': first_request_result['end_company_icon'],
             'current_id': self.id,
             'current_content': "-",
             'request_type': self.request_type,

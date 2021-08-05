@@ -2,8 +2,9 @@
 @Description:
 @Author: michael
 @Date: 2021-08-02 10:16:20
-LastEditTime: 2021-08-05 18:36:00
+LastEditTime: 2021-08-05 18:53:14
 LastEditors: fanshaoqiang
+
 '''
 
 # coding=utf-8
@@ -62,7 +63,7 @@ class MeetingRequesterRequest:
             return {'code': 203, 'message': '没有志愿者回复记录'}
 
         if self.request_type == 3:
-            self.time = common.getTime()
+            self.time = time
             # 添加请求者同意记录
             if await self.acceptBookingTime(two_request_result) is False:
                 return {'code': 204, 'message': '请求者接受志愿者预约时间失败'}
@@ -106,14 +107,24 @@ class MeetingRequesterRequest:
             'id': get_id_result['update_id'],
             'reservation_company_id': two_request_result['reservation_company_id'],
             'reservation_company_name': two_request_result['reservation_company_name'],
-            'start_id': self.id,
-            'end_id': two_request_result['end_id'],
             'session_id': self.session_id,
+            'start_id': self.id,
+            'start_user_name': two_request_result['start_user_name'],
+            'start_head_portrait': two_request_result['start_head_portrait'],
+            'start_working_fixed_year': two_request_result['start_working_fixed_year'],
+            'start_company_name': two_request_result['start_company_name'],
+            'start_company_icon': two_request_result['start_company_icon'],
+            'end_id': two_request_result['end_id'],
+            'end_user_name': two_request_result['end_user_name'],
+            'end_head_portrait': two_request_result['end_head_portrait'],
+            'end_working_fixed_year': two_request_result['end_working_fixed_year'],
+            'end_company_name': two_request_result['end_company_name'],
+            'end_company_icon': two_request_result['end_company_icon'],
             'current_id': self.id,
             'current_content': "-",
             'request_type': self.request_type,
             'volunteer_reply_time': "-",
-            'requester_agree_time': two_request_result['volunteer_reply_time'],
+            'requester_agree_time': self.time,
             'national_area_code': "-",
             'national_area_name': "-",
             'request_num': 3,
@@ -264,21 +275,31 @@ class MeetingRequesterRequest:
         logger.info(f"zoom 创建成功 {meetingInfo.get('Meeting_ID')}")
         dbo.resetInitConfig('test', 'meeting_list')
         document = {
+
             'id': get_id_result['update_id'],
             'reservation_company_id': two_request_result['reservation_company_id'],
             'reservation_company_name': two_request_result['reservation_company_name'],
             'session_id': self.session_id,
             'start_id': self.id,
+            'start_user_name': two_request_result['start_user_name'],
+            'start_head_portrait': two_request_result['start_head_portrait'],
+            'start_working_fixed_year': two_request_result['start_working_fixed_year'],
+            'start_company_name': two_request_result['start_company_name'],
+            'start_company_icon': two_request_result['start_company_icon'],
             'end_id': two_request_result['end_id'],
-            'meeting_pass': meetingInfo.get('Meeting_Pwd'),
-            'meeting_url': meetingInfo.get('Join_URL'),
-            'meeting_id': meetingInfo.get('Meeting_ID'),
+            'end_user_name': two_request_result['end_user_name'],
+            'end_head_portrait': two_request_result['end_head_portrait'],
+            'end_working_fixed_year': two_request_result['end_working_fixed_year'],
+            'end_company_name': two_request_result['end_company_name'],
+            'end_company_icon': two_request_result['end_company_icon'],
+            'meeting_pass': "-",
             'national_area_code': "-",
             'national_area_name': "-",
-            'is_start': 0,
+            'meeting_time': self.time,
+            'meeting_status': 0,
             'start_time': 0,
-            'is_cancel': 0,
             'cancel_time': 0,
+            'overdue_time': 0,
             'status': 1,
             'create_time': common.getTime(),
             'update_time': common.getTime()
