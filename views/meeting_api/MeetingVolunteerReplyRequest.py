@@ -3,7 +3,7 @@
 @Author: michael
 @Date: 2021-08-02 10:16:20
 
-LastEditTime: 2021-08-05 18:56:20
+LastEditTime: 2021-08-05 19:37:13
 LastEditors: fanshaoqiang
 '''
 
@@ -57,9 +57,9 @@ class MeetingVolunteerReplyRequest:
                 # 志愿者已经 同意/拒绝 会议，将本次 session_id 相关的记录 status 都改为 0
                 await self.updateSessionId()
             logger.info(
-                f" 志愿者{two_request_result['end_id']} 拒绝  用户{self.id} 的 refCall")
+                f" 志愿者{first_request_result['end_id']} 拒绝  用户{first_request_result['start_id']} 的 refCall")
             await umengPushApi.sendUnicastByUserID(
-                self.id, two_request_result['end_id'], False)
+                first_request_result['start_id'], first_request_result['end_id'], False)
             return result
 
     # 志愿者回复 - 预约时间
