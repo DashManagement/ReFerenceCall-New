@@ -11,6 +11,7 @@ LastEditors: michael
 from views.meeting_api.MeetingFirstMeetingRequest import meetingFirstMeetingRequest
 from views.meeting_api.MeetingVolunteerReplyRequest import meetingVolunteerReplyRequest
 from views.meeting_api.MeetingRequesterRequest import meetingRequesterRequest
+from views.meeting_api.MeetingBookingList import meetingBookingList
 
 # Meeting 会议接口类
 class Meeting:
@@ -30,6 +31,10 @@ class Meeting:
     async def requesterRequest(self, id, session_id, request_type, requester_agree_time):
         return await meetingRequesterRequest.construct(id, session_id, request_type, requester_agree_time)
 
+
+    # 获取会议列表相关操作
+    async def getMeetingList(self, id, request_type, check_type, data_num):
+        return await meetingBookingList.construct(id, request_type, check_type, data_num)
 
 
 

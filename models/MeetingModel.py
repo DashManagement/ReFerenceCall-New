@@ -37,3 +37,9 @@ class RequesterRequestModel(BaseModel):
     time: list = [0, 0]
 
 
+# 会议列表相关操作验证模型
+class MeetingListModel(BaseModel):
+    id: str
+    request_type: str
+    check_type: str
+    data_num: str
