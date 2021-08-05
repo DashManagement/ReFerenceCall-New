@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-07-08 10:16:20
-LastEditTime: 2021-08-04 10:15:07
+LastEditTime: 2021-08-05 10:01:36
 LastEditors: fanshaoqiang
 '''
 # coding=utf-8
@@ -13,7 +13,7 @@ import motor.motor_asyncio
 import pymongo
 
 readConfig = ConfigParser()
-distribution = 0
+distribution = 1
 # 0 代表 读
 if distribution:
     readConfig.read('./config/database.ini')
@@ -27,7 +27,7 @@ if distribution:
     # 组合远程数据库地址
     mongo_url = f"mongodb://{user}:{password}@{host}:{port}/{prefix}{db}"
 else:
-    useLocalMongo = 1
+    useLocalMongo = 0
     if useLocalMongo == 0:
         # 加载远程数据库配置变量
         readConfig.read('./config/database.ini')
