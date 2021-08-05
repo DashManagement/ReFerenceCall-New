@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-08-02 10:16:20
-LastEditTime: 2021-08-05 11:40:41
+LastEditTime: 2021-08-05 16:07:28
 LastEditors: fanshaoqiang
 '''
 
@@ -11,6 +11,7 @@ LastEditors: fanshaoqiang
 # 加载自己创建的包
 from views.Base import *
 from views.ThirdParty.UMengPushAPI import umengPushApi
+from views.ThirdParty.ZoomAPI import *
 from config.log_config import logger
 
 # meeting 预约会议 - 请求者回复请求
@@ -54,6 +55,7 @@ class MeetingRequesterRequest:
             return is_perform_step_two['data']
 
         two_request_result = await self.volunteersRequestTwo()
+        # logger
         if two_request_result is False:
             return {'code': 203, 'message': '没有志愿者回复记录'}
 
@@ -68,8 +70,10 @@ class MeetingRequesterRequest:
 
             # 请求者已经 同意/拒绝 会议，将本次 session_id 相关的记录 status 都改为 0
             await self.updateSessionId()
-            umengPushApi.sendUnicastByUserID(
-                self.id, two_request_result['end_id'], False)
+            logger.info(
+                f" 用户{self.id} 同意 志愿者{two_request_result['end_id']} 给的时间里面的一个")
+            await umengPushApi.sendUnicastByUserID(
+                self.id, two_request_result['end_id'], True)
             return {'code': 200}
 
         if self.request_type == 5:
@@ -79,8 +83,10 @@ class MeetingRequesterRequest:
             if result['code'] == 200:
                 # 请求者已经 同意/拒绝 会议，将本次 session_id 相关的记录 status 都改为 0
                 await self.updateSessionId()
-            umengPushApi.sendUnicastByUserID(
-                self.id, two_request_result['end_id'], False)
+            logger.info(
+                f"  用户{self.id} 拒绝  志愿者{two_request_result['end_id']} 的时间")
+            await umengPushApi.sendUnicastByUserID(
+                self.id, two_request_result['end_id'], True)
             return result
 
     # 请求者回复 - 接受志愿者预约时间
@@ -165,8 +171,6 @@ class MeetingRequesterRequest:
         # 判断添加记录是否成功
         if insert_result.inserted_id is None:
             return {'code': 206, 'message': '志愿者拒绝请求失败'}
-        # umengPushApi.sendUnicastByUserID(
-        #     self.id, two_request_result['end_id'], False)
         return {'code': 200}
 
     # 查询 预约会议过程中的 - 会话id记录 session_id 和志愿者id 是否存在，并且已经执行到第三步 - 请求者同意或者拒绝
@@ -219,6 +223,7 @@ class MeetingRequesterRequest:
                      'request_num': 2, 'is_create_meeting': 0, 'status': 1}
         field = {'_id': 0}
         result = await dbo.findOne(condition, field)
+        logger.info(f"condition is {condition}")
 
         if result is None:
             return False
@@ -250,6 +255,11 @@ class MeetingRequesterRequest:
         if get_id_result['action'] == False:
             logger.info('获取 id 自增失败')
             return {'code': 209, 'message': '获取 id 自增失败'}
+        meetingModel = await self.getMeetingModelFromTwoResult(two_request_result)
+        meetingInfo = zoomapi.createMeeting(meetingModel)
+        if meetingInfo == None:
+            logger.info('Zoom创建会议失败')
+            return {'code': 210, 'message': 'Zoom创建会议失败'}
 
         dbo.resetInitConfig('test', 'meeting_list')
         document = {
@@ -259,7 +269,9 @@ class MeetingRequesterRequest:
             'session_id': self.session_id,
             'start_id': self.id,
             'end_id': two_request_result['end_id'],
-            'meeting_pass': "-",
+            'meeting_pass': meetingInfo.get('Meeting_Pwd'),
+            'meeting_url': meetingInfo.get('Join_URL'),
+            'meeting_id': meetingInfo.get('Meeting_ID'),
             'national_area_code': "-",
             'national_area_name': "-",
             'is_start': 0,
@@ -290,6 +302,24 @@ class MeetingRequesterRequest:
         result = await dbo.updateAll(condition, set_fields)
         '''此条记录记入日志 - 不作其它处理'''
         logger.info('update all meeting status = 0')
+
+    async def getMeetingModelFromTwoResult(self, two_request_result):
+        meetingModel = MeetingModel()
+        meetingModel.fundName = two_request_result['reservation_company_name']
+        sendUserInfo = await base.getUserPushInfo(
+            self.id)
+        toUserInfo = await base.getUserPushInfo(
+            two_request_result['end_id'])
+        meetingModel.fromUserName = sendUserInfo.get("userName")
+        meetingModel.fromEmail = sendUserInfo.get("userEmail")
+        meetingModel.toUserName = toUserInfo.get("userName")
+        meetingModel.toEmail = toUserInfo.get("userEmail")
+        meetingModel.meetingZone = sendUserInfo.get("localTimeZone")
+        # TODO 临时给个时间，需要从two_request_result里面获取
+        timeNow = datetime.now()
+        timeNow = timeNow.strftime("%Y-%m-%dT%H:%M:%S")
+        meetingModel.meetingTime = timeNow
+        return meetingModel
 
 
 meetingRequesterRequest = MeetingRequesterRequest()

@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-08-02 10:16:20
-LastEditTime: 2021-08-05 11:41:48
+LastEditTime: 2021-08-05 15:47:44
 LastEditors: fanshaoqiang
 '''
 
@@ -10,6 +10,7 @@ LastEditors: fanshaoqiang
 
 # 加载自己创建的包
 from views.Base import *
+from views.ThirdParty.UMengPushAPI import umengPushApi
 from config.log_config import logger
 
 # meeting 预约会议 - 志愿者回复请求
@@ -41,6 +42,11 @@ class MeetingVolunteerReplyRequest:
             return {'code': 202, 'message': '没有被请求记录'}
 
         if self.request_type == 2:
+            logger.info(f"first_request_result is {first_request_result}")
+            logger.info(
+                f" 志愿者{first_request_result['end_id']} 同意  用户{first_request_result['start_id']} 的 refCall")
+            await umengPushApi.sendUnicastByUserID(
+                first_request_result['start_id'], first_request_result['end_id'], False)
             return await self.returnBookingTime(first_request_result)
 
         if self.request_type == 4:
@@ -49,8 +55,10 @@ class MeetingVolunteerReplyRequest:
             if result['code'] == 200:
                 # 志愿者已经 同意/拒绝 会议，将本次 session_id 相关的记录 status 都改为 0
                 await self.updateSessionId()
-            # umengPushApi.sendUnicastByUserID(
-            # self.id, two_request_result['end_id'], False)
+            logger.info(
+                f" 志愿者{two_request_result['end_id']} 拒绝  用户{self.id} 的 refCall")
+            await umengPushApi.sendUnicastByUserID(
+                self.id, two_request_result['end_id'], False)
             return result
 
     # 志愿者回复 - 预约时间

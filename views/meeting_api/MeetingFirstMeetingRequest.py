@@ -53,7 +53,8 @@ class MeetingFirstMeetingRequest:
             insert_result = await self.insertFirstMeetingRequest(id, volunteers_id, request_type, reservation_company_id, reservation_company_name)
             if insert_result is False:
                 return {'code': 204, 'message': '预约记录添加失败'}
-            umengPushApi.sendUnicastByUserID(id, volunteers_id, True)
+            logger.info(f"用户{id} 第一次向{volunteers_id} 请求refCall")
+            await umengPushApi.sendUnicastByUserID(id, volunteers_id, True)
             return {'code': 200, 'message': '预约成功'}
 
         else:
