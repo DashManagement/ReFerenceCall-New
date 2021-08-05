@@ -2,7 +2,7 @@
 Description: 
 Author: fanshaoqiang
 Date: 2021-07-27 11:52:52
-LastEditTime: 2021-08-04 12:08:56
+LastEditTime: 2021-08-05 11:34:51
 LastEditors: fanshaoqiang
 '''
 '''
@@ -23,6 +23,7 @@ from views.ThirdParty.umessage.iospush import *
 from views.ThirdParty.umessage.androidpush import *
 from views.ThirdParty.umessage.errorcodes import UMPushError, APIServerErrorCode
 from enum import Enum, unique
+from views.Base import base
 from config.log_config import logger
 appKey = '60dd7be426a57f1018425555'
 androidKey = '60fa83e0999517176d7a95c6'
@@ -47,6 +48,22 @@ class UMengPushAPI(object):
             return "You got a replay."
         else:
             return "You got a request."
+
+    # 通过发送者的ID和志愿者的ID和是否是请求来发送Push
+    # 如果isRequest为真，那应该寻找volunteerID相关的信息
+    def sendUnicastByUserID(self, fromUserID, volunteerID, isRequest):
+        sendUid = fromUserID
+        if isRequest:
+            sendUid = volunteerID
+        basicUserInfo = base.getUserPushInfo(sendUid)
+        if basicUserInfo != None:
+            title = "New request." if isRequest else "New replay."
+            content = "You got a new request." if isRequest else "You got a new replay."
+            platForm = PlatForm.platform_IOS if basicUserInfo.get(
+                "platForm") == 1 else PlatForm.platform_Android
+            deviceToken = basicUserInfo.get("userToken", None)
+            if deviceToken:
+                self.sendUnicast(title, content, platForm, deviceToken)
 
     def sendUnicast(self, title, content, platForm, deviceToken):
         logger.info(f"params is {title}, {content}, {platForm},{deviceToken}")
@@ -218,7 +235,7 @@ def printResult(ret):
                   (errorcode, APIServerErrorCode.errorMessage(errorcode)))
 
 
-# testUmengapi = UMengPushAPI()
+umengPushApi = UMengPushAPI()
 
 # testUmengapi.sendUnicast(
 #     "title", "123", PlatForm.platform_Android, "AiBTRwWUzGJ4Y13iiwPuv9tptgIlGEOkch2wQM48WC48")
