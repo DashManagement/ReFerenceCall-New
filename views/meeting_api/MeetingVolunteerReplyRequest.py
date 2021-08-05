@@ -2,8 +2,8 @@
 @Description:
 @Author: michael
 @Date: 2021-08-02 10:16:20
-LastEditTime: 2021-08-02 20:00:00
-LastEditors: michael
+LastEditTime: 2021-08-05 11:41:48
+LastEditors: fanshaoqiang
 '''
 
 # coding=utf-8
@@ -13,6 +13,8 @@ from views.Base import *
 from config.log_config import logger
 
 # meeting 预约会议 - 志愿者回复请求
+
+
 class MeetingVolunteerReplyRequest:
 
     id = ''
@@ -36,7 +38,7 @@ class MeetingVolunteerReplyRequest:
 
         first_request_result = await self.findFirstMeetingRequest()
         if first_request_result is False:
-            return {'code':202, 'message':'没有被请求记录'}
+            return {'code': 202, 'message': '没有被请求记录'}
 
         if self.request_type == 2:
             return await self.returnBookingTime(first_request_result)
@@ -47,19 +49,20 @@ class MeetingVolunteerReplyRequest:
             if result['code'] == 200:
                 # 志愿者已经 同意/拒绝 会议，将本次 session_id 相关的记录 status 都改为 0
                 await self.updateSessionId()
-
+            # umengPushApi.sendUnicastByUserID(
+            # self.id, two_request_result['end_id'], False)
             return result
 
-
     # 志愿者回复 - 预约时间
+
     async def returnBookingTime(self, first_request_result):
 
         # 获取自增 ID
         get_id_result = await dbo.getNextIdtoUpdate('reservation_meeting', db='test')
         if get_id_result['action'] == False:
             logger.info('获取 id 自增失败')
-            return {'code':209, 'message':'获取 id 自增失败'}
-        
+            return {'code': 209, 'message': '获取 id 自增失败'}
+
         dbo.resetInitConfig('test', 'reservation_meeting')
         document = {
             'id': get_id_result['update_id'],
@@ -77,10 +80,10 @@ class MeetingVolunteerReplyRequest:
             'national_area_name': "-",
             'request_num': 2,
             'is_create_meeting': 0,
-            'status':1,
+            'status': 1,
             "create_time": common.getTime(),
-            #此处需要一个预约过期时间，后面补上。也有可能不需要
-            "update_time" : common.getTime()
+            # 此处需要一个预约过期时间，后面补上。也有可能不需要
+            "update_time": common.getTime()
         }
 
         insert_result = await dbo.insert(document)
@@ -88,19 +91,19 @@ class MeetingVolunteerReplyRequest:
 
         # 判断添加记录是否成功
         if insert_result.inserted_id is None:
-            return {'code':202, 'message':'志愿者回复请求失败'}
+            return {'code': 202, 'message': '志愿者回复请求失败'}
 
-        return {'code':200}
-
+        return {'code': 200}
 
     # 志愿者回复 - 拒绝
+
     async def returnRefused(self, first_request_result):
 
         # 获取自增 ID
         get_id_result = await dbo.getNextIdtoUpdate('reservation_meeting', db='test')
         if get_id_result['action'] == False:
             logger.info('获取 id 自增失败')
-            return {'code':209, 'message':'获取 id 自增失败'}
+            return {'code': 209, 'message': '获取 id 自增失败'}
 
         dbo.resetInitConfig('test', 'reservation_meeting')
         document = {
@@ -119,10 +122,10 @@ class MeetingVolunteerReplyRequest:
             'national_area_name': "-",
             'request_num': 2,
             'is_create_meeting': 2,
-            'status':1,
+            'status': 1,
             "create_time": common.getTime(),
-            #此处需要一个预约过期时间，后面补上。也有可能不需要
-            "update_time" : common.getTime()
+            # 此处需要一个预约过期时间，后面补上。也有可能不需要
+            "update_time": common.getTime()
         }
 
         insert_result = await dbo.insert(document)
@@ -130,22 +133,22 @@ class MeetingVolunteerReplyRequest:
 
         # 判断添加记录是否成功
         if insert_result.inserted_id is None:
-            return {'code':203, 'message':'志愿者拒绝请求失败'}
+            return {'code': 203, 'message': '志愿者拒绝请求失败'}
 
-        return {'code':200}
-
+        return {'code': 200}
 
     # 查询 预约会议过程中的 - 会话id记录 session_id 和志愿者id 是否存在，并且已经执行到第二步 - 等待志愿者回复
+
     async def isPerformStepTwo(self):
 
-        data = {'action': '', 'data':''}
+        data = {'action': '', 'data': ''}
 
         dbo.resetInitConfig('test', 'reservation_meeting')
 
         # 查看是否已经成功创建会议 或者 拒绝了创建会议
-        condition = {'session_id':self.session_id}
-        field = {'_id':0}
-        sort = [('id',-1)]
+        condition = {'session_id': self.session_id}
+        field = {'_id': 0}
+        sort = [('id', -1)]
         num = 0
         length = 1
         result = await dbo.findSort(condition, field, sort, num, length)
@@ -154,7 +157,8 @@ class MeetingVolunteerReplyRequest:
 
             data['action'] = False
             if result[0]['is_create_meeting'] == 1:
-                data['data'] = {'code': 201, 'message': '已经成功创建会议，不能再次回复请求者预约时间'}
+                data['data'] = {'code': 201,
+                                'message': '已经成功创建会议，不能再次回复请求者预约时间'}
                 return data
 
             if result[0]['is_create_meeting'] == 2:
@@ -162,8 +166,9 @@ class MeetingVolunteerReplyRequest:
                 return data
 
         # 查看是否有志愿者回复记录
-        condition = {'end_id':self.id, 'session_id':self.session_id, 'request_num':2, 'is_create_meeting':0}
-        field = {'_id':0}
+        condition = {'end_id': self.id, 'session_id': self.session_id,
+                     'request_num': 2, 'is_create_meeting': 0}
+        field = {'_id': 0}
         result = await dbo.findOne(condition, field)
 
         if result is not None:
@@ -174,13 +179,14 @@ class MeetingVolunteerReplyRequest:
         data['action'] = True
         return data
 
-
     # 查询 请求者第一次发送请求时的预议会议记录
+
     async def findFirstMeetingRequest(self):
 
         dbo.resetInitConfig('test', 'reservation_meeting')
-        condition = {'end_id':self.id, 'session_id':self.session_id, 'request_num':1, 'is_create_meeting':0, 'status':1}
-        field = {'_id':0}
+        condition = {'end_id': self.id, 'session_id': self.session_id,
+                     'request_num': 1, 'is_create_meeting': 0, 'status': 1}
+        field = {'_id': 0}
         result = await dbo.findOne(condition, field)
 
         if result is None:
@@ -188,13 +194,14 @@ class MeetingVolunteerReplyRequest:
 
         return result
 
-
     # 查询已经预约成功的会议中是否有未结束的会议 - 如果有则返回需要先完成已经预约成功的会议
+
     async def isUnexecutedMeeting(self):
-        
+
         dbo.resetInitConfig('test', 'meeting_list')
-        condition = {'end_id':self.id, 'session_id':self.session_id, 'status':1}
-        field = {'_id':0}
+        condition = {'end_id': self.id,
+                     'session_id': self.session_id, 'status': 1}
+        field = {'_id': 0}
         result = await dbo.findOne(condition, field)
 
         if result is not None:
@@ -202,24 +209,16 @@ class MeetingVolunteerReplyRequest:
 
         return True
 
-
     # 志愿者已经 同意/拒绝 会议，将本次 session_id 相关的记录 status 都改为 0
+
     async def updateSessionId(self):
 
         dbo.resetInitConfig('test', 'reservation_meeting')
-        condition = {'session_id':self.session_id}
-        set_fields = {'$set':{'status':0}}
+        condition = {'session_id': self.session_id}
+        set_fields = {'$set': {'status': 0}}
         result = await dbo.updateAll(condition, set_fields)
         '''此条记录记入日志 - 不作其它处理'''
         logger.info('update all meeting status = 0')
-
-
-
-
-
-
-
-
 
 
 meetingVolunteerReplyRequest = MeetingVolunteerReplyRequest()
