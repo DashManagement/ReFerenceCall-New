@@ -2,7 +2,7 @@
 Description: 
 Author: fanshaoqiang
 Date: 2021-07-27 11:52:52
-LastEditTime: 2021-08-05 15:20:21
+LastEditTime: 2021-08-05 16:35:58
 LastEditors: fanshaoqiang
 '''
 '''
@@ -66,7 +66,7 @@ class UMengPushAPI(object):
                 self.sendUnicast(title, content, platForm, deviceToken)
 
     def sendUnicast(self, title, content, platForm, deviceToken):
-        logger.info(f"params is {title}, {content}, {platForm},{deviceToken}")
+        # logger.info(f"params is {title}, {content}, {platForm},{deviceToken}")
         if platForm == PlatForm.platform_IOS:
             self.iosUnicast = IOSUnicast(appKey, appMasterSecret)
             self.iosUnicast.setAppKey(appKey)
@@ -92,8 +92,8 @@ class UMengPushAPI(object):
             self.androidUnicast.setDisplayType(
                 AndroidNotification.DisplayType.notification)
             self.androidUnicast.setTestMode()
-            logger.info(f"self.appKey is {self.androidUnicast.appKey}")
-            logger.info(self.androidUnicast.getPostBody())
+            # logger.info(f"self.appKey is {self.androidUnicast.appKey}")
+            # logger.info(self.androidUnicast.getPostBody())
             # pushClient = PushClient()
             ret = self.pushClient.send(self.androidUnicast)
             # retJson = json.JSONDecoder(ret)
