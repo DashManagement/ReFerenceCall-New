@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-07-08 10:16:20
-LastEditTime: 2021-08-05 11:22:21
+LastEditTime: 2021-08-05 12:13:12
 LastEditors: fanshaoqiang
 '''
 # coding=utf-8
@@ -86,7 +86,8 @@ class Base:
         if user_info is None:
             return None
 
-        return {"userToken": user_info.get("userToken"), "localTimeZone": user_info.get("localTimeZone"), "platForm": user_info.get("platForm")}
+        return {"userName": user_info.get("name"), "userEmail": user_info.get("email"),
+                "userToken": user_info.get("userToken"), "localTimeZone": user_info.get("localTimeZone"), "platForm": user_info.get("platForm")}
 
 
 base = Base()
