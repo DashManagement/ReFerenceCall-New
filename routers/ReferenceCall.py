@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2020-07-27 10:48:20
-LastEditTime: 2021-08-04 12:15:14
+LastEditTime: 2021-08-06 14:33:00
 LastEditors: fanshaoqiang
 '''
 # coding=utf-8
@@ -78,4 +78,8 @@ async def companyVolunteersList(company_volunteers_list: CompanyVolunteersListMo
 
     params = company_volunteers_list.__dict__
     logger.info(f"params is {params}")
-    return await referenceCall.companyVolunteersList(int(params['id']), int(params['company_id']))
+    if params['id'] == 'refid':
+        userID = 0
+    else:
+        userID = int(params['id'])
+    return await referenceCall.companyVolunteersList(userID, int(params['company_id']))
