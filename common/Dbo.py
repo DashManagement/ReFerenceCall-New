@@ -186,7 +186,7 @@ class Dbo:
             '''这块如果不使用 exit 退出全部程序，容易造成用户或其它集合 ID 的重复，会出现大问题的，所以在没有事务处理之这前，宁可让它出现错误时崩溃'''
 
         # 更新字段 - 如果是字符型字段，用第一个，否则用第二个
-        if field_name == 'friend_verify_log' or field_name == 'email_verify':
+        if field_name == 'friend_verify_log' or field_name == 'email_verify' or field_name == 'lp_gp':
             # 组织更新参数
             update_id = {field_name: str(insert_id)}
             updateResult = await self.updateOne(condition, {'$set': update_id})
