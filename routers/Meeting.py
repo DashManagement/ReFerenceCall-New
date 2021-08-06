@@ -26,14 +26,14 @@ router = APIRouter()
 async def sendRequest(send_request: SendRequestModel):
     ''' 
     id	                        是	string	请求者 id
-    volunteers_id	            是	list	志愿者 id
+    volunteers_id	            是	list	志愿者 id 列表
     request_type	            是	string	请求类型：1 请求者发送预约请求
     reservation_company_id	    是	string	预约沟通的公司id
     reservation_company_name	是	string	预约沟通的公司名称
     非测试数据：
     {
         "id": 1,
-        "volunteers_id": 2,
+        "volunteers_id": [11, 12],
         "request_type": 1,
         "reservation_company_id": 2323,
         "reservation_company_name": "AA公司"
@@ -57,13 +57,17 @@ async def volunteerReplyRequest(volunteer_reply_request: VolunteerReplyRequestMo
     id	            是	string	        志愿者 id
     session_id	    是	list	        会话 id
     request_type	是	string	        请求类型：2 志愿者回复请求时间，4 志愿者拒绝，没有预约时间
-    time	        否	string	        志愿者回复预订的时间
+    time	        否	string	        志愿者回复预订的时间 例：[[13213565461, 12474672392],[13213565461, 12474672392],[13213565461, 12474672392]]
     非测试数据：
     {
         "id": 1,
         "session_id": 2,
         "request_type": 1,
-        "time": 2323
+        "time": [
+            [13213565461, 12474672392],
+            [13213565461, 12474672392],
+            [13213565461, 12474672392]
+        ]
     }
     '''
 
@@ -83,13 +87,13 @@ async def requesterRequest(requester_request: RequesterRequestModel):
     id	            是	string	        志愿者 id
     session_id	    是	list	        会话 id
     request_type	是	string	        请求类型：2 志愿者回复请求时间，4 志愿者拒绝，没有预约时间
-    time	        否	string	        志愿者回复预订的时间
+    time	        否	string	        请求者回复志愿者预订的时间 例：[13213565461, 12474672392]
     非测试数据：
     {
         "id": 1,
         "session_id": 2,
         "request_type": 1,
-        "time": 2323
+        "time": [13213565461, 12474672392]
     }
     '''
 

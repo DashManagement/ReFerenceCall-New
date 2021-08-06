@@ -19,7 +19,17 @@ class Meeting:
 
     # 第一次预约会议
     async def sendRequest(self, id, volunteers_id, request_type, reservation_company_id, reservation_company_name):
-        return await meetingFirstMeetingRequest.construct(id, volunteers_id, request_type, reservation_company_id, reservation_company_name)
+
+        if len(volunteers_id) < 1:
+            return {'code':207, 'message':'预约会议列表不合法'}
+
+        data = []
+        for value in volunteers_id:
+            result = await meetingFirstMeetingRequest.construct(id, value, request_type, reservation_company_id, reservation_company_name)
+            result['send_request_info'] = {'id':id, 'volunteers_id':value}
+            data.append(result)
+
+        return {'coce':200, 'data':data}
 
 
     # 志愿者回复预约时间或者拒绝

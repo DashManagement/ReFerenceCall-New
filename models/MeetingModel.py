@@ -15,7 +15,7 @@ from typing import List
 # 预约会议 - 预约者第一次发送请求的验证模型
 class SendRequestModel(BaseModel):
     id: str
-    volunteers_id: str
+    volunteers_id: list
     request_type: str
     reservation_company_id: str
     reservation_company_name: str

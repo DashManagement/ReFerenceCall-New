@@ -164,17 +164,27 @@ class CompanyCurd:
         condition = {'rc_company_id': company_id}
         field = {'uid': 1, '_id': 0}
 
-        # field = {'uid':1, 'is_reservation':1, 'user_name':1, 'fund_name':1, 'company_icon':1, 'company_introduction':1, 'create_time':1, 'update_time':1, '_id':0}
         company_volunteers_list = await dbo.getData(condition, field)
-
-        # 查询日愿者详细信息
+        
+        # 查询志愿者详细信息
+        data['volunteers_list'] = []
         dbo.resetInitConfig('test', 'users')
         for value in company_volunteers_list:
-            condition = {'id': int(value['uid'])}
+            '''根据 uid 查询公司匹配的志愿者信息（不包括当前用户id 的志愿者，也就是排除志愿者自己）'''
+            condition = {'$and':[
+                {'id': int(value['uid'])},
+                {'id':{'$ne':int(id)}}
+            ]}
             filed = {'id': 1, 'is_reservation': 1, 'name': 1, 'company_name': 1, 'company_icon': 1,
                      'company_introduction': 1, 'create_time': 1, 'update_time': 1, '_id': 0}
             result = await dbo.findOne(condition, filed)
+            
+            '''如果没有记录则跳过本次循环'''
+            if result is None:
+                continue
+            '''添加一条志愿者信息到志愿者列表'''
             data['volunteers_list'].append(result)
+
         logger.info(f"data is {data}")
         return {'code': 200, 'data': data}
 
