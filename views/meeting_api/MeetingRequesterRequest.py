@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-08-02 10:16:20
-LastEditTime: 2021-08-05 19:22:11
+LastEditTime: 2021-08-07 23:23:16
 LastEditors: fanshaoqiang
 
 '''
@@ -353,8 +353,8 @@ class MeetingRequesterRequest:
         toEmail = toUserInfo.get("userEmail")
         meetingZone = sendUserInfo.get("localTimeZone")
 
-        startTime = selectTime[0]
-        endTime = selectTime[1]
+        startTime = selectTime[0]/1000
+        endTime = selectTime[1]/1000
         duration = int((endTime-startTime)/60)
         startTime = datetime.fromtimestamp(
             startTime).strftime("%Y-%m-%dT%H:%M:%S")
