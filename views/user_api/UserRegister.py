@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-07-08 10:16:20
-LastEditTime: 2021-08-08 00:15:44
+LastEditTime: 2021-08-08 00:22:05
 LastEditors: fanshaoqiang
 '''
 # coding=utf-8
@@ -111,7 +111,7 @@ class UserRegister:
             'userToken': self.userToken,
             'platForm': self.platForm,
             'localTimeZone': self.localTimeZone,
-            'name': "-",
+            'name': self.account,
             'alias': "-",
             'head_portrait': "-",
             'position': "-",
