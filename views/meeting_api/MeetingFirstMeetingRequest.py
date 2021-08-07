@@ -3,7 +3,7 @@
 @Author: michael
 @Date: 2021-08-02 10:16:20
 
-LastEditTime: 2021-08-05 18:58:27
+LastEditTime: 2021-08-08 00:36:08
 LastEditors: fanshaoqiang
 
 '''
@@ -58,6 +58,7 @@ class MeetingFirstMeetingRequest:
             if insert_result is False:
                 return {'code': 204, 'message': '预约记录添加失败'}
             logger.info(f"用户{id} 第一次向{volunteers_id} 请求refCall")
+            logger.info(f"umengPushApi is {umengPushApi}")
             await umengPushApi.sendUnicastByUserID(id, volunteers_id, True)
             return {'code': 200, 'message': '预约成功'}
 
