@@ -2,8 +2,8 @@
 @Description:
 @Author: michael
 @Date: 2021-08-05 10:16:20
-LastEditTime: 2021-08-05 20:00:00
-LastEditors: michael
+LastEditTime: 2021-08-07 23:46:33
+LastEditors: fanshaoqiang
 '''
 
 # coding=utf-8
@@ -13,11 +13,12 @@ from views.Base import *
 from config.log_config import logger
 
 # meeting 我的/其它的 - 预约会议流程列表
+
+
 class BookingMeetingList:
 
-
     id = ''
-    request_type= ''
+    request_type = ''
     check_type = ''
     data_num = ''
     query_field = ''
@@ -31,11 +32,11 @@ class BookingMeetingList:
 
         # 查看请求者是否存在
         if await self.getUserInfo() is False:
-            return {'code':201, 'message':'无效的用户id'}
+            return {'code': 201, 'message': '无效的用户id'}
 
         # 验证请求类型是否合法
         if self.request_type != 1 and self.request_type != 2:
-            return {'code':202, 'message':'错误的请求类型'}
+            return {'code': 202, 'message': '错误的请求类型'}
 
         # 验证查看类型是否合法
         # if self.check_type != 0 and self.check_type != 1 and self.check_type != 2 and self.check_type != 3 and self.check_type != 4:
@@ -51,20 +52,21 @@ class BookingMeetingList:
 
         # 查看用户列表信息
         result = await self.getMeetingList()
-        return {'code':200, 'count':len(result), 'data':result}
-
+        return {'code': 200, 'count': len(result), 'data': result}
 
     # 查询被拒绝的和未完成的预约列表
+
     async def getMeetingList(self):
 
         dbo.resetInitConfig('test', 'reservation_meeting')
-        logger.info({'field':self.query_field, 'id':self.id, 'request_type':self.request_type})
+        logger.info({'field': self.query_field, 'id': self.id,
+                    'request_type': self.request_type})
 
         # 获取第一次发起请求的所有数据
-        condition = {self.query_field:self.id, 'request_num':1}
-        field = {'session_id':1, '_id':0}
+        condition = {self.query_field: self.id, 'request_num': 1}
+        field = {'session_id': 1, '_id': 0}
         result = await dbo.getData(condition, field)
-        
+
         # 如果没有记录则直接返回空的 list 列表
         if len(result) == 0:
             return []
@@ -72,7 +74,7 @@ class BookingMeetingList:
         # 获取单个 session_id 的所有预约记录
         booking_meeting_list = []
         for value in result:
-            condition = {'session_id':value['session_id']}
+            condition = {'session_id': value['session_id']}
             field = {
                 "id": 1,
                 "reservation_company_id": 1,
@@ -82,14 +84,14 @@ class BookingMeetingList:
                 "start_user_name": 1,
                 "start_head_portrait": 1,
                 # "start_working_fixed_year": 1,
-                # "start_company_name": 1,
-                # "start_company_icon": 1,
+                "start_company_name": 1,
+                "start_company_icon": 1,
                 "end_id": 1,
                 "end_user_name": 1,
                 "end_head_portrait": 1,
                 # "end_working_fixed_year": 1,
-                # "end_company_name": 1,
-                # "end_company_icon": 1,
+                "end_company_name": 1,
+                "end_company_icon": 1,
                 # "meeting_pass": 1,
                 # "national_area_code": 1,
                 # "national_area_name": 1,
@@ -103,9 +105,9 @@ class BookingMeetingList:
                 "is_create_meeting": 1,
                 "status": 1,
                 "create_time": 1,
-                "_id":0
+                "_id": 0
             }
-            sort = [('id',-1)]
+            sort = [('id', -1)]
             num = 0
             session_id_record = await dbo.findSort(condition, field, sort, num)
             # print(session_id_record)
@@ -132,7 +134,7 @@ class BookingMeetingList:
                     if session_id_record[0]['end_id'] == self.id and session_id_record[0]['start_id'] != self.id and session_id_record[0]['request_num'] == 2:
                         session_id_record[0]['message'] = '等待请求者回复'
 
-                # 查看当前记录是否为被拒绝 
+                # 查看当前记录是否为被拒绝
                 if value_two['is_create_meeting'] == 2:
                     '''当前用户 self.id 为请求者时候 拒绝的消息'''
                     if session_id_record[0]['start_id'] == self.id and session_id_record[0]['current_id'] != self.id and session_id_record[0]['request_num'] == 2:
@@ -149,26 +151,19 @@ class BookingMeetingList:
 
         return booking_meeting_list
 
-
     # 获取用户信息
+
     async def getUserInfo(self):
 
-        dbo.resetInitConfig('test','users')
-        condition = {'id':self.id}
-        field = {'id':1, '_id':0}
+        dbo.resetInitConfig('test', 'users')
+        condition = {'id': self.id}
+        field = {'id': 1, '_id': 0}
         result = await dbo.findOne(condition, field)
         logger.info(result)
         if result is None:
             return False
 
         return result
-
-
-
-
-
-
-
 
 
 bookingMeetingList = BookingMeetingList()
