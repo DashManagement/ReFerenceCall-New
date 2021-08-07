@@ -2,7 +2,7 @@
 Description: 
 Author: fanshaoqiang
 Date: 2021-07-27 11:52:52
-LastEditTime: 2021-08-05 16:35:58
+LastEditTime: 2021-08-08 00:29:54
 LastEditors: fanshaoqiang
 '''
 '''
@@ -66,7 +66,7 @@ class UMengPushAPI(object):
                 self.sendUnicast(title, content, platForm, deviceToken)
 
     def sendUnicast(self, title, content, platForm, deviceToken):
-        # logger.info(f"params is {title}, {content}, {platForm},{deviceToken}")
+        logger.info(f"params is {title}, {content}, {platForm},{deviceToken}")
         if platForm == PlatForm.platform_IOS:
             self.iosUnicast = IOSUnicast(appKey, appMasterSecret)
             self.iosUnicast.setAppKey(appKey)
@@ -81,6 +81,7 @@ class UMengPushAPI(object):
             logger.info(f"ret is {ret}")
             return ret.status_code
         elif platForm == PlatForm.platform_Android:
+            logger.info("begin send Android push ")
             self.androidUnicast = AndroidUnicast(
                 androidKey, androidMasterSecret)
             self.androidUnicast.setAppKey(androidKey)
@@ -92,8 +93,8 @@ class UMengPushAPI(object):
             self.androidUnicast.setDisplayType(
                 AndroidNotification.DisplayType.notification)
             self.androidUnicast.setTestMode()
-            # logger.info(f"self.appKey is {self.androidUnicast.appKey}")
-            # logger.info(self.androidUnicast.getPostBody())
+            logger.info(f"self.appKey is {self.androidUnicast.appKey}")
+            logger.info(self.androidUnicast.getPostBody())
             # pushClient = PushClient()
             ret = self.pushClient.send(self.androidUnicast)
             # retJson = json.JSONDecoder(ret)
@@ -237,7 +238,7 @@ def printResult(ret):
 
 umengPushApi = UMengPushAPI()
 
-# testUmengapi.sendUnicast(
-#     "title", "123", PlatForm.platform_Android, "AiBTRwWUzGJ4Y13iiwPuv9tptgIlGEOkch2wQM48WC48")
+umengPushApi.sendUnicast(
+    "title", "123", PlatForm.platform_Android, "AjzbDEhet8jsUe9FaQNyzPQaHZgLgpRpHdtLx8hxTJVx")
 # testUmengapi.sendUnicast("ios title", "123", PlatForm.platform_IOS,
 #                          "DEC3C97AB50F958395E0F799037C1FAF5F71CCE0869307F57785FC6C7BC78DD2")
