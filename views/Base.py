@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-07-08 10:16:20
-LastEditTime: 2021-08-05 12:13:12
+LastEditTime: 2021-08-08 01:01:41
 LastEditors: fanshaoqiang
 '''
 # coding=utf-8
@@ -79,7 +79,7 @@ class Base:
         dbo.resetInitConfig('test', 'users')
 
         # 条件 - 用户名 - 返回字段 全部
-        condition = {'id': uid}
+        condition = {'id': int(uid)}
         field = {'_id': 0}
         user_info = await dbo.findOne(condition, field)
 
