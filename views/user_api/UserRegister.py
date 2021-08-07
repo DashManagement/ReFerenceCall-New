@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-07-08 10:16:20
-LastEditTime: 2021-08-04 12:33:40
+LastEditTime: 2021-08-08 00:15:44
 LastEditors: fanshaoqiang
 '''
 # coding=utf-8
@@ -116,7 +116,7 @@ class UserRegister:
             'head_portrait': "-",
             'position': "-",
             'working_fixed_year': "-",
-            'company_name': "-",
+            'company_name': self.fund_name,
             'company_alias': "-",
             'company_icon': "-",
             'company_introduction': "-",
@@ -150,12 +150,6 @@ class UserRegister:
         }
 
         return data
-
-
-
-
-
-
 
 
 userRegister = UserRegister()
