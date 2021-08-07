@@ -13,7 +13,7 @@ from views.Base import *
 from config.log_config import logger
 
 # meeting 我的/其它的 - 会议记录列表
-class MeetingBookingList:
+class MeetingList:
 
 
     id = ''
@@ -116,4 +116,4 @@ class MeetingBookingList:
 
 
 
-meetingBookingList = MeetingBookingList()
+meetingList = MeetingList()

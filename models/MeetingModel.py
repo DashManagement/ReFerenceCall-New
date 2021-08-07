@@ -36,6 +36,12 @@ class RequesterRequestModel(BaseModel):
     request_type: str
     time: list = [0, 0]
 
+# 正在进行中的预约列表相关操作验证模型
+class CheckRequestModel(BaseModel):
+    id: str
+    request_type: str
+    data_num: str
+
 
 # 会议列表相关操作验证模型
 class MeetingListModel(BaseModel):
