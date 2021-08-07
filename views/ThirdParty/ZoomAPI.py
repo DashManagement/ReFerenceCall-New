@@ -2,7 +2,7 @@
 Description: 
 Author: fanshaoqiang
 Date: 2021-07-26 17:33:13
-LastEditTime: 2021-07-30 17:40:20
+LastEditTime: 2021-08-05 18:34:18
 LastEditors: fanshaoqiang
 '''
 from pydantic import BaseModel
@@ -12,6 +12,7 @@ import json
 from time import time
 import chardet
 from datetime import date, datetime
+from config.log_config import logger
 
 
 # Enter your API key and your API secret
@@ -28,6 +29,7 @@ class MeetingModel(BaseModel):
     toEmail: str = None
     meetingTime: str = None
     meetingZone: str = None
+    duration: str = None
 
 
 class ZoomAPI:
@@ -89,6 +91,7 @@ class ZoomAPI:
                 "auto_recording": "cloud"
             }
         }
+        logger.info(meetingdetails)
         return meetingdetails
 
         # send a request with headers including
@@ -103,7 +106,8 @@ class ZoomAPI:
         # timeNow = datetime.now()
         # timeNow = timeNow.strftime("%Y-%m-%dT%H:%M:%S")
         meetingdetails = self.generateMeetingDetail(
-            topic, meetingModel.meetingTime, meetingModel.meetingZone)
+            topic, meetingModel.meetingTime, meetingModel.meetingZone, meetingModel.duration)
+
         r = requests.post(
             f'https://api.zoom.us/v2/users/me/meetings',
             headers=headers, data=json.dumps(meetingdetails))
@@ -114,7 +118,8 @@ class ZoomAPI:
         meetingInfo = json.loads(r.text)
 
         if meetingInfo.get("id") == None:
-            return {"Join_URL": None, "Meeting_ID": None, "Meeting_Pwd": None}
+            return None
+            # return {"Join_URL": None, "Meeting_ID": None, "Meeting_Pwd": None}
         join_URL = meetingInfo["join_url"]
         meeting_ID = meetingInfo.get("id")
         meetingPassword = meetingInfo.get("password")
