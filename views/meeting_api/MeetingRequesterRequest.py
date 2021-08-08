@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-08-02 10:16:20
-LastEditTime: 2021-08-08 11:34:11
+LastEditTime: 2021-08-08 15:58:35
 LastEditors: fanshaoqiang
 
 '''
@@ -284,6 +284,7 @@ class MeetingRequesterRequest:
             return {'code': 210, 'message': 'Zoom创建会议失败'}
         logger.info(f"zoom 创建成功 {meetingInfo.get('Meeting_ID')}")
         dbo.resetInitConfig('test', 'meeting_list')
+        logger.info(f"meetingInfo is {meetingInfo.get('Meeting_Pwd')}")
         document = {
 
             'id': get_id_result['update_id'],
@@ -302,7 +303,9 @@ class MeetingRequesterRequest:
             'end_working_fixed_year': two_request_result['end_working_fixed_year'],
             'end_company_name': two_request_result['end_company_name'],
             'end_company_icon': two_request_result['end_company_icon'],
-            'meeting_pass': "-",
+            'meeting_pass': meetingInfo.get('Meeting_Pwd'),
+            'meeting_address': meetingInfo.get('Join_URL'),
+            'meeting_id': meetingInfo.get('Meeting_ID'),
             'national_area_code': "-",
             'national_area_name': "-",
             'meeting_time': self.time,
