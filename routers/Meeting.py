@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2020-08-02 10:48:20
-LastEditTime: 2021-08-08 20:21:11
+LastEditTime: 2021-08-08 20:26:21
 LastEditors: fanshaoqiang
 '''
 # coding=utf-8
@@ -20,6 +20,7 @@ from models.MeetingModel import MeetingListModel
 from models.MeetingModel import BookingMeetingModel
 from models.MeetingModel import LastCallModel
 from models.MeetingModel import HistoryMeetingScheduleModel
+from config.log_config import logger
 
 # 创建 APIRouter 实例
 router = APIRouter()
