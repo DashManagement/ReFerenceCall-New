@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-07-09 10:16:20
-LastEditTime: 2021-08-04 16:05:24
+LastEditTime: 2021-08-08 13:06:52
 LastEditors: fanshaoqiang
 '''
 
@@ -29,7 +29,8 @@ class FundList:
             return {'code': 201, 'message': '无效的用户 id'}
 
         # 返回基金公司列表
-        return await self.getFundList()
+        tmpFundList = await self.getFundList()
+        return {'code': 200, 'data': tmpFundList}
 
     # 返回基金公司列表
 
