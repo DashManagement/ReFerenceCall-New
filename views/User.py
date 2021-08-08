@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-07-08 10:16:20
-LastEditTime: 2021-08-04 10:50:07
+LastEditTime: 2021-08-08 12:55:13
 LastEditors: fanshaoqiang
 '''
 # coding=utf-8
@@ -24,7 +24,7 @@ class User:
             register_params['password'],
             register_params['email'],
             register_params['fund_type'],
-            register_params['fund_name'],
+            register_params['company_name'],
             register_params['company_address'],
             register_params['user_name'],
             register_params['userToken'],
