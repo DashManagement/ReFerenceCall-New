@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-07-27 10:10:20
-LastEditTime: 2021-08-04 12:07:27
+LastEditTime: 2021-08-08 12:05:51
 LastEditors: fanshaoqiang
 '''
 # coding=utf-8
@@ -24,7 +24,17 @@ class CompanyCurd:
         for value in company_id:
             messages.append(await self.addCompany(uid, value))
 
-        return messages
+        isAllSuccess = True
+        for item in messages:
+            if item.get("code") != 200:
+                isAllSuccess = False
+
+        if isAllSuccess == False:
+            return {"code": 203, "message": "批量添加失败", "detail": messages}
+
+        ret = {"code": 200, "message": "批量添加成功", "detail": messages}
+
+        return ret
 
     # 添加单个 公司
 
@@ -165,20 +175,20 @@ class CompanyCurd:
         field = {'uid': 1, '_id': 0}
 
         company_volunteers_list = await dbo.getData(condition, field)
-        
+
         # 查询志愿者详细信息
         data['volunteers_list'] = []
         dbo.resetInitConfig('test', 'users')
         for value in company_volunteers_list:
             '''根据 uid 查询公司匹配的志愿者信息（不包括当前用户id 的志愿者，也就是排除志愿者自己）'''
-            condition = {'$and':[
+            condition = {'$and': [
                 {'id': int(value['uid'])},
-                {'id':{'$ne':int(id)}}
+                {'id': {'$ne': int(id)}}
             ]}
             filed = {'id': 1, 'is_reservation': 1, 'name': 1, 'company_name': 1, 'company_icon': 1,
                      'company_introduction': 1, 'create_time': 1, 'update_time': 1, '_id': 0}
             result = await dbo.findOne(condition, filed)
-            
+
             '''如果没有记录则跳过本次循环'''
             if result is None:
                 continue

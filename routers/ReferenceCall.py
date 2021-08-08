@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2020-07-27 10:48:20
-LastEditTime: 2021-08-06 14:33:00
+LastEditTime: 2021-08-08 12:08:45
 LastEditors: fanshaoqiang
 '''
 # coding=utf-8
@@ -33,7 +33,7 @@ async def addCompany(add_company: AddCompanyModel):
     '''
 
     params = add_company.__dict__
-    return await referenceCall.addCompany(params['uid'], params['company_id'])
+    return await referenceCall.addManyCompany(params['uid'], params['company_id'])
 
 
 # 删除 referencecall 单个公司接口
