@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2020-12-22 22:49:20
-LastEditTime: 2021-08-04 11:31:36
+LastEditTime: 2021-08-08 12:50:59
 LastEditors: fanshaoqiang
 '''
 # coding=utf-8
@@ -103,6 +103,7 @@ class EmailCaptchaVerify():
             return update_admin_user
 
         # logger.info(123123)
+        logger.info(f"self.data is {self.data}")
         return self.data
 
     # 修改新密码验证码 - 验证

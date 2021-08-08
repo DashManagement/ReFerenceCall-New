@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2020-12-21 14:48:20
-LastEditTime: 2021-08-04 11:12:05
+LastEditTime: 2021-08-08 13:00:56
 LastEditors: fanshaoqiang
 '''
 # coding=utf-8
@@ -51,4 +51,6 @@ async def emailOrVerify(verify_params: VerifyModel):
     1. 其它参数发送请看文档
     '''
     logger.info(f"verify_params is {verify_params}")
-    return await verify.judgeRequest(verify_params.__dict__)
+    ret = await verify.judgeRequest(verify_params.__dict__)
+    logger.info(f"the result is {ret}")
+    return ret
