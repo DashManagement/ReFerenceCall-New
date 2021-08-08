@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-07-09 10:16:20
-LastEditTime: 2021-08-08 13:06:52
+LastEditTime: 2021-08-08 13:34:32
 LastEditors: fanshaoqiang
 '''
 
@@ -23,7 +23,9 @@ class FundList:
 
         self.uid = uid
         if uid == "refid":
-            return await self.getFundList()
+            # 返回基金公司列表
+            tmpFundList = await self.getFundList()
+            return {'code': 200, 'data': tmpFundList}
         # 验证是否有此用户
         if await base.verifyUser(int(uid)) is False:
             return {'code': 201, 'message': '无效的用户 id'}
