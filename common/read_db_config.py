@@ -13,7 +13,7 @@ import motor.motor_asyncio
 import pymongo
 
 readConfig = ConfigParser()
-distribution = 1
+distribution = 0
 # 0 代表 读
 if distribution:
     readConfig.read('./config/database.ini')
@@ -27,7 +27,7 @@ if distribution:
     # 组合远程数据库地址
     mongo_url = f"mongodb://{user}:{password}@{host}:{port}/{prefix}{db}"
 else:
-    useLocalMongo = 0
+    useLocalMongo = 1
     if useLocalMongo == 0:
         # 加载远程数据库配置变量
         readConfig.read('./config/database.ini')
