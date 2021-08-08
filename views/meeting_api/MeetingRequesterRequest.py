@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-08-02 10:16:20
-LastEditTime: 2021-08-08 15:58:35
+LastEditTime: 2021-08-08 19:53:30
 LastEditors: fanshaoqiang
 
 '''
@@ -310,7 +310,7 @@ class MeetingRequesterRequest:
             'national_area_name': "-",
             'meeting_time': self.time,
             'meeting_status': 0,
-            'start_time': 0,
+            'start_time': selectTime[0],
             'cancel_time': 0,
             'overdue_time': 0,
             'status': 1,
