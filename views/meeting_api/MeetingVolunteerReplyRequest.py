@@ -3,7 +3,7 @@
 @Author: michael
 @Date: 2021-08-02 10:16:20
 
-LastEditTime: 2021-08-05 19:37:13
+LastEditTime: 2021-08-08 11:34:29
 LastEditors: fanshaoqiang
 '''
 
@@ -145,8 +145,8 @@ class MeetingVolunteerReplyRequest:
             'current_id': self.id,
             'current_content': "-",
             'request_type': self.request_type,
-            'volunteer_reply_time': "-",
-            'requester_agree_time': "-",
+            'volunteer_reply_time': [],
+            'requester_agree_time': [],
             'national_area_code': "-",
             'national_area_name': "-",
             'request_num': 2,

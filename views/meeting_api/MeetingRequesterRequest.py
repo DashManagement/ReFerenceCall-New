@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-08-02 10:16:20
-LastEditTime: 2021-08-07 23:25:06
+LastEditTime: 2021-08-08 11:34:11
 LastEditors: fanshaoqiang
 
 '''
@@ -123,7 +123,7 @@ class MeetingRequesterRequest:
             'current_id': self.id,
             'current_content': "-",
             'request_type': self.request_type,
-            'volunteer_reply_time': "-",
+            'volunteer_reply_time': [],
             'requester_agree_time': self.time,
             'national_area_code': "-",
             'national_area_name': "-",
@@ -175,8 +175,8 @@ class MeetingRequesterRequest:
             'current_id': self.id,
             'current_content': "-",
             'request_type': self.request_type,
-            'volunteer_reply_time': "-",
-            'requester_agree_time': "-",
+            'volunteer_reply_time': [],
+            'requester_agree_time': [],
             'national_area_code': "-",
             'national_area_name': "-",
             'request_num': 3,

@@ -3,7 +3,7 @@
 @Author: michael
 @Date: 2021-08-02 10:16:20
 
-LastEditTime: 2021-08-08 00:36:08
+LastEditTime: 2021-08-08 11:44:00
 LastEditors: fanshaoqiang
 
 '''
@@ -143,8 +143,8 @@ class MeetingFirstMeetingRequest:
             'current_id': int(id),
             'current_content': "-",
             'request_type': int(request_type),
-            'volunteer_reply_time': "-",
-            'requester_agree_time': "-",
+            'volunteer_reply_time': [],
+            'requester_agree_time': [],
             'national_area_code': "-",
             'national_area_name': "-",
             'request_num': 1,
