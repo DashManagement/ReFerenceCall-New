@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-08-02 10:16:20
-LastEditTime: 2021-08-08 19:53:30
+LastEditTime: 2021-08-08 20:19:34
 LastEditors: fanshaoqiang
 
 '''
@@ -48,7 +48,7 @@ class MeetingRequesterRequest:
         self.id = int(id)
         self.session_id = int(session_id)
         self.request_type = int(request_type)
-        logger.info(f"time is {selectTime}")
+        logger.info(f"MeetingRequesterRequest time is {selectTime}")
 
         if await self.isUnexecutedMeeting() is False:
             return {'code': 202, 'message': '请先完成已经预约的会议'}
@@ -272,6 +272,7 @@ class MeetingRequesterRequest:
 
     async def addMeetingRecord(self, two_request_result, selectTime):
 
+        logger.info(f"in add MeetingRecord the selectTime is {selectTime}")
         # 获取自增 ID
         get_id_result = await dbo.getNextIdtoUpdate('meeting_list', db='test')
         if get_id_result['action'] == False:
@@ -310,7 +311,7 @@ class MeetingRequesterRequest:
             'national_area_name': "-",
             'meeting_time': self.time,
             'meeting_status': 0,
-            'start_time': selectTime[0],
+            'start_time': str(selectTime[0]),
             'cancel_time': 0,
             'overdue_time': 0,
             'status': 1,
@@ -356,8 +357,8 @@ class MeetingRequesterRequest:
         toEmail = toUserInfo.get("userEmail")
         meetingZone = sendUserInfo.get("localTimeZone")
 
-        startTime = int(selectTime[0])/1000
-        endTime = int(selectTime[1])/1000
+        startTime = int(selectTime[0][0:10])
+        endTime = int(selectTime[1][0:10])
         duration = int((endTime-startTime)/60)
         startTime = datetime.fromtimestamp(
             startTime).strftime("%Y-%m-%dT%H:%M:%S")

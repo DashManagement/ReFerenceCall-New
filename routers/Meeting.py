@@ -2,8 +2,8 @@
 @Description:
 @Author: michael
 @Date: 2020-08-02 10:48:20
-LastEditTime: 2020-08-02 20:00:00
-LastEditors: michael
+LastEditTime: 2021-08-08 20:21:11
+LastEditors: fanshaoqiang
 '''
 # coding=utf-8
 
@@ -46,10 +46,10 @@ async def sendRequest(send_request: SendRequestModel):
 
     params = send_request.__dict__
     return await meeting.sendRequest(
-        params['id'], 
-        params['volunteers_id'], 
-        params['request_type'], 
-        params['reservation_company_id'], 
+        params['id'],
+        params['volunteers_id'],
+        params['request_type'],
+        params['reservation_company_id'],
         params['reservation_company_name']
     )
 
@@ -77,9 +77,9 @@ async def volunteerReplyRequest(volunteer_reply_request: VolunteerReplyRequestMo
 
     params = volunteer_reply_request.__dict__
     return await meeting.volunteerReplyRequest(
-        params['id'], 
-        params['session_id'], 
-        params['request_type'], 
+        params['id'],
+        params['session_id'],
+        params['request_type'],
         params['time']
     )
 
@@ -102,10 +102,12 @@ async def requesterRequest(requester_request: RequesterRequestModel):
     '''
 
     params = requester_request.__dict__
+    logger.info("in requesterRequest the params is ")
+    logger.info(f"params is {params}")
     return await meeting.requesterRequest(
-        params['id'], 
-        params['session_id'], 
-        params['request_type'], 
+        params['id'],
+        params['session_id'],
+        params['request_type'],
         params['time']
     )
 
