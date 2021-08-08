@@ -13,6 +13,9 @@ from views.meeting_api.MeetingVolunteerReplyRequest import meetingVolunteerReply
 from views.meeting_api.MeetingRequesterRequest import meetingRequesterRequest
 from views.meeting_api.MeetingList import meetingList
 from views.meeting_api.BookingMeetingList import bookingMeetingList
+from views.meeting_api.MeetingSchedule import meetingSchedule
+from views.meeting_api.LastCall import lastCall
+from views.meeting_api.HistoryMeetingSchedule import historyMeetingSchedule
 
 # Meeting 会议接口类
 class Meeting:
@@ -52,6 +55,19 @@ class Meeting:
     async def getMeetingList(self, id, request_type, check_type, data_num):
         return await meetingList.construct(id, request_type, check_type, data_num)
 
+
+    # 已经约定的会议日程
+    async def meetingSchedule(self, id):
+        return await meetingSchedule.construct(id)
+
+
+    # 最后一个已完成的会议信息接口
+    async def lastCall(self, id):
+        return await lastCall.construct(id)
+
+    # 最后一个已完成的会议信息接口
+    async def historyMeetingSchedule(self, id):
+        return await historyMeetingSchedule.construct(id)
 
 
 

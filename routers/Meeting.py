@@ -17,6 +17,9 @@ from models.MeetingModel import VolunteerReplyRequestModel
 from models.MeetingModel import RequesterRequestModel
 from models.MeetingModel import CheckRequestModel
 from models.MeetingModel import MeetingListModel
+from models.MeetingModel import BookingMeetingModel
+from models.MeetingModel import LastCallModel
+from models.MeetingModel import HistoryMeetingScheduleModel
 
 # 创建 APIRouter 实例
 router = APIRouter()
@@ -143,3 +146,27 @@ async def meetingList(meeting_list: MeetingListModel):
 
     params = meeting_list.__dict__
     return await meeting.getMeetingList(params['id'], params['request_type'], params['check_type'], params['data_num'])
+
+
+# 已经约定的会议日程接口
+@router.post('/api/meeting/meeting_schedule')
+async def meetingSchedule(meeting_schedule: BookingMeetingModel):
+    ''' 非测试数据：{ "id": 23 } '''
+    params = meeting_schedule.__dict__
+    return await meeting.meetingSchedule(int(params['id']))
+
+
+# 最后一个已完成的会议信息接口
+@router.post('/api/meeting/last_call')
+async def lastCall(last_call: LastCallModel):
+    ''' 非测试数据：{ "id": 23 } '''
+    params = last_call.__dict__
+    return await meeting.lastCall(int(params['id']))
+
+
+# 查看今日和今日之前已约定的历史会议日程接口
+@router.post('/api/meeting/history_meeting_schedule')
+async def historyMeetingSchedule(history_meeting_schedule: HistoryMeetingScheduleModel):
+    ''' 非测试数据：{ "id": 23 } '''
+    params = history_meeting_schedule.__dict__
+    return await meeting.historyMeetingSchedule(int(params['id']))

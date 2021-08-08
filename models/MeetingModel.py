@@ -49,3 +49,18 @@ class MeetingListModel(BaseModel):
     request_type: str
     check_type: str
     data_num: str
+
+
+# 已约定的会议日程验证模型
+class BookingMeetingModel(BaseModel):
+    id: str
+
+
+# 已约定的会议日程验证模型
+class LastCallModel(BaseModel):
+    id: str
+
+
+# 已约定的会议日程验证模型
+class HistoryMeetingScheduleModel(BaseModel):
+    id: str
