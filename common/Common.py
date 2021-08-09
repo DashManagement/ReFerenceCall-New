@@ -30,7 +30,7 @@ class Common:
     #     return Curd(dbname, collection)
 
 
-    # 获取时间戳
+    # 获取当前时间戳
     def getTime(self):
 
         '''注释掉的代码为 - 时间戳转换为 - 年-月-日 时:分:秒'''
@@ -41,6 +41,13 @@ class Common:
         da_2 = datetime.datetime.timetuple(da_1)
         return int(time.mktime(da_2))
         
+
+    # 获取今日零点时间戳
+    async def getTodayZeroStamp(self):
+        day_time=int(time.mktime(datetime.date.today().timetuple()))
+        print("第三种:", day_time)
+        return day_time
+
 
     # 今天开始时间戳
     def getTimeStamp(self):

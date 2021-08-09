@@ -13,7 +13,7 @@ import motor.motor_asyncio
 import pymongo
 
 readConfig = ConfigParser()
-distribution = 1
+distribution = 0
 # 0 代表 读
 if distribution:
     readConfig.read('./config/database.ini')
