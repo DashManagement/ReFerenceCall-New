@@ -37,7 +37,7 @@ class MeetingSchedule:
     async def getMeetingScheduleList(self, user_info):
 
         dbo.resetInitConfig('test', 'meeting_list')
-        condition = {'$or':[
+        condition = {'status':1, 'meeting_status':0, '$or':[
             {'start_id':self.id},
             {'end_id':self.id}  
         ]}

@@ -132,7 +132,7 @@ async def checkRequest(check_request: CheckRequestModel):
     return await meeting.checkRequest(params['id'], params['request_type'], params['data_num'])
 
 
-# 会议列表相关操作
+# 会议列表相关操作 - 暂时被取消 - 没有用到
 @router.post('/api/meeting/meeting_list')
 async def meetingList(meeting_list: MeetingListModel):
     ''' 
