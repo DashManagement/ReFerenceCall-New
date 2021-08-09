@@ -37,7 +37,7 @@ class LastCall:
     async def getLastCall(self, user_info):
 
         dbo.resetInitConfig('test', 'meeting_list')
-        condition = {'$or':[
+        condition = {'status':0, 'meeting_status':1, '$or':[
             {'start_id':self.id},
             {'end_id':self.id}  
         ]}
