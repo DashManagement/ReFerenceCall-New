@@ -9,9 +9,9 @@ LastEditors: fanshaoqiang
 
 # 加载自己创建的包
 from views.Base import *
-from datetime import datetime, timedelta
 from config.log_config import logger
 from views.reference_call_api.CommonReferenceCall import commonReferenceCall
+from views.reference_call_api.TimeOperation import timeOperation
 
 # reference call 对于 公司的 增/删/改/查/操作
 
@@ -152,7 +152,7 @@ class CompanyCurd:
     # 按公司查看 reference_call 的志愿者列表
 
     async def companyVolunteersList(self, id, company_id):
-        return await self.timeList()
+        return await timeOperation.timeList()
         data = {
             'company_info': {},
             'volunteers_list': []
@@ -197,60 +197,6 @@ class CompanyCurd:
 
         logger.info(f"data is {data}")
         return {'code': 200, 'data': data}
-
-
-    # 计算一段时间的时间算列表，默认从今天开始向后五天
-    async def timeList(self, number_day=6):
-        time_list = []
-        for i in range(number_day):
-            time_list.append(await self.calculatedTimeCycle(i))
-        return time_list
-
-
-    # 计算当天 早9点 到 晚6点 的时间段列表
-    async def calculatedTimeCycle(self, number_day=0):
-        '''
-        :param number_day integer 指定从今天开始向后计算的天数，例：number_day=1，向后一天，number_day=2，向后二天，默认0，计算当天
-        '''
-
-        # 今日零点时间戳
-        today_zero_stamp = common.getTimeStamp()
-        
-        # 上午 8点整 时间戳
-        nine_clock_stamp = today_zero_stamp + (3600*9) + (number_day*86400)
-        # 上午 9点整 时间戳转换为 - 年-月-日 时:分:秒
-        nine_clock = datetime.fromtimestamp(nine_clock_stamp)
-
-        # 下午 6点整
-        size_clock_stamp = today_zero_stamp + 3600*18
-        # 下午 6点整 时间戳转换为 - 年-月-日 时:分:秒
-        # six_clock = datetime.fromtimestamp(size_clock_stamp)
-
-        time_list = []
-        host_time_list = []
-        tmp_time = []
-        start_time = 9
-        # 建立早上9点到晚上6点的时间戳列表
-        for i in range(11):
-            if i != 0 and len(host_time_list) == 2:
-                time_list.append(host_time_list)
-                host_time_list = [tmp_time]
-
-            new_time = nine_clock_stamp + 3600 * i
-            host_time_list.append(new_time)
-            tmp_time = new_time
-
-        # 建立早上9点到晚上6点的时间戳转换为 - 年-月-日 时:分:秒
-        good_time_list = []
-        for value in time_list:
-            good_time_list.append([datetime.fromtimestamp(value[0]), datetime.fromtimestamp(value[1])])
-
-        data = {nine_clock:{
-            'time_stamp':time_list,
-            'time_clock':good_time_list
-        }}
-        return data
-
 
 
 
