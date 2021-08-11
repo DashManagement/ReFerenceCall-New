@@ -65,9 +65,12 @@ class Meeting:
     async def lastCall(self, id):
         return await lastCall.construct(id)
 
+
     # 最后一个已完成的会议信息接口
     async def historyMeetingSchedule(self, id):
         return await historyMeetingSchedule.construct(id)
+
+
 
 
 

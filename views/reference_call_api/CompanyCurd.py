@@ -175,26 +175,31 @@ class CompanyCurd:
         field = {'uid': 1, '_id': 0}
 
         company_volunteers_id_list = await dbo.getData(condition, field)
-        
-        # 查看志愿者是否有多余的时间来处理预约会议
-        check_volunteers_time = await self.checkVolunteersTime(company_volunteers_id_list)
-        return check_volunteers_time
+
         # 查询志愿者详细信息
         data['volunteers_list'] = []
-        dbo.resetInitConfig('test', 'users')
         for value in company_volunteers_id_list:
+
+            dbo.resetInitConfig('test', 'users')
             '''根据 uid 查询公司匹配的志愿者信息（不包括当前用户id 的志愿者，也就是排除志愿者自己）'''
             condition = {'$and': [
                 {'id': int(value['uid'])},
                 {'id': {'$ne': int(id)}}
             ]}
-            filed = {'id': 1, 'is_reservation': 1, 'name': 1, 'company_name': 1, 'company_icon': 1,
+            field = {'id': 1, 'is_reservation': 1, 'name': 1, 'company_name': 1, 'company_icon': 1,
                      'company_introduction': 1, 'create_time': 1, 'update_time': 1, '_id': 0}
-            result = await dbo.findOne(condition, filed)
+            result = await dbo.findOne(condition, field)
 
             '''如果没有记录则跳过本次循环'''
             if result is None:
                 continue
+
+            '''查询志愿者是否有超过 5 次未完成的会议预约，如果有则代表志愿者不会再被预约会议'''
+            if await self.is_reservation(result['id']) is False:
+                result['is_reservation'] = 0
+            else:
+                result['is_reservation'] = 1
+            
             '''添加一条志愿者信息到志愿者列表'''
             data['volunteers_list'].append(result)
 
@@ -203,25 +208,91 @@ class CompanyCurd:
 
 
     # 查看志愿者是否有多余的时间来处理预约会议
-    # async def checkVolunteersTime(self, id, company_volunteers_id_list):
-    #     print(company_volunteers_id_list)
+    async def is_reservation(self, volunteers_id):
+
+        dbo.resetInitConfig('test', 'meeting_list')
+        condition = {
+            '$or':[
+                {'start_id':volunteers_id},
+                {'end_id':volunteers_id}
+            ], 
+            'status':1
+        }
+        field = {'_id': 0}
+        result = await dbo.getData(condition, field)
+        print(len(result))
+        if len(result) > 5:
+            return False
+
+        return True
 
 
-    # 查看志愿者是否有多余的时间来处理预约会议
-    async def checkVolunteersTime(self, company_volunteers_id_list):
-        # print(type(id))
-        # return id
-        # 获取第一次发起请求的所有数据
-        # condition = {self.query_field: self.id, 'request_num': 1}
-        # field = {'session_id': 1, '_id': 0}
-        # result = await dbo.getData(condition, field)
+    # 计算志愿者会议时间剩余可预约时间
+    async def checkVolunteersTime(self, volunteers_id):
 
+        # 查看志愿者是否存在
+        user_info = await self.getUserInfo(volunteers_id)
+        if user_info is False:
+            return {'code': 201, 'message': '无效的志愿者id'}
+
+        time_list = await timeOperation.timeList()
+        volunteers_time = await self.volunteersTime(volunteers_id)
+        # return time_list
+
+        # 清除会议中已经被占用的时间
+        for value in time_list:
+
+            # 循环预约会议列表
+            for meeting_list in volunteers_time['meeting_list']:
+
+                ctmp_del = []
+                # 循环一天当中9点到18点的时间戳
+                for index,time_stamp in enumerate(value['time_stamp']):
+                    # 判断如果预约会议时间和预约时间戳相等，则在一天当中的时间中移除这一个小时的时间
+                    if int(meeting_list['requester_agree_time'][0]) == int(time_stamp[0]):
+                        # 将需要删除的索引添加到列表中
+                        ctmp_del.append(index)
+
+                # 删除索引中的值
+                for value_index in ctmp_del:
+                    del value['time_stamp'][value_index]
+                    del value['time_clock'][value_index]
+                    del value['time'][value_index]
+                    del value['check_time'][value_index]
+
+            # 循环正在进行预约的会议列表
+            for booking_list in volunteers_time['booking_list']:
+
+                tmp_del = []
+                # 循环一天当中9点到18点的时间戳
+                for index,time_stamp in enumerate(value['time_stamp']):
+                    # 循环预约的三组时间
+                    for reply_list in booking_list['volunteer_reply_time']:
+                        # 判断如果预约会议时间和预约时间戳相等，则在一天当中的时间中移除这一个小时的时间
+                        if int(reply_list[0]) == int(time_stamp[0]):
+                            # 将需要删除的索引添加到列表中
+                            tmp_del.append(index)
+
+                # 删除索引中的值
+                for value_index in tmp_del:
+                    del value['time_stamp'][value_index]
+                    del value['time_clock'][value_index]
+                    del value['time'][value_index]
+                    del value['check_time'][value_index]
+
+        return {'code':200, 'data':{'user_info':user_info, 'volunteers_time_list':time_list}}
+
+
+    # 查看志愿者处理预约会议的时间
+    async def volunteersTime(self, volunteers_id):
+        
+        # return await timeOperation.timeList()
         # 获取第一次发起请求的所有数据
         dbo.resetInitConfig('test', 'reservation_meeting')
-        condition = {'request_num': 1}
+        condition = {'$or':[{'start_id':volunteers_id},{'end_id':volunteers_id}], 'request_num': 1}
         field = {'session_id': 1, '_id': 0}
         result = await dbo.getData(condition, field)
-        print(result)
+        # print(result)
 
          # 如果没有记录则直接返回空的 list 列表
         if len(result) == 0:
@@ -268,7 +339,7 @@ class CompanyCurd:
             session_id_record.append(await dbo.findSort(condition, field, sort, num))
 
         # return session_id_record
-
+        # 将已经预约的会议 和 正在进行预约当中的会议(并且志愿者已经回复的预约时间)分成两个列表
         meeting_list = []
         booking_list = []
         for value_two in session_id_record:
@@ -283,6 +354,24 @@ class CompanyCurd:
                 booking_list.append(value_two)
 
         return {'meeting_list':meeting_list, 'booking_list':booking_list}
+
+
+    # 获取用户信息
+    async def getUserInfo(self, id):
+
+        dbo.resetInitConfig('test','users')
+        condition = {'id':id}
+        field = {'id': 1, 'name': 1, 'company_name': 1, 'company_icon': 1,
+                     'company_introduction': 1, 'create_time': 1, '_id': 0}
+        result = await dbo.findOne(condition, field)
+        logger.info(result)
+        if result is None:
+            return False
+
+        return result
+
+
+
 
 
 

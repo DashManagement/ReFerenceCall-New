@@ -51,6 +51,10 @@ class ReferenceCall:
     async def companyVolunteersList(self, id, company_id):
         return await companyCurd.companyVolunteersList(id, company_id)
 
+    
+    async def volunteersTime(self, id):
+        return await companyCurd.checkVolunteersTime(id)
+
 
     def testCreateZoomMeeting(self):
         meetingTest = MeetingModel(

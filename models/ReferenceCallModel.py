@@ -33,3 +33,8 @@ class CompanyListModel(BaseModel):
 class CompanyVolunteersListModel(BaseModel):
     id: str = '-'
     company_id: str
+
+
+# 查看志愿者可预订时间的模型验证
+class VolunteersTimeModel(BaseModel):
+    id: str

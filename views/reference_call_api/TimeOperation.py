@@ -22,7 +22,9 @@ class TimeOperation:
     async def timeList(self, number_day=6):
         time_list = []
         for i in range(number_day):
-            time_list.append(await self.calculatedTimeCycle(i))
+            result = await self.calculatedTimeCycle(i)
+            # time_list[result['time_info']['date']] = result
+            time_list.append(result)
         return time_list
 
 
@@ -83,7 +85,7 @@ class TimeOperation:
             check_list.append(tmp_str)
 
         data = {
-            'nine_clock':date_week_result,
+            'time_info':date_week_result,
             'time_stamp':time_list,
             'time_clock':good_time_list,
             'time':new_time_list,
@@ -98,12 +100,12 @@ class TimeOperation:
         # date = '1573401600'
         ltime = time.localtime(int(date))
         dateymd = time.strftime("%Y-%m-%d", ltime)
-        print(ltime)
-        print(dateymd)
+        # print(ltime)
+        # print(dateymd)
         # 数字年月日 转换为 英语年月日
         month_english = time.strftime('%b', ltime)
 
-        print(dateymd)
+        # print(dateymd)
         # 转换为星期几 星期表示 0-6，所以2019-11-11实际为周一，打印结果为0
         week = datetime.strptime(dateymd, "%Y-%m-%d").weekday()
 

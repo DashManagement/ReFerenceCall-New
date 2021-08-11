@@ -16,6 +16,8 @@ from models.ReferenceCallModel import AddCompanyModel
 from models.ReferenceCallModel import DeleteCompanyModel
 from models.ReferenceCallModel import CompanyListModel
 from models.ReferenceCallModel import CompanyVolunteersListModel
+from models.ReferenceCallModel import VolunteersTimeModel
+
 from config.log_config import logger
 # 创建 APIRouter 实例
 router = APIRouter()
@@ -85,3 +87,11 @@ async def companyVolunteersList(company_volunteers_list: CompanyVolunteersListMo
     return await referenceCall.companyVolunteersList(userID, int(params['company_id']))
 
 
+# 查看志愿者可预约的时间
+@router.post('/api/referencecall/volunteers_time')
+async def volunteersTime(volunteers_time: VolunteersTimeModel):
+    '''
+    非测试数据：{"id": 23} 
+    '''
+    params = volunteers_time.__dict__
+    return await referenceCall.volunteersTime(int(params['id']))
