@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-07-08 10:16:20
-LastEditTime: 2021-07-08 20:00:00
+LastEditTime: 2021-08-12 20:00:00
 LastEditors: michael
 '''
 
@@ -18,6 +18,7 @@ from routers import Fund
 from routers import ReferenceCall
 from routers import Search
 from routers import Meeting
+from routers import DefaultConfig
 
 from starlette.middleware.cors import CORSMiddleware
 
@@ -73,3 +74,6 @@ app.include_router(Search.router)
 
 # 搜索路由
 app.include_router(Meeting.router)
+
+# APP 默认配置路由
+app.include_router(DefaultConfig.router)
