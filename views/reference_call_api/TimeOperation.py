@@ -43,9 +43,9 @@ class TimeOperation:
         nine_clock = datetime.fromtimestamp(nine_clock_stamp)
 
         # 下午 6点整
-        size_clock_stamp = today_zero_stamp + 3600*18
+        six_clock_stamp = today_zero_stamp + 3600*18 + (number_day*86400)
         # 下午 6点整 时间戳转换为 - 年-月-日 时:分:秒
-        # six_clock = datetime.fromtimestamp(size_clock_stamp)
+        # six_clock = datetime.fromtimestamp(six_clock_stamp)
 
         time_list = []
         host_time_list = []
@@ -112,7 +112,7 @@ class TimeOperation:
         today_time = datetime.today()
         # 获取当前年份
         year = today_time.year
-        
+
         # 获取当前月份
         month = today_time.month
 
@@ -156,10 +156,52 @@ class TimeOperation:
             return 'error digitalConversionEnglish'
             
             
-    # 将时间日期转化为英语
-    # async def 
-            
-            
+    # 返回未来 N 天的 早9点 到晚 6点的时间戳
+    async def returnTimeStamp(self, number_day=2):
+    
+        time_list = []
+        for i in range(number_day):
+            result = await self.returnNumberDayTimeStamp(i)
+            time_list.append(result)
+
+        return time_list
+
+
+    # 返回 传入未来天数的 早9点 到晚 6点的时间戳
+    async def returnNumberDayTimeStamp(self, number_day=0):
+
+        # 今日零点时间戳
+        today_zero_stamp = common.getTimeStamp()
+        
+        # 上午 8点整 时间戳
+        nine_clock_stamp = today_zero_stamp + (3600*9) + (number_day*86400)
+        # 上午 9点整 时间戳转换为 - 年-月-日 时:分:秒
+        nine_clock = datetime.fromtimestamp(nine_clock_stamp)
+
+        # 下午 6点整
+        six_clock_stamp = today_zero_stamp + 3600*18 + (number_day*86400)
+        # 下午 6点整 时间戳转换为 - 年-月-日 时:分:秒
+        six_clock = datetime.fromtimestamp(six_clock_stamp)
+
+        # 获取当前年份
+        year = nine_clock.year
+        # 获取当前月份
+        month = nine_clock.month
+        # 获取当前日期天数
+        day = nine_clock.day
+
+        time_info = {
+            'time_stamp':[nine_clock_stamp, six_clock_stamp],
+            'time_clock':[nine_clock, six_clock],
+            'time_info':{
+                'number_day':number_day,
+                'year':year,
+                'month':month,
+                'day':day
+            }
+        }
+
+        return time_info
 
 
 
