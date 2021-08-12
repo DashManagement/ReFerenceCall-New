@@ -33,7 +33,7 @@ class Meeting:
             result['send_request_info'] = {'id':id, 'volunteers_id':value}
             data.append(result)
 
-        return {'coce':200, 'data':data}
+        return {'code':200, 'data':data}
 
 
     # 志愿者回复预约时间或者拒绝
