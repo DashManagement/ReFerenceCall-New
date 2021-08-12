@@ -100,7 +100,7 @@ class MeetingSchedule:
                 # print(len(tmp_schedult))
                 # tmp_schedult['time_info'] = value['time_info']
                 schedult_list.append(
-                    {'time_info':value['time_info'], 'meeting':tmp_schedult}
+                    {'time_info':value['time_info'], 'meeting':{'count':len(tmp_schedult), 'list':tmp_schedult}}
                 )
 
         # 整理用户信息返回的字段
@@ -114,7 +114,7 @@ class MeetingSchedule:
     async def finishingReturnUserInfoField(self, schedult_list):
 
         for value in schedult_list:
-            for meeting in value['meeting']:
+            for meeting in value['meeting']['list']:
                 if self.id == meeting['start_id']:
                     meeting['name'] = meeting['start_user_name']
                     meeting['head_portrait'] = meeting['start_head_portrait']
@@ -122,13 +122,12 @@ class MeetingSchedule:
                     meeting['company_icon'] = meeting['start_company_icon']
                 if self.id == meeting['end_id']:
                     meeting['name'] = meeting['end_user_name']
-                    meeting['name'] = meeting['end_head_portrait']
+                    meeting['head_portrait'] = meeting['end_head_portrait']
                     meeting['company_name'] = meeting['end_company_name']
                     meeting['company_icon'] = meeting['end_company_icon']
 
                 del meeting['start_user_name'], meeting['start_head_portrait'], meeting['start_company_name'], meeting['start_company_icon']
                 del meeting['end_user_name'], meeting['end_head_portrait'], meeting['end_company_name'], meeting['end_company_icon']
-
 
         return schedult_list
 
