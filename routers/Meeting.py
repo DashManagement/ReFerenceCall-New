@@ -46,6 +46,7 @@ async def sendRequest(send_request: SendRequestModel):
     '''
 
     params = send_request.__dict__
+    logger.info(params)
     return await meeting.sendRequest(
         params['id'],
         params['volunteers_id'],
@@ -77,6 +78,7 @@ async def volunteerReplyRequest(volunteer_reply_request: VolunteerReplyRequestMo
     '''
 
     params = volunteer_reply_request.__dict__
+    logger.info(params)
     return await meeting.volunteerReplyRequest(
         params['id'],
         params['session_id'],
@@ -103,6 +105,7 @@ async def requesterRequest(requester_request: RequesterRequestModel):
     '''
 
     params = requester_request.__dict__
+    logger.info(params)
     logger.info("in requesterRequest the params is ")
     logger.info(f"params is {params}")
     return await meeting.requesterRequest(
@@ -129,6 +132,7 @@ async def checkRequest(check_request: CheckRequestModel):
     '''
 
     params = check_request.__dict__
+    logger.info(params)
     return await meeting.checkRequest(params['id'], params['request_type'], params['data_num'])
 
 
@@ -148,6 +152,7 @@ async def meetingList(meeting_list: MeetingListModel):
     '''
 
     params = meeting_list.__dict__
+    logger.info(params)
     return await meeting.getMeetingList(params['id'], params['request_type'], params['check_type'], params['data_num'])
 
 
