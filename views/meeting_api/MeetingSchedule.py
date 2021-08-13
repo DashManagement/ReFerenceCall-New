@@ -82,38 +82,38 @@ class MeetingSchedule:
         :param user_meeting_list list 该用的会议信息列表
         '''
 
-        schedult_list = []
+        schedule_list = []
         # 获取 N 天之内的 早9点 到 晚6点 的时间列表
         time_list = await timeOperation.returnTimeStamp(10)
         # 将未来 N 天的时候列表 与 会议时间匹配
         for value in time_list:
-            tmp_schedult = []
+            tmp_schedule = []
             for value_two in user_meeting_list:
                 # return value_two
                 # logger.info(value)
                 # logger.info(value_two)
                 if int(value_two['meeting_time'][0]) >= int(value['time_stamp'][0]) and int(value_two['meeting_time'][1]) <= int(value['time_stamp'][1]):
-                    tmp_schedult.append(value_two)
+                    tmp_schedule.append(value_two)
 
             # 如果有会议记录，则添加进列表中一段会议时间的详细信息
-            if len(tmp_schedult) > 0:
-                # print(len(tmp_schedult))
-                # tmp_schedult['time_info'] = value['time_info']
-                schedult_list.append(
-                    {'time_info':value['time_info'], 'meeting':{'count':len(tmp_schedult), 'list':tmp_schedult}}
+            if len(tmp_schedule) > 0:
+                # print(len(tmp_schedule))
+                # tmp_schedule['time_info'] = value['time_info']
+                schedule_list.append(
+                    {'time_info':value['time_info'], 'meeting':{'count':len(tmp_schedule), 'list':tmp_schedule}}
                 )
 
         # 整理用户信息返回的字段
-        result = await self.finishingReturnUserInfoField(schedult_list)
+        result = await self.finishingReturnUserInfoField(schedule_list)
 
-        data = {'code':200, 'data':{'count':len(result), 'schedult_list':result}}
+        data = {'code':200, 'data':{'count':len(result), 'schedule_list':result}}
         return data
 
 
     # 整理用户信息字段
-    async def finishingReturnUserInfoField(self, schedult_list):
+    async def finishingReturnUserInfoField(self, schedule_list):
 
-        for value in schedult_list:
+        for value in schedule_list:
             for meeting in value['meeting']['list']:
                 if self.id == meeting['start_id']:
                     meeting['name'] = meeting['start_user_name']
@@ -129,7 +129,7 @@ class MeetingSchedule:
                 del meeting['start_user_name'], meeting['start_head_portrait'], meeting['start_company_name'], meeting['start_company_icon']
                 del meeting['end_user_name'], meeting['end_head_portrait'], meeting['end_company_name'], meeting['end_company_icon']
 
-        return schedult_list
+        return schedule_list
 
 
     # 获取用户信息
