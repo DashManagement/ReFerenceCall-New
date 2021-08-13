@@ -238,6 +238,7 @@ class CompanyCurd:
         time_list = await timeOperation.timeList()
         volunteers_time = await self.volunteersTime(volunteers_id)
         # return time_list
+        # return volunteers_time
 
         # 清除会议中已经被占用的时间
         for value in time_list:
@@ -253,12 +254,12 @@ class CompanyCurd:
                         # 将需要删除的索引添加到列表中
                         ctmp_del.append(index)
 
+                # return ctmp_del
+                # 反转列表 - 不反转列表会删除错误的索引
+                nctmp_del = list(reversed(ctmp_del))
                 # 删除索引中的值
-                for value_index in ctmp_del:
-                    del value['time_stamp'][value_index]
-                    del value['time_clock'][value_index]
-                    del value['time'][value_index]
-                    del value['check_time'][value_index]
+                for value_index in nctmp_del:
+                    del value['time_stamp'][value_index],value['time_clock'][value_index],value['time'][value_index],value['check_time'][value_index]
 
             # 循环正在进行预约的会议列表
             for booking_list in volunteers_time['booking_list']:
@@ -267,20 +268,31 @@ class CompanyCurd:
                 # 循环一天当中9点到18点的时间戳
                 for index,time_stamp in enumerate(value['time_stamp']):
                     # 循环预约的三组时间
-                    for reply_list in booking_list['volunteer_reply_time']:
+                    for reply_list in booking_list['volunteer_reply_time']['time_stamp']:
                         # 判断如果预约会议时间和预约时间戳相等，则在一天当中的时间中移除这一个小时的时间
                         if int(reply_list[0]) == int(time_stamp[0]):
                             # 将需要删除的索引添加到列表中
                             tmp_del.append(index)
 
+                # return tmp_del
+                # 反转列表 - 不反转列表会删除错误的索引
+                vtmp_del = list(reversed(tmp_del))
                 # 删除索引中的值
-                for value_index in tmp_del:
-                    del value['time_stamp'][value_index]
-                    del value['time_clock'][value_index]
-                    del value['time'][value_index]
-                    del value['check_time'][value_index]
+                for value_index in vtmp_del:
+                    print(value_index)
+                    del value['time_stamp'][value_index],value['time_clock'][value_index],value['time'][value_index],value['check_time'][value_index]
 
-        return {'code':200, 'data':{'user_info':user_info, 'volunteers_time_list':time_list}}
+        data = {
+            'code':200, 
+            'data':{
+                'user_info':user_info, 
+                'volunteers':{'count':len(time_list), 
+                'volunteers_time_list':time_list
+                }
+            }
+        }
+        
+        return data
 
 
     # 查看志愿者处理预约会议的时间

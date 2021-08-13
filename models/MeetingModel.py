@@ -26,7 +26,7 @@ class VolunteerReplyRequestModel(BaseModel):
     id: str
     session_id: str
     request_type: str
-    time: list = [0, 0]
+    time: dict = {}
 
 
 # 预约会议 - 请求者回复请求的验证模型
