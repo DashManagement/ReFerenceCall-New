@@ -41,13 +41,15 @@ class MeetingRequesterRequest:
     id = ''
     session_id = ''
     request_type = ''
+    time_info = ''
     time = ''
 
-    async def construct(self, id='', session_id='', request_type='', selectTime=''):
+    async def construct(self, id='', session_id='', request_type='', time_info='', selectTime=''):
 
         self.id = int(id)
         self.session_id = int(session_id)
         self.request_type = int(request_type)
+        self.time_info = time_info
         logger.info(f"MeetingRequesterRequest time is {selectTime}")
 
         if await self.isUnexecutedMeeting() is False:
@@ -64,9 +66,11 @@ class MeetingRequesterRequest:
 
         if self.request_type == 3:
             self.time = selectTime
+            
             # 添加请求者同意记录
             if await self.acceptBookingTime(two_request_result) is False:
                 return {'code': 204, 'message': '请求者接受志愿者预约时间失败'}
+
             # 在会议列表中添加一条待处理的会议记录
             if await self.addMeetingRecord(two_request_result, selectTime) is False:
                 return {'code': 205, 'message': '在会议列表中添加会议记录失败'}
@@ -124,6 +128,7 @@ class MeetingRequesterRequest:
             'current_content': "-",
             'request_type': self.request_type,
             'volunteer_reply_time': [],
+            'agree_time_info': self.time_info,
             'requester_agree_time': self.time,
             'national_area_code': "-",
             'national_area_name': "-",
@@ -311,6 +316,7 @@ class MeetingRequesterRequest:
             'national_area_name': "-",
             'meeting_time': self.time,
             'meeting_status': 0,
+            'agree_time_info':self.time_info,
             'start_time': str(selectTime[0]),
             'cancel_time': 0,
             'overdue_time': 0,

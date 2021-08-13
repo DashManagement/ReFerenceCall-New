@@ -34,7 +34,8 @@ class RequesterRequestModel(BaseModel):
     id: str
     session_id: str
     request_type: str
-    time: list = [0, 0]
+    time_info: dict = {}
+    meeting_time: list = [0, 0]
 
 # 正在进行中的预约列表相关操作验证模型
 class CheckRequestModel(BaseModel):

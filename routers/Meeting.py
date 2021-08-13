@@ -94,13 +94,29 @@ async def requesterRequest(requester_request: RequesterRequestModel):
     id	            是	string	        志愿者 id
     session_id	    是	list	        会话 id
     request_type	是	string	        请求类型：2 志愿者回复请求时间，4 志愿者拒绝，没有预约时间
-    time	        否	string	        请求者回复志愿者预订的时间 例：[13213565461, 12474672392]
+    time_info	    否	dict	        创建会议的时间信息 例：{
+                                                                "date": "2021-08-13",
+                                                                "year": 2021,
+                                                                "month": 8,
+                                                                "month_english": "Aug",
+                                                                "day": 13,
+                                                                "week": 5,"week_english": "Fri" 
+                                                            }
+    meeting_time	否	list	        请求者回复志愿者预订的时间 例：[13213565461, 12474672392]
     非测试数据：
     {
         "id": 1,
         "session_id": 2,
         "request_type": 1,
-        "time": [13213565461, 12474672392]
+        "time_info": {
+            "date": "2021-08-13",
+            "year": 2021,
+            "month": 8,
+            "month_english": "Aug",
+            "day": 13,
+            "week": 5,"week_english": "Fri" 
+        }
+        "meeting_time": [13213565461, 12474672392]
     }
     '''
 
@@ -112,7 +128,8 @@ async def requesterRequest(requester_request: RequesterRequestModel):
         params['id'],
         params['session_id'],
         params['request_type'],
-        params['time']
+        params['time_info'],
+        params['meeting_time']
     )
 
 

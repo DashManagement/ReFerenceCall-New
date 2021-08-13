@@ -42,8 +42,8 @@ class Meeting:
 
 
     # 请求者同意预约时间或者拒绝
-    async def requesterRequest(self, id, session_id, request_type, requester_agree_time):
-        return await meetingRequesterRequest.construct(id, session_id, request_type, requester_agree_time)
+    async def requesterRequest(self, id, session_id, request_type, time_info, requester_agree_time):
+        return await meetingRequesterRequest.construct(id, session_id, request_type, time_info, requester_agree_time)
 
 
     # 查看预约会议请求
