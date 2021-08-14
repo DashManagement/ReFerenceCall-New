@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-07-27 10:10:20
-LastEditTime: 2021-08-08 12:05:51
+LastEditTime: 2021-08-14 21:49:11
 LastEditors: fanshaoqiang
 '''
 # coding=utf-8
@@ -160,7 +160,8 @@ class CompanyCurd:
 
         # 查询公司信息
         dbo.resetInitConfig('test', 'lp_gp')
-        condition = {"id": str(company_id), "company_id": str(company_id), "describe": "0"}
+        condition = {"id": str(company_id), "company_id": str(
+            company_id), "describe": "0"}
         field = {"id": 1, "fund_name": 1, "company_info": 1, '_id': 0}
         company_info = await dbo.findOne(condition, field)
 
@@ -199,24 +200,24 @@ class CompanyCurd:
                 result['is_reservation'] = 0
             else:
                 result['is_reservation'] = 1
-            
+
             '''添加一条志愿者信息到志愿者列表'''
             data['volunteers_list'].append(result)
 
         logger.info(f"data is {data}")
         return {'code': 200, 'data': data}
 
-
     # 查看志愿者是否有多余的时间来处理预约会议
+
     async def is_reservation(self, volunteers_id):
 
         dbo.resetInitConfig('test', 'meeting_list')
         condition = {
-            '$or':[
-                {'start_id':volunteers_id},
-                {'end_id':volunteers_id}
-            ], 
-            'status':1
+            '$or': [
+                {'start_id': volunteers_id},
+                {'end_id': volunteers_id}
+            ],
+            'status': 1
         }
         field = {'_id': 0}
         result = await dbo.getData(condition, field)
@@ -226,8 +227,8 @@ class CompanyCurd:
 
         return True
 
-
     # 计算志愿者会议时间剩余可预约时间
+
     async def checkVolunteersTime(self, volunteers_id):
 
         # 查看志愿者是否存在
@@ -248,7 +249,7 @@ class CompanyCurd:
 
                 ctmp_del = []
                 # 循环一天当中9点到18点的时间戳
-                for index,time_stamp in enumerate(value['time_stamp']):
+                for index, time_stamp in enumerate(value['time_stamp']):
                     # 判断如果预约会议时间和预约时间戳相等，则在一天当中的时间中移除这一个小时的时间
                     if int(meeting_list['requester_agree_time'][0]) == int(time_stamp[0]):
                         # 将需要删除的索引添加到列表中
@@ -259,20 +260,21 @@ class CompanyCurd:
                 nctmp_del = list(reversed(ctmp_del))
                 # 删除索引中的值
                 for value_index in nctmp_del:
-                    del value['time_stamp'][value_index],value['time_clock'][value_index],value['time'][value_index],value['check_time'][value_index]
+                    del value['time_stamp'][value_index], value['time_clock'][
+                        value_index], value['time'][value_index], value['check_time'][value_index]
 
             # 循环正在进行预约的会议列表
             for booking_list in volunteers_time['booking_list']:
 
                 tmp_del = []
                 # 循环一天当中9点到18点的时间戳
-                for index,time_stamp in enumerate(value['time_stamp']):
-                    # 循环预约的三组时间
-                    for reply_list in booking_list['volunteer_reply_time']['time_stamp']:
-                        # 判断如果预约会议时间和预约时间戳相等，则在一天当中的时间中移除这一个小时的时间
-                        if int(reply_list[0]) == int(time_stamp[0]):
-                            # 将需要删除的索引添加到列表中
-                            tmp_del.append(index)
+                # for index,time_stamp in enumerate(value['time_stamp']):
+                #     # 循环预约的三组时间
+                #     for reply_list in booking_list['volunteer_reply_time']['time_stamp']:
+                #         # 判断如果预约会议时间和预约时间戳相等，则在一天当中的时间中移除这一个小时的时间
+                #         if int(reply_list[0]) == int(time_stamp[0]):
+                #             # 将需要删除的索引添加到列表中
+                #             tmp_del.append(index)
 
                 # return tmp_del
                 # 反转列表 - 不反转列表会删除错误的索引
@@ -280,33 +282,35 @@ class CompanyCurd:
                 # 删除索引中的值
                 for value_index in vtmp_del:
                     print(value_index)
-                    del value['time_stamp'][value_index],value['time_clock'][value_index],value['time'][value_index],value['check_time'][value_index]
+                    del value['time_stamp'][value_index], value['time_clock'][
+                        value_index], value['time'][value_index], value['check_time'][value_index]
 
         data = {
-            'code':200, 
-            'data':{
-                'user_info':user_info, 
-                'volunteers':{'count':len(time_list), 
-                'volunteers_time_list':time_list
-                }
+            'code': 200,
+            'data': {
+                'user_info': user_info,
+                'volunteers': {'count': len(time_list),
+                               'volunteers_time_list': time_list
+                               }
             }
         }
-        
+
         return data
 
-
     # 查看志愿者处理预约会议的时间
+
     async def volunteersTime(self, volunteers_id):
-        
+
         # return await timeOperation.timeList()
         # 获取第一次发起请求的所有数据
         dbo.resetInitConfig('test', 'reservation_meeting')
-        condition = {'$or':[{'start_id':volunteers_id},{'end_id':volunteers_id}], 'request_num': 1}
+        condition = {'$or': [{'start_id': volunteers_id},
+                             {'end_id': volunteers_id}], 'request_num': 1}
         field = {'session_id': 1, '_id': 0}
         result = await dbo.getData(condition, field)
         # print(result)
 
-         # 如果没有记录则直接返回空的 list 列表
+        # 如果没有记录则直接返回空的 list 列表
         if len(result) == 0:
             return []
 
@@ -365,29 +369,22 @@ class CompanyCurd:
             if value_two['is_create_meeting'] == 0 and value_two['status'] == 1 and value_two['request_num'] == 2:
                 booking_list.append(value_two)
 
-        return {'meeting_list':meeting_list, 'booking_list':booking_list}
-
+        return {'meeting_list': meeting_list, 'booking_list': booking_list}
 
     # 获取用户信息
+
     async def getUserInfo(self, id):
 
-        dbo.resetInitConfig('test','users')
-        condition = {'id':id}
+        dbo.resetInitConfig('test', 'users')
+        condition = {'id': id}
         field = {'id': 1, 'name': 1, 'company_name': 1, 'company_icon': 1,
-                     'company_introduction': 1, 'create_time': 1, '_id': 0}
+                 'company_introduction': 1, 'create_time': 1, '_id': 0}
         result = await dbo.findOne(condition, field)
         logger.info(result)
         if result is None:
             return False
 
         return result
-
-
-
-
-
-
-
 
 
 companyCurd = CompanyCurd()
