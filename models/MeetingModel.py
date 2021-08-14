@@ -2,8 +2,8 @@
 @Description:
 @Author: michael
 @Date: 2021-08-02 10:16:20
-LastEditTime: 2021-08-02 20:00:00
-LastEditors: michael
+LastEditTime: 2021-08-14 22:00:26
+LastEditors: fanshaoqiang
 '''
 
 # coding=utf-8
@@ -26,7 +26,7 @@ class VolunteerReplyRequestModel(BaseModel):
     id: str
     session_id: str
     request_type: str
-    time: dict = {}
+    time: list = []
 
 
 # 预约会议 - 请求者回复请求的验证模型
@@ -38,6 +38,8 @@ class RequesterRequestModel(BaseModel):
     meeting_time: list = [0, 0]
 
 # 正在进行中的预约列表相关操作验证模型
+
+
 class CheckRequestModel(BaseModel):
     id: str
     request_type: str
