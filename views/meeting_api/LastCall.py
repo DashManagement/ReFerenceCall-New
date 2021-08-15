@@ -37,7 +37,7 @@ class LastCall:
     async def getLastCall(self, user_info):
 
         dbo.resetInitConfig('test', 'meeting_list')
-        condition = {'status':0, 'meeting_status':1, '$or':[
+        condition = {'$or':[
             {'start_id':self.id},
             {'end_id':self.id}  
         ]}
@@ -45,6 +45,8 @@ class LastCall:
             "id": 1,
             "reservation_company_id": 1,
             "reservation_company_name": 1,
+            "start_id": 1,
+            "end_id": 1,
             "session_id": 1,
             "start_time": 1,
             "meeting_id": 1,
@@ -57,9 +59,28 @@ class LastCall:
         num = 0
         result = await dbo.findSort(condition, field, sort, num)
 
-        for value in result:
-            value['name'] = user_info['name']
-            value['company_name'] = user_info['company_name']
+        # 没有记录则返回空
+        if len(result) == 0:
+            return []
+
+        # 判断是会议请求者，还是会议的志愿者
+        if self.id == result[0]['start_id']:
+            condition = {'id':int(result[0]['end_id'])}
+        else:
+            condition = {'id':int(result[0]['start__id'])}
+        field = {'_id':0}
+
+        dbo.resetInitConfig('test', 'users')
+        user_result = await dbo.findOne(condition, field)
+
+        if user_result is None:
+            return {'code':205, 'message':'获取会议请求者或志愿者信息失败'}
+        # return user_result
+        result[0]['name'] = user_result['name']
+        result[0]['company_name'] = user_result['company_name']
+
+        # value['name'] = user_info['name']
+        #     value['company_name'] = user_info['company_name']
 
         return result
 
