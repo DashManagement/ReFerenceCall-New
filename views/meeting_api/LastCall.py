@@ -67,7 +67,7 @@ class LastCall:
         if self.id == result[0]['start_id']:
             condition = {'id':int(result[0]['end_id'])}
         else:
-            condition = {'id':int(result[0]['start__id'])}
+            condition = {'id':int(result[0]['start_id'])}
         field = {'_id':0}
 
         dbo.resetInitConfig('test', 'users')
