@@ -69,11 +69,13 @@ class MeetingSchedule:
             'create_time':1,
             '_id':0
         }
-        result = await dbo.getData(condition, field)
+        sort = [('id', -1)]
+        skip = 0
+        num = 100
+        result = await dbo.findSort(condition, field, sort, skip, num)
 
-        for value in result:
-            value['name'] = user_info['name']
-            value['company_name'] = user_info['company_name']
+        result[0]['name'] = user_info['name']
+        result[0]['company_name'] = user_info['company_name']
 
         return result
 
@@ -83,10 +85,10 @@ class MeetingSchedule:
         '''
         :param user_meeting_list list 该用的会议信息列表
         '''
-
+        # logger.info(user_meeting_list)
         schedule_list = []
         # 获取 N 天之内的 早9点 到 晚6点 的时间列表
-        time_list = await timeOperation.returnTimeStamp(10)
+        time_list = await timeOperation.returnTimeStamp(1)
         # 将未来 N 天的时候列表 与 会议时间匹配
         for value in time_list:
             tmp_schedule = []
@@ -94,6 +96,7 @@ class MeetingSchedule:
                 # return value_two
                 # logger.info(value)
                 # logger.info(value_two)
+                # logger.info(value_two['meeting_time'])
                 if int(value_two['meeting_time'][0]) >= int(value['time_stamp'][0]) and int(value_two['meeting_time'][1]) <= int(value['time_stamp'][1]):
                     tmp_schedule.append(value_two)
 
