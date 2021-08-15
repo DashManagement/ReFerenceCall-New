@@ -110,19 +110,29 @@ class TimeOperation:
         week = datetime.strptime(dateymd, "%Y-%m-%d").weekday()
 
         today_time = datetime.today()
+        # # 获取当前年份
+        # year = today_time.year
+        # # 获取当前月份
+        # month = today_time.month
+        # # 获取当前日历
+        # day = today_time.day
+
         # 获取当前年份
-        year = today_time.year
+        year = time.strftime("%Y", ltime)
 
         # 获取当前月份
-        month = today_time.month
+        month = time.strftime("%m", ltime)
 
         # 获取当前日历
-        day = today_time.day
+        day = time.strftime("%d", ltime)
 
         # 将星期 + 1，改为 星期表示 1-7，实际周一的打印结果为 1
         new_week = week + 1
 
-        data = {'date':dateymd, 'year':year, 'month':month, 'month_english':month_english, 'day':day, 'week':new_week, 'week_english':await self.digitalConversionEnglish(new_week)}
+        # 今日零点时间戳
+        today_zero_stamp = common.getTimeStamp()
+
+        data = {'date':dateymd, 'today_zero_stamp':today_zero_stamp, 'year':year, 'month':month, 'month_english':month_english, 'day':day, 'week':new_week, 'week_english':await self.digitalConversionEnglish(new_week)}
 
         return data
 
