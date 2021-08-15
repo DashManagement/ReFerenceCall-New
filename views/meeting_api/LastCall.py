@@ -77,7 +77,9 @@ class LastCall:
             return {'code':205, 'message':'获取会议请求者或志愿者信息失败'}
         # return user_result
         result[0]['name'] = user_result['name']
+        result[0]['head_portrait'] = user_result['head_portrait']
         result[0]['company_name'] = user_result['company_name']
+        result[0]['company_icon'] = user_result['company_icon']
 
         # value['name'] = user_info['name']
         #     value['company_name'] = user_info['company_name']
