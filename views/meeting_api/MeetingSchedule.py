@@ -73,9 +73,10 @@ class MeetingSchedule:
         skip = 0
         num = 100
         result = await dbo.findSort(condition, field, sort, skip, num)
-
-        result[0]['name'] = user_info['name']
-        result[0]['company_name'] = user_info['company_name']
+        
+        if len(result) > 0:
+            result[0]['name'] = user_info['name']
+            result[0]['company_name'] = user_info['company_name']
 
         return result
 
