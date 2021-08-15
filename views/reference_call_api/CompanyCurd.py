@@ -268,13 +268,13 @@ class CompanyCurd:
 
                 tmp_del = []
                 # 循环一天当中9点到18点的时间戳
-                # for index,time_stamp in enumerate(value['time_stamp']):
-                #     # 循环预约的三组时间
-                #     for reply_list in booking_list['volunteer_reply_time']['time_stamp']:
-                #         # 判断如果预约会议时间和预约时间戳相等，则在一天当中的时间中移除这一个小时的时间
-                #         if int(reply_list[0]) == int(time_stamp[0]):
-                #             # 将需要删除的索引添加到列表中
-                #             tmp_del.append(index)
+                for index,time_stamp in enumerate(value['time_stamp']):
+                    # 循环预约的三组时间
+                    for reply_list in booking_list['time_stamp']:
+                        # 判断如果预约会议时间和预约时间戳相等，则在一天当中的时间中移除这一个小时的时间
+                        if int(reply_list[0]) == int(time_stamp[0]):
+                            # 将需要删除的索引添加到列表中
+                            tmp_del.append(index)
 
                 # return tmp_del
                 # 反转列表 - 不反转列表会删除错误的索引
@@ -289,9 +289,10 @@ class CompanyCurd:
             'code': 200,
             'data': {
                 'user_info': user_info,
-                'volunteers': {'count': len(time_list),
-                               'volunteers_time_list': time_list
-                               }
+                'volunteers': {
+                    'count': len(time_list),
+                    'volunteers_time_list': time_list
+                }
             }
         }
 
@@ -367,9 +368,18 @@ class CompanyCurd:
 
             '''添加正在进行中的预约，并且状态为有效，并且者愿者已经回复了时间可用时间'''
             if value_two['is_create_meeting'] == 0 and value_two['status'] == 1 and value_two['request_num'] == 2:
+                
+                # 增加一个临时字段 time_stamp, 将志愿者回复的预约时间 格式化为 [['123','123'],['321','321'],['111','111]]
+                value_two['time_stamp'] = []
+                for tmp_1 in value_two['volunteer_reply_time']:
+                    value_1 = list(tmp_1.values())
+                    for value_2 in value_1[0]:
+                        value_two['time_stamp'].append(value_2)
+
                 booking_list.append(value_two)
 
         return {'meeting_list': meeting_list, 'booking_list': booking_list}
+
 
     # 获取用户信息
 
