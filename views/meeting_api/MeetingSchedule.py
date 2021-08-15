@@ -121,12 +121,12 @@ class MeetingSchedule:
 
         for value in schedule_list:
             for meeting in value['meeting']['list']:
-                if self.id == meeting['start_id']:
+                if self.id == meeting['end_id']:
                     meeting['name'] = meeting['start_user_name']
                     meeting['head_portrait'] = meeting['start_head_portrait']
                     meeting['company_name'] = meeting['start_company_name']
                     meeting['company_icon'] = meeting['start_company_icon']
-                if self.id == meeting['end_id']:
+                if self.id == meeting['start_id']:
                     meeting['name'] = meeting['end_user_name']
                     meeting['head_portrait'] = meeting['end_head_portrait']
                     meeting['company_name'] = meeting['end_company_name']
