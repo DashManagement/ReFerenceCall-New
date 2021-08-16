@@ -27,7 +27,7 @@ class MeetingFirstMeetingRequest:
         dbo.resetInitConfig('test', 'reservation_meeting')
 
         # 查找是否已经有未完成的预约会议
-        condition = {'start_id': id, 'end_id': volunteers_id,
+        condition = {'start_id': id, 'end_id': volunteers_id, 'reservation_company_id':reservation_company_id,
                      'is_create_meeting': 0, 'status': 1}
         field = {'_id': 0}
         is_meeting_result = await dbo.findOne(condition, field)
