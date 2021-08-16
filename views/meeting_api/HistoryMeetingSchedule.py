@@ -71,9 +71,10 @@ class HistoryMeetingSchedule:
         sort = [('create_time', -1)]
         result = await dbo.getDataSort(condition, field, sort)
 
-        for value in result:
-            value['name'] = user_info['name']
-            value['company_name'] = user_info['company_name']
+        if len(result) > 0:
+            for value in result:
+                value['name'] = user_info['name']
+                value['company_name'] = user_info['company_name']
 
         # 整理用户信息返回的字段
         return_list = await self.finishingReturnUserInfoField(result)
