@@ -232,7 +232,7 @@ class CompanyCurd:
     async def checkVolunteersTime(self, volunteers_id):
 
         # 查看志愿者是否存在
-        user_info = await self.getUserInfo(volunteers_id)
+        user_info = await base.verifyUserReturnInfo(volunteers_id)
         if user_info is False:
             return {'code': 201, 'message': '无效的志愿者id'}
 
@@ -381,20 +381,10 @@ class CompanyCurd:
         return {'meeting_list': meeting_list, 'booking_list': booking_list}
 
 
-    # 获取用户信息
 
-    async def getUserInfo(self, id):
 
-        dbo.resetInitConfig('test', 'users')
-        condition = {'id': id}
-        field = {'id': 1, 'name': 1, 'company_name': 1, 'company_icon': 1,
-                 'company_introduction': 1, 'create_time': 1, '_id': 0}
-        result = await dbo.findOne(condition, field)
-        logger.info(result)
-        if result is None:
-            return False
 
-        return result
+
 
 
 companyCurd = CompanyCurd()

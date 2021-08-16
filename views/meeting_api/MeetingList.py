@@ -31,7 +31,7 @@ class MeetingList:
         self.data_num = int(data_num)
 
         # 查看请求者是否存在
-        if await self.getUserInfo() is False:
+        if await base.verifyUserReturnInfo(self.id) is False:
             return {'code':201, 'message':'无效的用户id'}
 
         # 验证请求类型是否合法
@@ -95,18 +95,6 @@ class MeetingList:
         return await dbo.getData(condition, field)
 
 
-    # 获取用户信息
-    async def getUserInfo(self):
-
-        dbo.resetInitConfig('test','users')
-        condition = {'id':self.id}
-        field = {'id':1, '_id':0}
-        result = await dbo.findOne(condition, field)
-        logger.info(result)
-        if result is None:
-            return False
-
-        return result
 
 
 

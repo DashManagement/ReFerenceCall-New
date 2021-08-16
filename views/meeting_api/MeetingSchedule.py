@@ -25,7 +25,7 @@ class MeetingSchedule:
         self.id = int(id)
 
         # 查看请求者是否存在
-        user_info = await self.getUserInfo()
+        user_info = await base.verifyUserReturnInfo(self.id)
         if user_info is False:
             return {'code':201, 'message':'无效的用户id'}
 
@@ -137,20 +137,6 @@ class MeetingSchedule:
                 del meeting['end_user_name'], meeting['end_head_portrait'], meeting['end_company_name'], meeting['end_company_icon']
 
         return schedule_list
-
-
-    # 获取用户信息
-    async def getUserInfo(self):
-
-        dbo.resetInitConfig('test','users')
-        condition = {'id':self.id}
-        field = {'_id':0}
-        result = await dbo.findOne(condition, field)
-        # logger.info(result)
-        if result is None:
-            return False
-
-        return result
 
 
 

@@ -64,9 +64,7 @@ class Base:
         field = {'id': 1, 'company_id': 1, 'fund_name': 1,
                  'company_icon': 1, 'base_info': 1, 'company_info': 1, '_id': 0}
         company_info = await dbo.findOne(condition, field)
-        print(company_info)
-        print(123123)
-        print(company_id)
+
         if company_info is None:
             return False
 
@@ -88,6 +86,10 @@ class Base:
 
         return {"userName": user_info.get("name"), "userEmail": user_info.get("email"),
                 "userToken": user_info.get("userToken"), "localTimeZone": user_info.get("localTimeZone"), "platForm": user_info.get("platForm")}
+
+
+
+
 
 
 base = Base()

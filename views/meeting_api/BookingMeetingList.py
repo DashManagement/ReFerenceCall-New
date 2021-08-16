@@ -31,16 +31,12 @@ class BookingMeetingList:
         self.data_num = int(data_num)
 
         # 查看请求者是否存在
-        if await self.getUserInfo() is False:
+        if await base.verifyUserReturnInfo(self.id) is False:
             return {'code': 201, 'message': '无效的用户id'}
 
         # 验证请求类型是否合法
         if self.request_type != 1 and self.request_type != 2:
             return {'code': 202, 'message': '错误的请求类型'}
-
-        # 验证查看类型是否合法
-        # if self.check_type != 0 and self.check_type != 1 and self.check_type != 2 and self.check_type != 3 and self.check_type != 4:
-        #     return {'code':203, 'message':'错误的查看类型'}
 
         # 设置请求字段类型
         if self.request_type == 1:
@@ -153,19 +149,7 @@ class BookingMeetingList:
 
         return booking_meeting_list
 
-    # 获取用户信息
 
-    async def getUserInfo(self):
-
-        dbo.resetInitConfig('test', 'users')
-        condition = {'id': self.id}
-        field = {'id': 1, '_id': 0}
-        result = await dbo.findOne(condition, field)
-        logger.info(result)
-        if result is None:
-            return False
-
-        return result
 
 
 
