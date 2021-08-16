@@ -71,12 +71,13 @@ class MeetingSchedule:
         }
         sort = [('id', -1)]
         skip = 0
-        num = 100
+        num = 100   # 返回的数量
         result = await dbo.findSort(condition, field, sort, skip, num)
         
         if len(result) > 0:
-            result[0]['name'] = user_info['name']
-            result[0]['company_name'] = user_info['company_name']
+            for value in result:
+                value['name'] = user_info['name']
+                value['company_name'] = user_info['company_name']
 
         return result
 
