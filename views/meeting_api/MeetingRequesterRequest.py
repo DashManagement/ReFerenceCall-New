@@ -318,6 +318,7 @@ class MeetingRequesterRequest:
             'meeting_status': 0,
             'agree_time_info':self.time_info,
             'start_time': str(selectTime[0]),
+            'meeting_end_time': str(selectTime[1]),
             'cancel_time': 0,
             'overdue_time': 0,
             'status': 1,

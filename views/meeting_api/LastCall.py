@@ -49,6 +49,7 @@ class LastCall:
             "end_id": 1,
             "session_id": 1,
             "start_time": 1,
+            "meeting_end_time": 1,
             "meeting_id": 1,
             "meeting_pass": 1,
             "meeting_address": 1,
