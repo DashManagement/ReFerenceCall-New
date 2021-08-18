@@ -250,4 +250,9 @@ class MeetingVolunteerReplyRequest:
         logger.info('update all meeting status = 0')
 
 
+
+
+
+
+
 meetingVolunteerReplyRequest = MeetingVolunteerReplyRequest()

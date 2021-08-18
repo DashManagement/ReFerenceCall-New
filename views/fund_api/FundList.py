@@ -28,7 +28,7 @@ class FundList:
             return {'code': 200, 'data': tmpFundList}
         # 验证是否有此用户
         if await base.verifyUser(int(uid)) is False:
-            return {'code': 201, 'message': '无效的用户 id'}
+            return {'code': 201, 'message': '用户不存在'}
 
         # 返回基金公司列表
         tmpFundList = await self.getFundList()

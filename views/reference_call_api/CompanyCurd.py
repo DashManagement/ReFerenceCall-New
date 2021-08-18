@@ -166,7 +166,7 @@ class CompanyCurd:
         company_info = await dbo.findOne(condition, field)
 
         if company_info is None:
-            return {'code': 201, 'message': '不存在的公司'}
+            return {'code': 201, 'message': '公司不存在'}
         else:
             data['company_info'] = company_info
 
@@ -234,7 +234,7 @@ class CompanyCurd:
         # 查看志愿者是否存在
         user_info = await base.verifyUserReturnInfo(volunteers_id)
         if user_info is False:
-            return {'code': 201, 'message': '无效的志愿者id'}
+            return {'code': 201, 'message': '用户不存在'}
 
         time_list = await timeOperation.timeList()
         volunteers_time = await self.volunteersTime(volunteers_id)

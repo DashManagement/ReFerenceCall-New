@@ -13,7 +13,7 @@ from views.Base import *
 from views.reference_call_api.TimeOperation import timeOperation
 from config.log_config import logger
 
-# meeting 我的/其它的 - 预约会议流程列表
+# meeting 已预定的会议日程
 class MeetingSchedule:
 
 
@@ -27,7 +27,7 @@ class MeetingSchedule:
         # 查看请求者是否存在
         user_info = await base.verifyUserReturnInfo(self.id)
         if user_info is False:
-            return {'code':201, 'message':'无效的用户id'}
+            return {'code':201, 'message':'用户不存在'}
 
         # 查看用户列表信息
         user_meeting_list = await self.getMeetingScheduleList(user_info)

@@ -40,7 +40,7 @@ class LoginInfo:
 
         # 判断用户是否存在
         if user_info is None:
-            return {'code': 201, 'message': '错误的账号'}
+            return {'code': 201, 'message': '用户不存在'}
 
         logger.info(self.password, user_info['password'])
 

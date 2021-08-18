@@ -32,7 +32,7 @@ class BookingMeetingList:
 
         # 查看请求者是否存在
         if await base.verifyUserReturnInfo(self.id) is False:
-            return {'code': 201, 'message': '无效的用户id'}
+            return {'code': 201, 'message': '用户不存在'}
 
         # 验证请求类型是否合法
         if self.request_type != 1 and self.request_type != 2:

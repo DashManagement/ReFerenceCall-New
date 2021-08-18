@@ -70,7 +70,7 @@ class EmailCaptchaVerify():
         # 判断用户 ID 和验证码 是否都存在 - 验证这块暂时先做个简单的验证 - 后面有时间再做更详细的验证
         if self.uid == 'None' or self.verify == 'None':
             self.data['code'] = 302
-            self.data['message'] = '参数不正确'
+            self.data['message'] = '参数错误'
             return self.data
 
         # logger.info(123123)
@@ -113,7 +113,7 @@ class EmailCaptchaVerify():
         # 判断 email 和 验证码 是否都存在 - 验证这块暂时先做个简单的验证 - 后面有时间再做更详细的验证
         if self.email == 'None' or self.verify == 'None':
             self.data['code'] = 302
-            self.data['message'] = '参数不正确'
+            self.data['message'] = '参数错误'
             return self.data
 
         user_result = await self.isUserEmailInfo()

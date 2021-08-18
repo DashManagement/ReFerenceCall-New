@@ -21,12 +21,12 @@ class FundDetails:
 
         # 验证是否有此用户
         if await base.verifyUser(int(uid)) is False:
-            return {'code': 201, 'message': '无效的用户 id'}
+            return {'code': 201, 'message': '用户不存在'}
 
         # 验证是否有此公司
         company_info = await base.verifyFundCompany(company_id)
         if company_info is False:
-            return {'code': 202, 'message': '无效的公司 id'}
+            return {'code': 202, 'message': '公司不存在'}
 
         return company_info
 

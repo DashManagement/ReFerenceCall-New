@@ -12,7 +12,7 @@ LastEditors: michael
 from views.Base import *
 from config.log_config import logger
 
-# meeting 我的 - 预约会议流程列表
+# meeting 我的 - 会议历史记录
 class HistoryMeetingSchedule:
 
 
@@ -26,7 +26,7 @@ class HistoryMeetingSchedule:
         # 查看请求者是否存在
         user_info = await base.verifyUserReturnInfo(self.id)
         if user_info is False:
-            return {'code':201, 'message':'无效的用户id'}
+            return {'code':201, 'message':'用户不存在'}
 
         # 查看用户列表信息
         result = await self.getMeetingScheduleList(user_info)

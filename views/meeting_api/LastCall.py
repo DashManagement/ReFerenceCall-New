@@ -26,7 +26,7 @@ class LastCall:
         # 查看请求者是否存在
         user_info = await base.verifyUserReturnInfo(self.id)
         if user_info is False:
-            return {'code':201, 'message':'无效的用户id'}
+            return {'code':201, 'message':'用户不存在'}
 
         # 查看用户列表信息
         result = await self.getLastCall(user_info)

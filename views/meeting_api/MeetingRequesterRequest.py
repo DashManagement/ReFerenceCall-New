@@ -197,7 +197,7 @@ class MeetingRequesterRequest:
 
         # 判断添加记录是否成功
         if insert_result.inserted_id is None:
-            return {'code': 206, 'message': '志愿者拒绝请求失败'}
+            return {'code': 206, 'message': '请求者拒绝请求失败'}
         return {'code': 200}
 
     # 查询 预约会议过程中的 - 会话id记录 session_id 和志愿者id 是否存在，并且已经执行到第三步 - 请求者同意或者拒绝
@@ -224,7 +224,7 @@ class MeetingRequesterRequest:
                 return data
 
             if result[0]['is_create_meeting'] == 2:
-                data['data'] = {'code': 208, 'message': '预约会议已经被拒绝，志愿者不能再次操作'}
+                data['data'] = {'code': 208, 'message': '预约会议已经被拒绝，请求者不能再次操作'}
                 return data
 
         # 查看是否有请求者回复记录
@@ -378,6 +378,10 @@ class MeetingRequesterRequest:
             fundName=fundName, fromUserName=fromUserName, toEmail=toEmail, toUserName=toUserName,
             fromEmail=fromEmail, meetingZone=meetingZone, meetingTime=meetingTime, duration=duration)
         return meetingModel
+
+
+
+
 
 
 meetingRequesterRequest = MeetingRequesterRequest()

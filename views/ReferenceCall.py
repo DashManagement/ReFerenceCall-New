@@ -51,7 +51,8 @@ class ReferenceCall:
     async def companyVolunteersList(self, id, company_id):
         return await companyCurd.companyVolunteersList(id, company_id)
 
-    
+
+    # 志愿者会议时间剩余可预约时间
     async def volunteersTime(self, id):
         return await companyCurd.checkVolunteersTime(id)
 
