@@ -34,8 +34,6 @@ class MeetingSchedule:
 
         # 计算未来 N 天之内的会议日程
         return await self.futureSchedule(user_meeting_list)
-        return user_meeting_list
-        # return {'code':200, 'count':len(result), 'data':result}
 
 
     # 查询已经约定的会议日程接口
@@ -95,17 +93,11 @@ class MeetingSchedule:
         for value in time_list:
             tmp_schedule = []
             for value_two in user_meeting_list:
-                # return value_two
-                # logger.info(value)
-                # logger.info(value_two)
-                # logger.info(value_two['meeting_time'])
                 if int(value_two['meeting_time'][0]) >= int(value['time_stamp'][0]) and int(value_two['meeting_time'][1]) <= int(value['time_stamp'][1]):
                     tmp_schedule.append(value_two)
 
             # 如果有会议记录，则添加进列表中一段会议时间的详细信息
             if len(tmp_schedule) > 0:
-                # print(len(tmp_schedule))
-                # tmp_schedule['time_info'] = value['time_info']
                 schedule_list.append(
                     {'time_info':value['time_info'], 'meeting':{'count':len(tmp_schedule), 'list':tmp_schedule}}
                 )

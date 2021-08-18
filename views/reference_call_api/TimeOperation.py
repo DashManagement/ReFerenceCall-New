@@ -18,7 +18,7 @@ from config.log_config import logger
 class TimeOperation:
 
 
-    # 计算一段时间的时间算列表，默认从今天开始向后五天
+    # 计算一段时间的时间戳列表，默认从今天开始向后五天
     async def timeList(self, number_day=6):
         time_list = []
         for i in range(number_day):
@@ -36,8 +36,8 @@ class TimeOperation:
 
         # 今日零点时间戳
         today_zero_stamp = common.getTimeStamp()
-        
-        # 上午 8点整 时间戳
+
+        # 上午 9点整 时间戳
         nine_clock_stamp = today_zero_stamp + (3600*9) + (number_day*86400)
         # 上午 9点整 时间戳转换为 - 年-月-日 时:分:秒
         nine_clock = datetime.fromtimestamp(nine_clock_stamp)

@@ -20,6 +20,7 @@ from models.MeetingModel import MeetingListModel
 from models.MeetingModel import BookingMeetingModel
 from models.MeetingModel import LastCallModel
 from models.MeetingModel import HistoryMeetingScheduleModel
+from models.MeetingModel import CheckMeetingScheduleModel
 from config.log_config import logger
 
 # 创建 APIRouter 实例
@@ -195,3 +196,11 @@ async def historyMeetingSchedule(history_meeting_schedule: HistoryMeetingSchedul
     ''' 非测试数据：{ "id": 23 } '''
     params = history_meeting_schedule.__dict__
     return await meeting.historyMeetingSchedule(int(params['id']))
+
+
+# 按时间戳查看当天的会议日程
+@router.post('/api/meeting/check_meeting_schedule')
+async def checkMeetingSchedule(check_meeting_schedule: CheckMeetingScheduleModel):
+    ''' 非测试数据：{ "id": 23, "time_stamp": "1629093600" } '''
+    params = check_meeting_schedule.__dict__
+    return await meeting.checkMeetingSchedule(int(params['id']), int(params['time_stamp']))

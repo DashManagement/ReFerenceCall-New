@@ -19,7 +19,7 @@ from config.log_config import logger
 
 # 公共类
 class Common:
-    
+
     # 清除返回数据 _id 类型，因为该字段通常为 object 类型 - 现在不需要了，已经没有类调用它 - 随时可以删除
     def clear_id(self, data):
         del data['_id']
@@ -67,6 +67,17 @@ class Common:
     def getTimeDataHMS(self, timeStamp):
         timeArray = time.localtime(timeStamp)
         return time.strftime("%H:%M:%S", timeArray)
+
+
+    # 转换时间戳为年月日
+    def getTimeDataYmd(self, timeStamp):
+        timeArray = time.localtime(timeStamp)
+        return time.strftime("%Y-%m-%d", timeArray)
+
+
+    # 转换时间戳为 time 类型 [2021,8,16,9,0,0,0,228,0]
+    def getTimeType(self, timeStamp):
+        return time.localtime(timeStamp)
 
 
     # 生成随机数字验证码

@@ -16,6 +16,7 @@ from views.meeting_api.BookingMeetingList import bookingMeetingList
 from views.meeting_api.MeetingSchedule import meetingSchedule
 from views.meeting_api.LastCall import lastCall
 from views.meeting_api.HistoryMeetingSchedule import historyMeetingSchedule
+from views.meeting_api.CheckMeetingSchedule import checkMeetingSchedule
 
 # Meeting 会议接口类
 class Meeting:
@@ -66,9 +67,15 @@ class Meeting:
         return await lastCall.construct(id)
 
 
-    # 最后一个已完成的会议信息接口
+    # 历史会议列表接口
     async def historyMeetingSchedule(self, id):
         return await historyMeetingSchedule.construct(id)
+
+
+    # 按时间戳查看当天的会议日程
+    async def checkMeetingSchedule(self, id, time_stamp):
+        return await checkMeetingSchedule.construct(id, time_stamp)
+
 
 
 

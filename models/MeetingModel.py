@@ -67,3 +67,9 @@ class LastCallModel(BaseModel):
 # 已约定的会议日程验证模型
 class HistoryMeetingScheduleModel(BaseModel):
     id: str
+
+
+# 按时间戳查看当天的会议日程验证模型
+class CheckMeetingScheduleModel(BaseModel):
+    id: str
+    time_stamp: str

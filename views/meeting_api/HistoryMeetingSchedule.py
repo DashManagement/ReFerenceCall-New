@@ -65,6 +65,8 @@ class HistoryMeetingSchedule:
             "meeting_pass": 1,
             "meeting_address": 1,
             "meeting_time": 1,
+            "start_time": 1,
+            "meeting_end_time": 1,
             'create_time':1,
             '_id':0
         }
