@@ -153,7 +153,7 @@ async def checkRequest(check_request: CheckRequestModel):
     params = check_request.__dict__
     logger.info(params)
     newMeeting = Meeting()
-    return await newMeeting.checkRequest(params['id'], params['request_type'], params['data_num'])
+    return newMeeting.checkRequest(params['id'], params['request_type'], params['data_num'])
 
 
 # 会议列表相关操作 - 暂时被取消 - 没有用到
@@ -206,3 +206,26 @@ async def checkMeetingSchedule(check_meeting_schedule: CheckMeetingScheduleModel
     ''' 非测试数据：{ "id": 23, "time_stamp": "1629093600" } '''
     params = check_meeting_schedule.__dict__
     return await meeting.checkMeetingSchedule(int(params['id']), int(params['time_stamp']))
+
+
+# 预约会议 - 志愿者回复请求
+@router.post('/api/meeting/volunteer_reply_request_test')
+async def volunteerReplyRequest(volunteer_reply_request: VolunteerReplyRequestModel):
+
+    # [ 
+    #     {
+    #         "1628902800" : [ [ "1628902800", "1628906400"], [ "1628989200", "1628992800"]]
+    #     }, 
+    #     {
+    #         "1629075600" : [ [ "1629075600", "1629079200"]]
+    #     }
+    # ],
+
+    params = volunteer_reply_request.__dict__
+    logger.info(params)
+    # return await meeting.volunteerReplyRequest(
+    #     params['id'],
+    #     params['session_id'],
+    #     params['request_type'],
+    #     params['time']
+    # )
