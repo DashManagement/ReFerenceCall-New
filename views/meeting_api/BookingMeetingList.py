@@ -157,4 +157,4 @@ class BookingMeetingList:
 
 
 
-bookingMeetingList = BookingMeetingList()
+# bookingMeetingList = BookingMeetingList()
