@@ -62,7 +62,7 @@ class TimeOperation:
             tmp_time = new_time
 
         # 计算时间为星期几
-        date_week_result = await self.weekWhatDay(nine_clock_stamp)
+        date_week_result = await self.weekWhatDay(nine_clock_stamp, number_day)
 
         # 建立早上9点到晚上6点的时间戳转换为 - 年-月-日 时:分:秒, 和 时:分:秒 两组数据
         good_time_list = []
@@ -95,7 +95,7 @@ class TimeOperation:
 
 
     # 计算时间戳为星期几
-    async def weekWhatDay(self, date):
+    async def weekWhatDay(self, date, number_day=0):
 
         # date = '1573401600'
         ltime = time.localtime(int(date))
@@ -131,8 +131,12 @@ class TimeOperation:
 
         # 今日零点时间戳
         today_zero_stamp = common.getTimeStamp()
+        if number_day != 0:
+            zero_stamp = today_zero_stamp + (3600*24)*number_day
+        else:
+            zero_stamp = today_zero_stamp
 
-        data = {'date':dateymd, 'today_zero_stamp':today_zero_stamp, 'year':year, 'month':month, 'month_english':month_english, 'day':day, 'week':new_week, 'week_english':await self.digitalConversionEnglish(new_week)}
+        data = {'date':dateymd, 'today_zero_stamp':zero_stamp, 'year':year, 'month':month, 'month_english':month_english, 'day':day, 'week':new_week, 'week_english':await self.digitalConversionEnglish(new_week)}
 
         return data
 
