@@ -73,11 +73,3 @@ class HistoryMeetingScheduleModel(BaseModel):
 class CheckMeetingScheduleModel(BaseModel):
     id: str
     time_stamp: str
-
-
-# 预约会议 - 志愿者回复请求的验证模型
-class VolunteerReplyRequestModel(BaseModel):
-    id: str
-    session_id: str
-    request_type: str
-    time: list = []

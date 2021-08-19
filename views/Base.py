@@ -50,6 +50,23 @@ class Base:
 
         return user_info
 
+    # 非异步的 - 根据 id 验证是否有此用户 - 并返回用户信息
+    def awaitVerifyUserReturnInfo(self, uid=''):
+
+        # 连接数据库
+        dbo.resetInitConfig('test', 'users')
+
+        # 条件 - 用户名 - 返回字段 全部
+        condition = {'id': uid}
+        field = {'_id': 0}
+        user_info = dbo.findOne(condition, field)
+
+        if user_info is None:
+            return False
+
+        return user_info
+
+
     # 根据 id 验证是否有此公司 - 并返回公司信息
 
     async def verifyFundCompany(self, company_id=''):
