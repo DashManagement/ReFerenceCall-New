@@ -27,7 +27,7 @@ if distribution:
     # 组合远程数据库地址
     mongo_url = f"mongodb://{user}:{password}@{host}:{port}/{prefix}{db}"
 else:
-    useLocalMongo = 1
+    useLocalMongo = 0
     if useLocalMongo == 0:
         # 加载远程数据库配置变量
         readConfig.read('./config/database.ini')

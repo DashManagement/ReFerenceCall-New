@@ -11,6 +11,7 @@ LastEditors: michael
 # import time
 
 # import uvicorn
+from time import sleep
 from fastapi import FastAPI
 from routers import User
 from routers import Verify
@@ -41,6 +42,9 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["*"]
 )
+
+# 延时执行程序
+sleep(1)
 
 # True 开启 Jwt 验证，False 关闭 Jwt 认证
 # is_verify_jwt = True
