@@ -27,6 +27,7 @@ class VolunteerReplyRequestModel(BaseModel):
     session_id: str
     request_type: str
     time: list = []
+    client_type: str = 'android'
 
 
 # 预约会议 - 请求者回复请求的验证模型

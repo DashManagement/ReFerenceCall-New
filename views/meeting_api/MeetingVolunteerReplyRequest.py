@@ -23,13 +23,19 @@ class MeetingVolunteerReplyRequest:
     session_id = ''
     request_type = ''
     time = ''
+    client_type = ''
 
-    async def construct(self, id='', session_id='', request_type='', time=''):
+    async def construct(self, id='', session_id='', request_type='', time='', client_type=''):
 
         self.id = int(id)
         self.session_id = int(session_id)
         self.request_type = int(request_type)
         self.time = time
+        self.client_type = client_type
+
+        # 判断是安卓还是 ios 传入的时间戳 - 如果是 ios 传入的时间戳，则需要转换 time 的数据格式为通用格式
+        if client_type == 'ios':
+            await self.iosDataConversionJson()
 
         is_perform_step_two = await self.isPerformStepTwo()
         if is_perform_step_two['action'] is False:
@@ -249,6 +255,21 @@ class MeetingVolunteerReplyRequest:
         '''此条记录记入日志 - 不作其它处理'''
         logger.info('update all meeting status = 0')
 
+
+    # 转换 ios 传入的时间戳结构
+    async def iosDataConversionJson(self):
+
+        time_list = []
+        # str 转 json 格式转化
+        for value in self.time:
+
+            tmp_list = []
+            for value_2 in value['timeList']:
+                tmp_list.append(value_2)
+
+            time_list.append({value['zero_stamp']:tmp_list})
+
+        self.time = time_list
 
 
 

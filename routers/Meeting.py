@@ -65,6 +65,7 @@ async def volunteerReplyRequest(volunteer_reply_request: VolunteerReplyRequestMo
     session_id	    是	list	        会话 id
     request_type	是	string	        请求类型：2 志愿者回复请求时间，4 志愿者拒绝，没有预约时间
     time	        否	string	        志愿者回复预订的时间 例：[[13213565461, 12474672392],[13213565461, 12474672392],[13213565461, 12474672392]]
+    time 为ios传入时 否	string	        ios 传入的 志愿者回复预订的时间 例：[{"timeList": [[1629334800, 1629338400],[1629334800, 1629338400]], "zero_stamp": "1629302400"}, {"timeList": [[1629601200, 1629604800]], "zero_stamp": "1629561600"}, {"timeList": [[1629511200, 1629514800]], "zero_stamp": "1629475200"}]
     非测试数据：
     {
         "id": 1,
@@ -76,6 +77,7 @@ async def volunteerReplyRequest(volunteer_reply_request: VolunteerReplyRequestMo
             [13213565461, 12474672392]
         ]
     }
+    client_type     否  string          判断是 android 还是 ios 传进来的值
     '''
 
     params = volunteer_reply_request.__dict__
@@ -84,7 +86,8 @@ async def volunteerReplyRequest(volunteer_reply_request: VolunteerReplyRequestMo
         params['id'],
         params['session_id'],
         params['request_type'],
-        params['time']
+        params['time'],
+        params['client_type']
     )
 
 
@@ -206,21 +209,31 @@ async def checkMeetingSchedule(check_meeting_schedule: CheckMeetingScheduleModel
     return await meeting.checkMeetingSchedule(int(params['id']), int(params['time_stamp']))
 
 
-# 预约会议 - 志愿者回复请求
+# 志愿者回复时间数据结构 - IOS 测试
 @router.post('/api/meeting/volunteer_reply_request_test')
 async def volunteerReplyRequest(volunteer_reply_request: VolunteerReplyRequestModel):
 
-    # [ 
-    #     {
-    #         "1628902800" : [ [ "1628902800", "1628906400"], [ "1628989200", "1628992800"]]
-    #     }, 
-    #     {
-    #         "1629075600" : [ [ "1629075600", "1629079200"]]
-    #     }
-    # ],
+    time = [
+        {"timeList": [[1629334800, 1629338400],[1629334800, 1629338400]], "zero_stamp": "1629302400"}, 
+        {"timeList": [[1629601200, 1629604800]], "zero_stamp": "1629561600"}, 
+        {"timeList": [[1629511200, 1629514800]], "zero_stamp": "1629475200"}
+    ]
 
-    params = volunteer_reply_request.__dict__
-    logger.info(params)
+    time_list = []
+    # str 转 json 格式转化
+    for value in time['time']:
+
+        tmp_list = []
+
+        for value_2 in value['timeList']:
+            tmp_list.append(value_2)
+
+        time_list.append({value['zero_stamp']:tmp_list})
+    
+    return time_list
+
+    # params = volunteer_reply_request.__dict__
+    # logger.info(params)
     # return await meeting.volunteerReplyRequest(
     #     params['id'],
     #     params['session_id'],
