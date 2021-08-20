@@ -12,6 +12,7 @@ from fastapi import APIRouter
 
 # 自己创建的包
 from views.Meeting import meeting
+from views.Meeting import Meeting
 from models.MeetingModel import SendRequestModel
 from models.MeetingModel import VolunteerReplyRequestModel
 from models.MeetingModel import RequesterRequestModel
@@ -154,7 +155,9 @@ async def checkRequest(check_request: CheckRequestModel):
 
     params = check_request.__dict__
     logger.info(params)
-    return await meeting.checkRequest(params['id'], params['request_type'], params['data_num'])
+    test_meeting = Meeting()
+    result = await test_meeting.checkRequest(params['id'], params['request_type'], params['data_num'])
+    return result
 
 
 # 会议列表相关操作 - 暂时被取消 - 没有用到

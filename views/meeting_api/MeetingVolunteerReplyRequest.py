@@ -37,6 +37,9 @@ class MeetingVolunteerReplyRequest:
         if client_type == 'ios':
             await self.iosDataConversionJson()
 
+        # 按时间戳大小重新排列时间
+        self.time = self.sortTime()
+
         is_perform_step_two = await self.isPerformStepTwo()
         if is_perform_step_two['action'] is False:
             return is_perform_step_two['data']
@@ -68,8 +71,45 @@ class MeetingVolunteerReplyRequest:
                 first_request_result['start_id'], first_request_result['end_id'], False)
             return result
 
-    # 志愿者回复 - 预约时间
 
+    # 按时间戳大小重新排列时间
+    def sortTime(self):
+
+        # return self.time
+
+        time_key = []
+        # 获取当日零时时间戳的 list 列表
+        for value in self.time:
+            for value_2 in value:
+                time_key.append(value_2)
+        # return time_key
+
+        # 排序列表
+        for j in range(len(time_key)-1,0,-1):
+            for i in range(j):
+                if time_key[i] > time_key[i+1]:
+                    time_key[i], time_key[i+1] = time_key[i+1], time_key[i]
+        # return time_key
+
+        tmp_list = {}
+        # 建立新的数据结构字典，以方便后面取wefhg
+        for value_2 in self.time:
+            for value_3 in value_2:
+                # return value_2[value_3]
+                tmp_list[str(value_3)] = value_2[value_3]
+        # return tmp_list
+
+        return_list = []
+        # 按从小到大的时间顺序重新排列时间戳结构 - 生成字典
+        for value in time_key:
+            tmp_time_list = {}
+            tmp_time_list[value] = tmp_list[value]
+            return_list.append(tmp_time_list)
+
+        return return_list
+
+
+    # 志愿者回复 - 预约时间
     async def returnBookingTime(self, first_request_result):
         print(first_request_result)
         # 获取自增 ID
