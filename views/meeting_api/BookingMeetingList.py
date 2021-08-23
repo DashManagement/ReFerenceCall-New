@@ -43,12 +43,10 @@ class BookingMeetingList:
         condition = {'id':self.id}
         field = {'_id':0}
         result = self.db.dash_users.find_one(condition, field)
-        print(result)
-        return 1333
+
         # result = list(self.db.dash_users.find_one(condition))
         # print(result)
         print(len(result))
-        return 123123123
         if len(result) == 0:
             return {'code': 201, 'message':'用户不存在'}
         print(1)
