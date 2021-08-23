@@ -30,20 +30,25 @@ class BookingMeetingList:
         self.id = int(id)
         self.request_type = int(request_type)
         self.data_num = int(data_num)
-
-        # base.awaitVerifyUserReturnInfo(self.id)
-        # 连接数据库
+        
+        # 连接数远程据库
+        self.client = pymongo.MongoClient("mongodb://dash:dashmima!@118.193.47.247:8088/dash_test")
+        self.db = self.client.dash_test
+        self.collection = self.db.dash_users
+        # 连接本地数据库
         # self.client = pymongo.MongoClient("localhost", 27017)
-        self.client = pymongo.MongoClient("118.193.47.247", 8088)
-        # self.client = pymongo.MongoClient("mongodb://dash:dashmima!@118.193.47.247:8088/dash_test")
-        # mongodb://dash:dashmima!@118.193.47.247:8088/dash
-        self.db = self.client["dash_test"]
+        # self.db = self.client["dash_test"]
 
         # 查看请求者是否存在 - 1
         condition = {'id':self.id}
-        result = list(self.db.dash_users.find_one(condition))
+        field = {'_id':0}
+        result = self.db.dash_users.find_one(condition, field)
+        print(result)
+        return 1333
+        # result = list(self.db.dash_users.find_one(condition))
         # print(result)
         print(len(result))
+        return 123123123
         if len(result) == 0:
             return {'code': 201, 'message':'用户不存在'}
         print(1)
