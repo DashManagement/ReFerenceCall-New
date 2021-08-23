@@ -11,6 +11,7 @@ LastEditors: fanshaoqiang
 from multiprocessing import Queue
 # from aioredis import create_redis_pool, Redis
 import asyncio
+from time import sleep
 from fastapi import APIRouter
 from config.log_config import logger
 
@@ -160,9 +161,10 @@ def checkRequest(check_request: CheckRequestModel):
     # print(111111)
     params = check_request.__dict__
     logger.info(params)
-    
+    sleep(0.5)
     test_meeting = Meeting()
     result = test_meeting.checkRequest(params['id'], params['request_type'], params['data_num'])
+    sleep(0.5)
     # asyncio.sleep(0.3)
     # print(333333)
     return result
