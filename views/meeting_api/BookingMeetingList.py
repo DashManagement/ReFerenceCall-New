@@ -71,6 +71,7 @@ class BookingMeetingList:
         result = self.getMeetingList()
         data = {'code': 200, 'count': len(result), 'data': result}
         # logger.info(data)
+
         return data
 
     # 查询被拒绝的和未完成的预约列表
