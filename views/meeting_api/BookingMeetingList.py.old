@@ -9,7 +9,6 @@ LastEditors: fanshaoqiang
 # coding=utf-8
 
 # 加载自己创建的包
-import pymongo
 from views.Base import *
 from config.log_config import logger
 
@@ -25,29 +24,15 @@ class BookingMeetingList:
     query_field = ''
 
     # 返回我的/其它的 - 会议记录列表
-    def construct(self, id='', request_type='', data_num=''):
+    async def construct(self, id='', request_type='', data_num=''):
 
         self.id = int(id)
         self.request_type = int(request_type)
         self.data_num = int(data_num)
 
-        # base.awaitVerifyUserReturnInfo(self.id)
-        # 连接数据库
-        self.client = pymongo.MongoClient("localhost", 27017)
-        self.db = self.client["dash_test"]
-
-        # 查看请求者是否存在 - 1
-        condition = {'id':self.id}
-        result = list(self.db.dash_users.find_one(condition))
-        # print(result)
-        print(len(result))
-        if len(result) == 0:
-            return {'code': 201, 'message':'用户不存在'}
-        print(1)
-
         # 查看请求者是否存在
-        # if base.verifyUserReturnInfo(self.id) is False:
-        #     return {'code': 201, 'message': '用户不存在'}
+        if await base.verifyUserReturnInfo(self.id) is False:
+            return {'code': 201, 'message': '用户不存在'}
 
         # 验证请求类型是否合法
         if self.request_type != 1 and self.request_type != 2:
@@ -62,22 +47,23 @@ class BookingMeetingList:
             self.query_field = 'end_id'
 
         # 查看用户列表信息
-        result = self.getMeetingList()
+        result = await self.getMeetingList()
         data = {'code': 200, 'count': len(result), 'data': result}
         # logger.info(data)
         return data
 
     # 查询被拒绝的和未完成的预约列表
-    def getMeetingList(self):
 
-        # dbo.resetInitConfig('test', 'reservation_meeting')
-        logger.info({'field': self.query_field, 'id': self.id, 'request_type': self.request_type})
+    async def getMeetingList(self):
+
+        dbo.resetInitConfig('test', 'reservation_meeting')
+        logger.info({'field': self.query_field, 'id': self.id,
+                    'request_type': self.request_type})
 
         # 获取第一次发起请求的所有数据
         condition = {self.query_field: self.id, 'request_num': 1}
         field = {'session_id': 1, '_id': 0}
-
-        result = list(self.db.dash_reservation_meeting.find(condition, field))
+        result = await dbo.getData(condition, field)
 
         # 如果没有记录则直接返回空的 list 列表
         if len(result) == 0:
@@ -122,8 +108,7 @@ class BookingMeetingList:
             sort = [('id', -1)]
             skip = 0
             num = 100
-            session_id_record = list(self.db.dash_reservation_meeting.find(condition, field).sort("id", pymongo.DESCENDING).limit(num).skip(skip))
-            # session_id_record = dbo.findSort(condition, field, sort, skip, num)
+            session_id_record = await dbo.findSort(condition, field, sort, skip, num)
             # print(session_id_record)
             is_complete = False
             # 查看当前记录是否为未完成

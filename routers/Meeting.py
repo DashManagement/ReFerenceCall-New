@@ -144,7 +144,7 @@ async def requesterRequest(requester_request: RequesterRequestModel):
 
 # 预约会议 - 查看请求 - 我发送的预约请求 my request /被邀请的预约请求 other
 @router.post('/api/meeting/check_request')
-async def checkRequest(check_request: CheckRequestModel):
+def checkRequest(check_request: CheckRequestModel):
     ''' 
     id	            是	string  	    请求者 id
     request_type	是	string	        请求类型：1 我的 my request，2 其它的 other request
@@ -156,15 +156,15 @@ async def checkRequest(check_request: CheckRequestModel):
         "data_num": 1
     }
     '''
-    await asyncio.sleep(0.3)
-    print(111111)
+    # asyncio.sleep(0.3)
+    # print(111111)
     params = check_request.__dict__
     logger.info(params)
     
     test_meeting = Meeting()
-    result = await test_meeting.checkRequest(params['id'], params['request_type'], params['data_num'])
-    await asyncio.sleep(0.3)
-    print(333333)
+    result = test_meeting.checkRequest(params['id'], params['request_type'], params['data_num'])
+    # asyncio.sleep(0.3)
+    # print(333333)
     return result
 
 

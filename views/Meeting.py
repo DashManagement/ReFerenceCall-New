@@ -48,8 +48,8 @@ class Meeting:
 
 
     # 查看预约会议请求
-    async def checkRequest(self, id, request_type, data_num):
-        return await bookingMeetingList.construct(id, request_type, data_num)
+    def checkRequest(self, id, request_type, data_num):
+        return bookingMeetingList.construct(id, request_type, data_num)
 
 
     # 获取会议列表相关操作
