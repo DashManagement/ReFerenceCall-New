@@ -8,7 +8,11 @@ LastEditors: fanshaoqiang
 # coding=utf-8
 
 # 第三方包
+from multiprocessing import Queue
+# from aioredis import create_redis_pool, Redis
+import asyncio
 from fastapi import APIRouter
+from config.log_config import logger
 
 # 自己创建的包
 from views.Meeting import meeting
@@ -22,7 +26,7 @@ from models.MeetingModel import BookingMeetingModel
 from models.MeetingModel import LastCallModel
 from models.MeetingModel import HistoryMeetingScheduleModel
 from models.MeetingModel import CheckMeetingScheduleModel
-from config.log_config import logger
+
 
 # 创建 APIRouter 实例
 router = APIRouter()
@@ -152,11 +156,15 @@ async def checkRequest(check_request: CheckRequestModel):
         "data_num": 1
     }
     '''
-
+    await asyncio.sleep(0.3)
+    print(111111)
     params = check_request.__dict__
     logger.info(params)
+    
     test_meeting = Meeting()
     result = await test_meeting.checkRequest(params['id'], params['request_type'], params['data_num'])
+    await asyncio.sleep(0.3)
+    print(333333)
     return result
 
 
@@ -243,3 +251,11 @@ async def volunteerReplyRequest(volunteer_reply_request: VolunteerReplyRequestMo
     #     params['request_type'],
     #     params['time']
     # )
+
+
+async def que():
+    return 123
+
+# async def log_to_data_base():
+#     await asyncio.sleep(3)
+#     print("log in database")
