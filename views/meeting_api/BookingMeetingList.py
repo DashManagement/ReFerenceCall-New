@@ -33,7 +33,10 @@ class BookingMeetingList:
 
         # base.awaitVerifyUserReturnInfo(self.id)
         # 连接数据库
-        self.client = pymongo.MongoClient("localhost", 27017)
+        # self.client = pymongo.MongoClient("localhost", 27017)
+        self.client = pymongo.MongoClient("118.193.47.247", 8088)
+        # self.client = pymongo.MongoClient("mongodb://dash:dashmima!@118.193.47.247:8088/dash_test")
+        # mongodb://dash:dashmima!@118.193.47.247:8088/dash
         self.db = self.client["dash_test"]
 
         # 查看请求者是否存在 - 1
