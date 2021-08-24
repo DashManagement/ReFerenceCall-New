@@ -23,8 +23,8 @@ from views.meeting_api.CheckMeetingSchedule import checkMeetingSchedule
 class Meeting:
 
 
-    def __init__(self, test_str=1):
-        print(test_str)
+    def __init__(self):
+        pass
 
     # 第一次预约会议
     async def sendRequest(self, id, volunteers_id, request_type, reservation_company_id, reservation_company_name):

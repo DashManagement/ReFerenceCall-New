@@ -157,8 +157,6 @@ def checkRequest(check_request: CheckRequestModel):
         "data_num": 1
     }
     '''
-    # asyncio.sleep(0.3)
-    # print(111111)
     params = check_request.__dict__
     logger.info(params)
     # sleep(0.5)
@@ -166,7 +164,6 @@ def checkRequest(check_request: CheckRequestModel):
     result = test_meeting.checkRequest(params['id'], params['request_type'], params['data_num'])
     # sleep(0.5)
     # asyncio.sleep(0.3)
-    # print(333333)
     return result
 
 

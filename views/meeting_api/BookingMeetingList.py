@@ -37,7 +37,7 @@ class BookingMeetingList:
         self.id = int(id)
         self.request_type = int(request_type)
         self.data_num = int(data_num)
-        
+
         # 连接数远程据库
         self.client = pymongo.MongoClient("mongodb://dash:dashmima!@118.193.47.247:8088/dash_test")
         self.db = self.client.dash_test
@@ -51,16 +51,8 @@ class BookingMeetingList:
         field = {'_id':0}
         result = self.db.dash_users.find_one(condition, field)
 
-        # result = list(self.db.dash_users.find_one(condition))
-        # print(result)
-        print(len(result))
         if len(result) == 0:
             return {'code': 201, 'message':'用户不存在'}
-        print(1)
-
-        # 查看请求者是否存在
-        # if base.verifyUserReturnInfo(self.id) is False:
-        #     return {'code': 201, 'message': '用户不存在'}
 
         # 验证请求类型是否合法
         if self.request_type != 1 and self.request_type != 2:
@@ -175,7 +167,7 @@ class BookingMeetingList:
                     is_complete = True
 
             if is_complete is True:
-                booking_meeting_list.append(session_id_record[0])
+                booking_meeting_list.insert(0, session_id_record[0])
 
         return booking_meeting_list
 
