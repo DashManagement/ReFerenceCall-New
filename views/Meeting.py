@@ -53,8 +53,8 @@ class Meeting:
 
     # 查看预约会议请求
     def checkRequest(self, id, request_type, data_num):
-        aa = BookingMeetingList()
-        return aa.construct(id, request_type, data_num)
+        newBookingMeeting = BookingMeetingList()
+        return newBookingMeeting.construct(id, request_type, data_num)
 
 
     # 获取会议列表相关操作
