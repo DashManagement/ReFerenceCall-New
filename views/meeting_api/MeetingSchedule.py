@@ -71,7 +71,7 @@ class MeetingSchedule:
         skip = 0
         num = 100   # 返回的数量
         result = await dbo.findSort(condition, field, sort, skip, num)
-        
+
         if len(result) > 0:
             for value in result:
                 value['name'] = user_info['name']
@@ -88,7 +88,7 @@ class MeetingSchedule:
         # logger.info(user_meeting_list)
         schedule_list = []
         # 获取 N 天之内的 早9点 到 晚6点 的时间列表
-        time_list = await timeOperation.returnTimeStamp(1)
+        time_list = await timeOperation.returnTimeStamp(10)
         # 将未来 N 天的时候列表 与 会议时间匹配
         for value in time_list:
             tmp_schedule = []
