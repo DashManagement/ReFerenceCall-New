@@ -86,4 +86,4 @@ class Meeting:
 
 
 
-# meeting = Meeting()
+meeting = Meeting()

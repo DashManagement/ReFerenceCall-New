@@ -16,7 +16,7 @@ from fastapi import APIRouter
 from config.log_config import logger
 
 # 自己创建的包
-# from views.Meeting import meeting
+from views.Meeting import meeting
 from views.Meeting import Meeting
 from models.MeetingModel import SendRequestModel
 from models.MeetingModel import VolunteerReplyRequestModel
