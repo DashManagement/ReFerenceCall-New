@@ -16,7 +16,7 @@ from fastapi import APIRouter
 from config.log_config import logger
 
 # 自己创建的包
-from views.Meeting import meeting
+# from views.Meeting import meeting
 from views.Meeting import Meeting
 from models.MeetingModel import SendRequestModel
 from models.MeetingModel import VolunteerReplyRequestModel
@@ -161,10 +161,10 @@ def checkRequest(check_request: CheckRequestModel):
     # print(111111)
     params = check_request.__dict__
     logger.info(params)
-    sleep(0.5)
+    # sleep(0.5)
     test_meeting = Meeting()
     result = test_meeting.checkRequest(params['id'], params['request_type'], params['data_num'])
-    sleep(0.5)
+    # sleep(0.5)
     # asyncio.sleep(0.3)
     # print(333333)
     return result

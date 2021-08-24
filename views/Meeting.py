@@ -12,7 +12,8 @@ from views.meeting_api.MeetingFirstMeetingRequest import meetingFirstMeetingRequ
 from views.meeting_api.MeetingVolunteerReplyRequest import meetingVolunteerReplyRequest
 from views.meeting_api.MeetingRequesterRequest import meetingRequesterRequest
 from views.meeting_api.MeetingList import meetingList
-from views.meeting_api.BookingMeetingList import bookingMeetingList
+# from views.meeting_api.BookingMeetingList import bookingMeetingList
+from views.meeting_api.BookingMeetingList import BookingMeetingList
 from views.meeting_api.MeetingSchedule import meetingSchedule
 from views.meeting_api.LastCall import lastCall
 from views.meeting_api.HistoryMeetingSchedule import historyMeetingSchedule
@@ -21,6 +22,9 @@ from views.meeting_api.CheckMeetingSchedule import checkMeetingSchedule
 # Meeting 会议接口类
 class Meeting:
 
+
+    def __init__(self, test_str=1):
+        print(test_str)
 
     # 第一次预约会议
     async def sendRequest(self, id, volunteers_id, request_type, reservation_company_id, reservation_company_name):
@@ -49,7 +53,8 @@ class Meeting:
 
     # 查看预约会议请求
     def checkRequest(self, id, request_type, data_num):
-        return bookingMeetingList.construct(id, request_type, data_num)
+        aa = BookingMeetingList()
+        return aa.construct(id, request_type, data_num)
 
 
     # 获取会议列表相关操作
@@ -81,4 +86,4 @@ class Meeting:
 
 
 
-meeting = Meeting()
+# meeting = Meeting()

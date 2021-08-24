@@ -24,6 +24,13 @@ class BookingMeetingList:
     data_num = ''
     query_field = ''
 
+    def __init__(self):
+        self.id=''
+        self.request_type=''
+        self.data_num=''
+        self.check_type = ''
+        self.data_num = ''
+
     # 返回我的/其它的 - 会议记录列表
     def construct(self, id='', request_type='', data_num=''):
 
@@ -180,4 +187,4 @@ class BookingMeetingList:
 
 
 
-bookingMeetingList = BookingMeetingList()
+# bookingMeetingList = BookingMeetingList()
