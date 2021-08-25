@@ -219,13 +219,45 @@ class CompanyCurd:
             ],
             'status': 1
         }
+
         field = {'_id': 0}
         result = await dbo.getData(condition, field)
-        print(len(result))
-        if len(result) > 5:
+
+        new_result = await self.updateMeetingStatus(result)
+
+        if len(new_result) > 5:
             return False
 
         return True
+
+
+    # 过滤过期时间并更改数据库过期会议已失效
+    async def updateMeetingStatus(self, result_list):
+
+        # 数据为空则返回空
+        if len(result_list) == 0:
+            return []
+
+        dbo.resetInitConfig('test', 'meeting_list')
+
+        # 获取当前时间戳
+        now_time = common.getTime()
+
+        tmp_result_list = []
+        # 循环查询会议是否过期 并 将过期会议状态更改为 0
+        for value in result_list:
+
+            if int(value['meeting_end_time']) < now_time:
+                condition = {'id':value['id']}
+                set_field = {'$set':{'status': 0}}
+                update_result = await dbo.updateOne(condition, set_field)
+                if update_result.modified_count != 1:
+                    logger.info('error: update status failure')
+            else:
+                tmp_result_list.append(value)
+
+        return tmp_result_list
+
 
     # 计算志愿者会议时间剩余可预约时间
 
@@ -281,7 +313,7 @@ class CompanyCurd:
                 vtmp_del = list(reversed(tmp_del))
                 # 删除索引中的值
                 for value_index in vtmp_del:
-                    print(value_index)
+
                     del value['time_stamp'][value_index], value['time_clock'][
                         value_index], value['time'][value_index], value['check_time'][value_index]
 
