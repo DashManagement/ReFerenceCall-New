@@ -97,10 +97,11 @@ class EmailCaptchaVerify():
         if self.data['code'] != 200:
             return update_user
 
-        update_admin_user = await self.updateUserIsAdminStatus()
-        logger.info(f"update_admin_user is {update_admin_user}")
-        if self.data['code'] != 200:
-            return update_admin_user
+        # 更改用户表 验证人身份是否为公司第一个注册的人 - 这一步 本项目用不上
+        # update_admin_user = await self.updateUserIsAdminStatus()
+        # logger.info(f"update_admin_user is {update_admin_user}")
+        # if self.data['code'] != 200:
+        #     return update_admin_user
 
         # logger.info(123123)
         logger.info(f"self.data is {self.data}")
@@ -245,7 +246,7 @@ class EmailCaptchaVerify():
 
         return self.data
 
-    # 更改用户表 验证人身份是否为公司第一个注册的人
+    # 更改用户表 验证人身份是否为公司第一个注册的人 - 这一步 本项目用不上
 
     async def updateUserIsAdminStatus(self):
 
