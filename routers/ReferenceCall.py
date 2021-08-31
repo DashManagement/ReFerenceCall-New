@@ -35,8 +35,10 @@ async def addCompany(add_company: AddCompanyModel):
     '''
 
     params = add_company.__dict__
-    return await referenceCall.addManyCompany(params['uid'], params['company_id'])
-
+    logger.info(f"params is {params}")
+    result = await referenceCall.addManyCompany(params['uid'], params['company_id'])
+    logger.info(f"result is {result}")
+    return result
 
 # 删除 referencecall 单个公司接口
 @router.post('/api/referencecall/delete_company')
@@ -50,6 +52,7 @@ async def deleteCompany(delete_company: DeleteCompanyModel):
     '''
 
     params = delete_company.__dict__
+    logger.info(params)
     return await referenceCall.deleteCompany(int(params['id']), int(params['uid']))
 
 
