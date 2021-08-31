@@ -58,7 +58,7 @@ class GeneralSearch:
             'search_content': self.search_content,
             'create_time': common.getTime()
         }
-        insert_result = await dbo.insert(document)
+        insert_result = dbo.insert(document)
 
         # 判断添加记录是否成功
         if insert_result.inserted_id is None:

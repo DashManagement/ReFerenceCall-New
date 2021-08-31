@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-07-08 10:16:20
-LastEditTime: 2021-07-08 20:00:00
+LastEditTime: 2021-08-31 20:00:00
 LastEditors: michael
 '''
 
@@ -71,13 +71,20 @@ class Dbo:
     def save(self, document):
         return self.collection.save(document)
 
+    # 查询一条数据，一参
+    def find_one_test(self, condition={}, field={}):
+        # result = self.collection.find(condition, field)
+        # return result.to_list(length=None)
+        aa = self.collection.find_one(condition)
+        return aa
+
     # 更新一条数据
     async def updateOne(self, condition, set_field):
         '''
         :param condition = {'id':self.user_id}
         :param set_field = {'$set':{'is_admin':'0'}}
         '''
-        return await self.collection.update_one(condition, set_field)
+        return self.collection.update_one(condition, set_field)
 
     # 批量更新数据
     async def updateAll(self, condition, set_fields):
@@ -89,7 +96,7 @@ class Dbo:
 
     # 查找一条数据
     async def findOne(self, condition={}, field={'_id':0}):
-        return await self.collection.find_one(condition, field)
+        return self.collection.find_one(condition, field)
 
     # 删除一条数据
     async def deleteOne(self, condition={}):
@@ -127,8 +134,9 @@ class Dbo:
         '''
         :param length 指定获取数据的条数，默认 None 获取全部数据
         '''
-        result = self.collection.find(condition, field)
-        return await result.to_list(length=length)
+        result = list(self.collection.find(condition, field))
+        # return result.to_list(length=length)
+        return result
 
 
     # 获取指定条件数据集合的总数
