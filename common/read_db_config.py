@@ -9,7 +9,7 @@ LastEditors: fanshaoqiang
 
 
 from configparser import ConfigParser
-# import motor.motor_asyncio
+import motor.motor_asyncio
 import pymongo
 
 readConfig = ConfigParser()
@@ -58,8 +58,8 @@ else:
 print(mongo_url)
 # 远程数据库地址 mongoClient 示例
 # emote_client = MongoClient('mongodb://dash:dashmima!@118.193.47.247:8088/dash')
-client = pymongo.MongoClient(mongo_url)
+# client = pymongo.MongoClient(mongo_url)
 # 连接数据库服务器
-# client = motor.motor_asyncio.AsyncIOMotorClient(
-#     mongo_url, retryWrites="false", uuidRepresentation="standard"
-# )
+client = motor.motor_asyncio.AsyncIOMotorClient(
+    mongo_url, retryWrites="false", uuidRepresentation="standard"
+)
