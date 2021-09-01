@@ -148,6 +148,7 @@ class CompanyCurd:
                 'create_time': result['reg_time']
             })
 
+        data['count'] = len(data['data'])
         return data
 
     # 按公司查看 reference_call 的志愿者列表
