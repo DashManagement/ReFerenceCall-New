@@ -53,14 +53,16 @@ async def sendRequest(send_request: SendRequestModel):
     '''
 
     params = send_request.__dict__
-    logger.info(params)
-    return await meeting.sendRequest(
+    logger.info(f"params is {params}")
+    result = await meeting.sendRequest(
         params['id'],
         params['volunteers_id'],
         params['request_type'],
         params['reservation_company_id'],
         params['reservation_company_name']
     )
+    logger.info(f"result is {result}")
+    return result
 
 
 # 预约会议 - 志愿者回复请求
