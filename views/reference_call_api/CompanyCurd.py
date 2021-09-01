@@ -85,7 +85,8 @@ class CompanyCurd:
             'rc_company_icon': company_info['company_icon'],
             'create_time': common.getTime(),
             'update_time': 1,
-            'delete_time': 1
+            'delete_time': 1,
+            'status': 1
         }
 
         insert_result = await dbo.insert(document)
@@ -101,18 +102,15 @@ class CompanyCurd:
 
     async def deleteCompany(self, id, uid):
 
+        now_time = common.getTime()
+
         dbo.resetInitConfig('test', 'reference_call_company')
+        condition = {'id': id, 'uid': uid, 'status': 1}
+        set_field = {'$set':{'status': 0, 'update_time':now_time, 'delete_time':now_time}}
+        update_result = await dbo.updateOne(condition, set_field)
+        if update_result.modified_count != 1:
+            logger.info('error: delete company failure')
 
-        # 删除一条数据
-        condition = {'id': id, 'uid': uid}
-        await dbo.deleteOne(condition)
-
-        # 查询这条数据是否存在
-        condition = {'id': id, 'uid': uid}
-        field = {'_id': 0}
-        if await dbo.findOne(condition, field) is None:
-            return {'code': 200}
-        return {'code': 201, 'message': '删除失败'}
 
     # 志愿者已经添加的公司列表接口
 
@@ -120,7 +118,7 @@ class CompanyCurd:
 
         dbo.resetInitConfig('test', 'reference_call_company')
 
-        condition = {'uid': uid}
+        condition = {'uid': uid, 'status': 1}
         field = {'id': 1, 'rc_company_id': 1, '_id': 0}
         company_list = await dbo.getData(condition, field)
 
@@ -172,7 +170,7 @@ class CompanyCurd:
 
         # 查询志愿者 id 列表
         dbo.resetInitConfig('test', 'reference_call_company')
-        condition = {'rc_company_id': company_id}
+        condition = {'rc_company_id': company_id, 'status': 1}
         field = {'uid': 1, '_id': 0}
 
         company_volunteers_id_list = await dbo.getData(condition, field)

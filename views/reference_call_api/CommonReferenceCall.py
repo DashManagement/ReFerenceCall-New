@@ -45,7 +45,7 @@ class CommonReferenceCall:
     async def userIsAddCompany(self, uid='', company_id=''):
 
         dbo.resetInitConfig('test', 'reference_call_company')
-        condition= {'uid':int(uid), 'rc_company_id':int(company_id)}
+        condition= {'uid':int(uid), 'rc_company_id':int(company_id), 'status': 1}
         field = {'_id':0}
         if await dbo.findOne(condition, field) is None:
             return False
