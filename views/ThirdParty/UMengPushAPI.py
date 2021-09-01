@@ -2,7 +2,7 @@
 Description: 
 Author: fanshaoqiang
 Date: 2021-07-27 11:52:52
-LastEditTime: 2021-08-08 01:00:52
+LastEditTime: 2021-09-01 11:28:13
 LastEditors: fanshaoqiang
 '''
 '''
@@ -63,7 +63,7 @@ class UMengPushAPI():
             title = "New request." if isRequest else "New replay."
             content = "You got a new request." if isRequest else "You got a new replay."
             platForm = PlatForm.platform_IOS if basicUserInfo.get(
-                "platForm") == 1 else PlatForm.platform_Android
+                "platForm") == "1" else PlatForm.platform_Android
             deviceToken = basicUserInfo.get("userToken", None)
             # logger.info(f"send bu id 3333 {deviceToken}")
             if deviceToken:
