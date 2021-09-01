@@ -130,7 +130,9 @@ class CompanyCurd:
 
         data = {}
         data['code'] = 200
+        data['count'] = 0
         data['data'] = []
+        tmp_data = []
 
         for value in company_list:
             dbo.resetInitConfig('test', 'lp_gp')
@@ -139,7 +141,7 @@ class CompanyCurd:
             field = {'_id': 0}
             result = await dbo.findOne(condition, field)
             result['insert_id'] = value['id']
-            data['data'].append({
+            tmp_data.append({
                 'insert_id': value['id'],
                 'company_id': result['company_id'],
                 'company_name': result['fund_name'],
@@ -148,7 +150,7 @@ class CompanyCurd:
                 'create_time': result['reg_time']
             })
 
-        data['count'] = len(data['data'])
+        data['count'] = len(tmp_data)
         return data
 
     # 按公司查看 reference_call 的志愿者列表
