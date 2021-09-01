@@ -110,6 +110,9 @@ class CompanyCurd:
         update_result = await dbo.updateOne(condition, set_field)
         if update_result.modified_count != 1:
             logger.info('error: delete company failure')
+            return {'code': 201, 'message': '删除失败'}
+
+        return {'code': 200}
 
 
     # 志愿者已经添加的公司列表接口
