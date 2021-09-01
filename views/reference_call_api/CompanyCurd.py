@@ -128,10 +128,7 @@ class CompanyCurd:
         if len(company_list) == 0:
             return {'code': 201, 'message': '此用户没有数据'}
 
-        data = {}
-        data['code'] = 200
-        data['count'] = 0
-        data['data'] = []
+        data = {'code':200, 'count':0, 'data':[]}
         tmp_data = []
 
         for value in company_list:
@@ -151,6 +148,7 @@ class CompanyCurd:
             })
 
         data['count'] = len(tmp_data)
+        data['data'] = tmp_data
         return data
 
     # 按公司查看 reference_call 的志愿者列表
