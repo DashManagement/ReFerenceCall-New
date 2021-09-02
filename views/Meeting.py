@@ -14,6 +14,7 @@ from views.meeting_api.MeetingRequesterRequest import meetingRequesterRequest
 from views.meeting_api.MeetingList import meetingList
 # from views.meeting_api.BookingMeetingList import bookingMeetingList
 from views.meeting_api.BookingMeetingList import BookingMeetingList
+from views.meeting_api.IsBookingMeeting import IsBookingMeeting
 from views.meeting_api.MeetingSchedule import meetingSchedule
 from views.meeting_api.LastCall import lastCall
 from views.meeting_api.HistoryMeetingSchedule import historyMeetingSchedule
@@ -55,6 +56,12 @@ class Meeting:
     def checkRequest(self, id, request_type, data_num):
         newBookingMeeting = BookingMeetingList()
         return newBookingMeeting.construct(id, request_type, data_num)
+
+
+    # 预约会议 - 查看是否有未处理的请求
+    def isRequest(self, id, request_type, data_num):
+        isBookingMeeting = IsBookingMeeting()
+        return isBookingMeeting.construct(id, request_type, data_num)
 
 
     # 获取会议列表相关操作
