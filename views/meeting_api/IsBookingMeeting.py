@@ -36,7 +36,7 @@ class IsBookingMeeting:
     
     def returnMeetingCount(self):
 
-        data = {'code':200, 'count':0}
+        data = {'code':200, 'unread_count':0}
 
         if self.request_type == 3:
 
@@ -51,13 +51,13 @@ class IsBookingMeeting:
             if other_result['code'] != 200:
                 return other_result
 
-            data['my_count'] = 0
-            data['other_count'] = 0
+            data['my_unread_count'] = 0
+            data['other_unread_count'] = 0
 
-            data['my_count'] = self.getMyResultCount(my_result)
-            data['other_count'] = self.getOtherResultCount(other_result)
+            data['my_unread_count'] = self.getMyResultCount(my_result)
+            data['other_unread_count'] = self.getOtherResultCount(other_result)
 
-            data['count'] = data['my_count'] + data['other_count']
+            data['unread_count'] = data['my_unread_count'] + data['other_unread_count']
 
             return data
 
@@ -66,11 +66,11 @@ class IsBookingMeeting:
             return result
         
         if self.request_type == 1:
-            data['count'] = self.getMyResultCount(result)
+            data['unread_count'] = self.getMyResultCount(result)
             return data
 
         if self.request_type == 2:
-            data['count'] = self.getOtherResultCount(result)
+            data['unread_count'] = self.getOtherResultCount(result)
             return data
 
 
