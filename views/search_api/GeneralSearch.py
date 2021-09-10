@@ -69,7 +69,7 @@ class GeneralSearch:
 
     # 查看是否有搜索历史记录
     async def isSearchHistory(self):
-        
+
         dbo.resetInitConfig('test', 'search_history_number')
         condition = {'search_content':self.search_content}
         field = {'id':1, '_id':0}

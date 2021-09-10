@@ -137,6 +137,11 @@ class CompanyCurd:
                 value['rc_company_id'])}
             field = {'_id': 0}
             result = await dbo.findOne(condition, field)
+
+            # 有不存在的公司时，跳过本次循环
+            if result is None:
+                continue
+
             result['insert_id'] = value['id']
             tmp_data.append({
                 'insert_id': value['id'],
