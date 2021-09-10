@@ -171,7 +171,7 @@ def checkRequest(check_request: CheckRequestModel):
 
 # 预约会议 - 查看是否有未处理的请求
 @router.post('/api/meeting/is_request')
-def checkRequest(is_request: CheckRequestModel):
+async def checkRequest(is_request: CheckRequestModel):
     '''
     id	            是	string  	    请求者 id
     request_type	是	string	        请求类型：1 我的 my request，2 其它的 other request
