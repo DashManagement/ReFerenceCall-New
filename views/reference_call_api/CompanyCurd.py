@@ -105,7 +105,7 @@ class CompanyCurd:
         now_time = common.getTime()
 
         dbo.resetInitConfig('test', 'reference_call_company')
-        condition = {'rc_company_id': id, 'uid': uid, 'status': 1}
+        condition = {'id': id, 'uid': uid, 'status': 1}
         set_field = {'$set':{'status': 0, 'update_time':now_time, 'delete_time':now_time}}
         update_result = await dbo.updateOne(condition, set_field)
         if update_result.modified_count != 1:
