@@ -111,7 +111,7 @@ class UserRegister:
             'userToken': self.userToken,
             'platForm': self.platForm,
             'localTimeZone': self.localTimeZone,
-            'name': self.account,
+            'name': self.user_name,
             'alias': "-",
             'head_portrait': "-",
             'position': "-",
