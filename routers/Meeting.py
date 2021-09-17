@@ -218,6 +218,15 @@ async def meetingList(meeting_list: MeetingListModel):
 async def meetingSchedule(meeting_schedule: BookingMeetingModel):
     ''' 非测试数据：{ "id": 23 } '''
     params = meeting_schedule.__dict__
+
+    '''判断是否为未注册的用户'''
+    if params['id'] == 'refid':
+        return {'code':200, 'data':{'count':0, 'schedule_list':[]}}
+
+    '''非法的字符串用户'''
+    if params['id'].isdigit() is False:
+        return {'code':302, 'message':'非法用户'}
+
     return await meeting.meetingSchedule(int(params['id']))
 
 
