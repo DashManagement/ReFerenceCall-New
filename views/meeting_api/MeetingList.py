@@ -25,6 +25,13 @@ class MeetingList:
     # 返回我的/其它的 - 会议记录列表
     async def construct(self, id='', request_type='', check_type='', data_num=''):
 
+        if id == "refid":
+            return {
+                "code": 200,
+                "data": [],
+                "message": "no login"
+            }
+
         self.id = int(id)
         self.request_type = int(request_type)
         self.check_type = int(check_type)

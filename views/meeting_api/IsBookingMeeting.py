@@ -24,6 +24,15 @@ class IsBookingMeeting:
     
     def construct(self, id='', request_type='', data_num=''):
 
+        if id == "refid":
+            return {
+                "code": 200,
+                "unread_count": 0,
+                "my_unread_count": 0,
+                "other_unread_count": 0,
+                "message": "no login"
+            }
+
         self.id = int(id)
         self.request_type = int(request_type)
         self.data_num = int(data_num)

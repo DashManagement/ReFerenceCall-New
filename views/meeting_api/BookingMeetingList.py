@@ -34,6 +34,14 @@ class BookingMeetingList:
     # 返回我的/其它的 - 会议记录列表
     def construct(self, id='', request_type='', data_num=''):
 
+        if id == "refid":
+            return {
+                "code": 200,
+                "count": 0,
+                "data": [],
+                "message": "no login"
+            }
+
         self.id = int(id)
         self.request_type = int(request_type)
         self.data_num = int(data_num)
@@ -51,7 +59,7 @@ class BookingMeetingList:
         field = {'_id':0}
         result = self.db.dash_users.find_one(condition, field)
 
-        if len(result) == 0:
+        if result is None or len(result) == 0:
             return {'code': 201, 'message':'用户不存在'}
 
         # 验证请求类型是否合法
