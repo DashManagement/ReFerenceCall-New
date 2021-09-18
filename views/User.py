@@ -11,6 +11,7 @@ LastEditors: fanshaoqiang
 
 from views.user_api.UserRegister import userRegister
 from views.user_api.LoginInfo import loginInfo
+from views.user_api.UpdateUserInfo import updateUserInfo
 
 
 # 用户接口类
@@ -36,6 +37,14 @@ class User:
 
     async def loginInfo(self, account, password):
         return await loginInfo.returnLoginInfo(account, password)
+
+
+    # 更新用户机器的 userToken
+    async def updateUserToken(self, uid, user_token, plat_form):
+        return await updateUserInfo.updateUserToken(uid, user_token, plat_form)
+
+
+
 
 
 user = User()

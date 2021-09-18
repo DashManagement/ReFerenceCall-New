@@ -14,6 +14,7 @@ from fastapi import APIRouter
 from views.User import user
 from models.UserModel import UserRegisterModel
 from models.UserModel import UserLoginModel
+from models.UserModel import UpdateUserTokenModel
 
 # 创建 APIRouter 实例
 router = APIRouter()
@@ -52,3 +53,18 @@ async def loginFirstInfo(login_params: UserLoginModel):
 
     params = login_params.__dict__
     return await user.loginInfo(params['account'], params['password'])
+
+
+# 更新用户机器的 userToken
+@router.post('/api/user/update_user_token')
+async def updateUserToken(update_user_token: UpdateUserTokenModel):
+    ''' 测试数据
+    {
+        "uid":"153",
+        "user_token":"E3F273426BF8170065D8C384C7C2FB6552F19EF495EDF7B11792718B746DA475"
+        "plat_form":"1"
+    }
+    '''
+
+    params = update_user_token.__dict__
+    return await user.updateUserToken(params['uid'], params['user_token'], params['plat_form'])

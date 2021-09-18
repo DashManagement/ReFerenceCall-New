@@ -29,3 +29,10 @@ class UserRegisterModel(BaseModel):
 class UserLoginModel(BaseModel):
     account: EmailStr
     password: str
+
+
+# 更新用户机器的 userToken
+class UpdateUserTokenModel(BaseModel):
+    uid: str
+    user_token: str
+    plat_form: str
