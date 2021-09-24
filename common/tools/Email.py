@@ -21,7 +21,7 @@ class Email:
         mail_user="26152462@qq.com" #    #用户名
         mail_pass="qzmlnvtojjkgbhbb"   #口令 - 腾讯授权
 
-        sender = '26152462@qq.com'      # 发送者邮箱地址
+        sender = 'sfan@dash-management.com'      # 发送者邮箱地址
         receivers = [email]  # 接收邮件，可设置为你的QQ邮箱或者其他邮箱
 
         # 三个参数：第一个为文本内容，第二个 plain 设置文本格式，第三个 utf-8 设置编码
