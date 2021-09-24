@@ -41,7 +41,7 @@ class HistoryMeetingSchedule:
         '''后面会用今日零点的时间戳代替当前时间 common.getTime()，暂时只是测试用的'''
 
         dbo.resetInitConfig('test', 'meeting_list')
-        condition = {'create_time':{'$lt' : today_zero_stamp}, '$or':[
+        condition = {'start_time':{'$lt' : str(today_zero_stamp)}, '$or':[
             {'start_id':self.id},
             {'end_id':self.id}  
         ]}
