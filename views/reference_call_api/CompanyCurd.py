@@ -2,8 +2,8 @@
 @Description:
 @Author: michael
 @Date: 2021-07-27 10:10:20
-LastEditTime: 2021-08-14 21:49:11
-LastEditors: fanshaoqiang
+LastEditTime: 2021-09-26 18:19:00
+LastEditors: michael
 '''
 # coding=utf-8
 
@@ -13,10 +13,10 @@ from config.log_config import logger
 from views.reference_call_api.CommonReferenceCall import commonReferenceCall
 from views.reference_call_api.TimeOperation import timeOperation
 
+
 # reference call 对于 公司的 增/删/改/查/操作
-
-
 class CompanyCurd:
+
 
     # 添加多个公司
     async def addManyCompany(self, uid='', company_id=''):
@@ -37,8 +37,8 @@ class CompanyCurd:
 
         return ret
 
-    # 添加单个 公司
 
+    # 添加单个 公司
     async def addCompany(self, uid='', company_id=''):
 
         # 验证是否有此用户和需要添加的公司 - 返回用户和公司信息
@@ -58,8 +58,8 @@ class CompanyCurd:
 
         return {'code': 200}
 
-    # 添加用户的 reference call 公司
 
+    # 添加用户的 reference call 公司
     async def addUserReferenceCall(self, user_info, company_info):
 
         # 获取自增 ID
@@ -98,8 +98,8 @@ class CompanyCurd:
 
         return True
 
-    # 删除单个公司
 
+    # 删除单个公司
     async def deleteCompany(self, id, uid):
 
         now_time = common.getTime()
@@ -116,7 +116,6 @@ class CompanyCurd:
 
 
     # 志愿者已经添加的公司列表接口
-
     async def companyList(self, uid):
 
         dbo.resetInitConfig('test', 'reference_call_company')
@@ -156,8 +155,8 @@ class CompanyCurd:
         data['data'] = tmp_data
         return data
 
-    # 按公司查看 reference_call 的志愿者列表
 
+    # 按公司查看 reference_call 的志愿者列表
     async def companyVolunteersList(self, id, company_id):
 
         data = {
@@ -214,8 +213,8 @@ class CompanyCurd:
         logger.info(f"data is {data}")
         return {'code': 200, 'data': data}
 
-    # 查看志愿者是否有多余的时间来处理预约会议
 
+    # 查看志愿者是否有多余的时间来处理预约会议
     async def is_reservation(self, volunteers_id):
 
         dbo.resetInitConfig('test', 'meeting_list')
@@ -267,7 +266,6 @@ class CompanyCurd:
 
 
     # 计算志愿者会议时间剩余可预约时间
-
     async def checkVolunteersTime(self, volunteers_id):
 
         # 查看志愿者是否存在
@@ -337,8 +335,8 @@ class CompanyCurd:
 
         return data
 
-    # 查看志愿者处理预约会议的时间
 
+    # 查看志愿者处理预约会议的时间
     async def volunteersTime(self, volunteers_id):
 
         # return await timeOperation.timeList()
@@ -362,6 +360,7 @@ class CompanyCurd:
                 "id": 1,
                 "reservation_company_id": 1,
                 "reservation_company_name": 1,
+                "reservation_company_icon": 1,
                 "session_id": 1,
                 "start_id": 1,
                 "start_user_name": 1,

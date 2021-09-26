@@ -105,6 +105,7 @@ class BookingMeetingList:
                 "id": 1,
                 "reservation_company_id": 1,
                 "reservation_company_name": 1,
+                "reservation_company_icon": 1,
                 "session_id": 1,
                 "start_id": 1,
                 "start_user_name": 1,
