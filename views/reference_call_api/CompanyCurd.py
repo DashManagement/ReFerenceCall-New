@@ -298,7 +298,7 @@ class CompanyCurd:
         # 清除小于今天零时以前的会议
         for value in volunteers_time['all_list']:
             print(value[1])
-            if int(value[1]) <= today_stamp:
+            if int(value[1]) >= today_stamp:
                 new_all_list.append(value)
 
         # 过滤并转换时间戳数据格式
