@@ -2,8 +2,8 @@
 @Description:
 @Author: michael
 @Date: 2020-07-08 10:10:20
-LastEditTime: 2021-08-08 00:13:11
-LastEditors: fanshaoqiang
+LastEditTime: 2021-09-28 20:00:00
+LastEditors: michael
 '''
 # coding=utf-8
 
@@ -15,6 +15,7 @@ from views.User import user
 from models.UserModel import UserRegisterModel
 from models.UserModel import UserLoginModel
 from models.UserModel import UpdateUserTokenModel
+from models.UserModel import IsAnonymousModel
 
 # 创建 APIRouter 实例
 router = APIRouter()
@@ -36,8 +37,6 @@ async def userRegister(register_params: UserRegisterModel):
     '''
 
     params = register_params.__dict__
-    print("in User register the params is ")
-    print(params)
     return await user.userRegister(params)
 
 
@@ -68,3 +67,17 @@ async def updateUserToken(update_user_token: UpdateUserTokenModel):
 
     params = update_user_token.__dict__
     return await user.updateUserToken(params['uid'], params['user_token'], params['plat_form'])
+
+
+# 设置用户是否匿名
+@router.post('/api/user/is_anonymous')
+async def isAnonymous(is_anonymous: IsAnonymousModel):
+    ''' 测试数据
+    {
+        "id": 454,              # 用户 id
+        "is_anonymous": "1"     # 是否匿名：1 是，0 否
+    }
+    '''
+
+    params = is_anonymous.__dict__
+    return await user.isAnonymous(params['id'], params['is_anonymous'])
