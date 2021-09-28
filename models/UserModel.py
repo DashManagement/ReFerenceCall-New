@@ -20,6 +20,7 @@ class UserRegisterModel(BaseModel):
     fund_type: str = 1
     company_address: str = 1
     user_name: str
+    alias: str
     userToken: str
     platForm: str
     localTimeZone: str

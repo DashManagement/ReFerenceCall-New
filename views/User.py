@@ -17,6 +17,7 @@ from views.user_api.UpdateUserInfo import updateUserInfo
 # 用户接口类
 class User:
 
+
     # 注册用户
     async def userRegister(self, register_params):
 
@@ -28,13 +29,14 @@ class User:
             register_params['company_name'],
             register_params['company_address'],
             register_params['user_name'],
+            register_params['alias'],
             register_params['userToken'],
             register_params['platForm'],
             register_params['localTimeZone']
         )
 
-    # 返回登陆后的首页信息
 
+    # 返回登陆后的首页信息
     async def loginInfo(self, account, password):
         return await loginInfo.returnLoginInfo(account, password)
 
@@ -42,6 +44,9 @@ class User:
     # 更新用户机器的 userToken
     async def updateUserToken(self, uid, user_token, plat_form):
         return await updateUserInfo.updateUserToken(uid, user_token, plat_form)
+
+
+
 
 
 

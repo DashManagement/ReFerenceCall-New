@@ -22,6 +22,7 @@ class UserRegister:
     fund_name = ''
     company_address = ''
     user_name = ''
+    alias = ''
     userToken = ''
     platForm = ''
     localTimeZone = ''
@@ -29,7 +30,7 @@ class UserRegister:
     # 返回登陆后的首页信息 lp/gp
 
     async def returnUserRegister(self, account='', password='', email='', fund_type='', fund_name='',
-                                 company_address='', user_name='', userToken='', platForm='', timeZone=''):
+                                 company_address='', user_name='', alias = '', userToken='', platForm='', timeZone=''):
 
         self.account = account
         self.password = password
@@ -38,6 +39,7 @@ class UserRegister:
         self.fund_name = fund_name
         self.company_address = company_address
         self.user_name = user_name
+        self.alias = alias
         self.userToken = userToken
         self.platForm = platForm
         self.localTimeZone = timeZone
@@ -112,7 +114,7 @@ class UserRegister:
             'platForm': self.platForm,
             'localTimeZone': self.localTimeZone,
             'name': self.user_name,
-            'alias': "-",
+            'alias': self.alias,
             'head_portrait': "-",
             'position': "-",
             'working_fixed_year': "-",
@@ -146,10 +148,15 @@ class UserRegister:
             'id': get_id_result['update_id'],
             'account': self.account,
             'user_name': self.user_name,
+            'alias': self.alias,
             'fund_name': self.fund_name
         }
 
         return data
+
+
+
+
 
 
 userRegister = UserRegister()
