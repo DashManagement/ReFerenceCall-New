@@ -267,6 +267,59 @@ class CompanyCurd:
 
     # 计算志愿者会议时间剩余可预约时间
     async def checkVolunteersTime(self, volunteers_id):
+        
+        # 查看志愿者是否存在
+        user_info = await base.verifyUserReturnInfo(volunteers_id)
+        if user_info is False:
+            return {'code': 201, 'message': '用户不存在'}
+
+        time_list = await timeOperation.timeList()
+        volunteers_time = await self.volunteersTime(volunteers_id)
+        # return time_list
+        # return volunteers_time
+
+        # 如果返回的长度等于 0，直接返回以下数据结构
+        if volunteers_time['all_list'] == 0:
+            return {
+                'code':200, 
+                'data': {
+                    'user_info': user_info,
+                    'volunteers': {
+                        'count': 0,
+                        'volunteers_time_list': []
+                    }
+                }
+            }
+
+        # 今天开始时间戳
+        today_stamp = common.getTimeStamp()
+
+        new_all_list = []
+        # 清除小于今天零时以前的会议
+        for value in volunteers_time['all_list']:
+            print(value[1])
+            if int(value[1]) <= today_stamp:
+                new_all_list.append(value)
+
+        # 过滤并转换时间戳数据格式
+        time_list = await timeOperation.newCalculatedTimeCycle(new_all_list)
+
+        data = {
+            'code': 200,
+            'data': {
+                'user_info': user_info,
+                'volunteers': {
+                    'count': len(time_list),
+                    'volunteers_time_list': time_list
+                }
+            }
+        }
+
+        return data
+
+
+    # 计算志愿者会议时间剩余可预约时间
+    async def checkRemainingVolunteersTime(self, volunteers_id):
 
         # 查看志愿者是否存在
         user_info = await base.verifyUserReturnInfo(volunteers_id)
@@ -397,12 +450,14 @@ class CompanyCurd:
         # 将已经预约的会议 和 正在进行预约当中的会议(并且志愿者已经回复的预约时间)分成两个列表
         meeting_list = []
         booking_list = []
+        all_list = []
         for value_two in session_id_record:
             value_two = value_two[0]
 
-            '''添加已经预约的议列表'''
+            '''添加已经预约的会议列表'''
             if value_two['is_create_meeting'] == 1:
                 meeting_list.append(value_two)
+                all_list.append(value_two['requester_agree_time'])
 
             '''添加正在进行中的预约，并且状态为有效，并且者愿者已经回复了时间可用时间'''
             if value_two['is_create_meeting'] == 0 and value_two['status'] == 1 and value_two['request_num'] == 2:
@@ -413,10 +468,11 @@ class CompanyCurd:
                     value_1 = list(tmp_1.values())
                     for value_2 in value_1[0]:
                         value_two['time_stamp'].append(value_2)
+                        all_list.append(value_2)
 
                 booking_list.append(value_two)
 
-        return {'meeting_list': meeting_list, 'booking_list': booking_list}
+        return {'all_list':all_list, 'meeting_list': meeting_list, 'booking_list': booking_list}
 
 
 

@@ -52,9 +52,14 @@ class ReferenceCall:
         return await companyCurd.companyVolunteersList(id, company_id)
 
 
-    # 志愿者会议时间剩余可预约时间
+    # 志愿者会议时间 - 已经被预约的时间
     async def volunteersTime(self, id):
         return await companyCurd.checkVolunteersTime(id)
+
+
+    # 志愿者会议时间 - 剩余可预约时间
+    async def remainingVolunteersTime(self, id):
+        return await companyCurd.checkRemainingVolunteersTime(id)
 
 
     def testCreateZoomMeeting(self):

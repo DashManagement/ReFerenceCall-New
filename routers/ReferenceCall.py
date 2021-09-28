@@ -98,3 +98,13 @@ async def volunteersTime(volunteers_time: VolunteersTimeModel):
     '''
     params = volunteers_time.__dict__
     return await referenceCall.volunteersTime(int(params['id']))
+
+
+# 查看志愿者可预约的时间
+@router.post('/api/referencecall/remaining_volunteers_time')
+async def remainingVolunteersTime(volunteers_time: VolunteersTimeModel):
+    '''
+    非测试数据：{"id": 23} 
+    '''
+    params = volunteers_time.__dict__
+    return await referenceCall.remainingVolunteersTime(int(params['id']))
