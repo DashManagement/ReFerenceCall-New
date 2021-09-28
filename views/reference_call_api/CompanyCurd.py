@@ -194,7 +194,7 @@ class CompanyCurd:
                 {'id': {'$ne': int(id)}}
             ]}
             field = {'id': 1, 'is_reservation': 1, 'name': 1, 'company_name': 1, 'company_icon': 1,
-                     'company_introduction': 1, 'create_time': 1, 'update_time': 1, '_id': 0}
+                     'company_introduction': 1, 'is_anonymous':1, 'create_time': 1, 'update_time': 1, '_id': 0}
             result = await dbo.findOne(condition, field)
 
             '''如果没有记录则跳过本次循环'''
