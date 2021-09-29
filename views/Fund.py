@@ -30,9 +30,11 @@ class Fund:
             '''将基金列表加入 redis 缓存(转换成字符串 str)，将返回数据'''
             fund_data = await fundList.returnFundList(uid)
             await redis.set('fund_data',str(fund_data))
+            logger.info('fund_list is not redis')
             return fund_data
         else:
             '''将缓存中的基金列表字符串 str 转换为 dict 数据类型'''
+            logger.info('fund_list is redis')
             return eval(fund_data)
 
 
