@@ -57,7 +57,7 @@ class TimeOperation:
 
             # 组合查看时间段 - 以小时为区间 如：9点到10点查示方式为 "09:00-10:00",
             tmp_str = str(new_time_1) + '-' + str(new_time_2)
-            tmp['check_time'] = tmp_str
+            tmp['check_time'] = [tmp_str]
 
             tmp_data.append(tmp)
 
