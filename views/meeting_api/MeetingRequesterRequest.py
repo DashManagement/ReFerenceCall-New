@@ -77,10 +77,8 @@ class MeetingRequesterRequest:
 
             # 请求者已经 同意/拒绝 会议，将本次 session_id 相关的记录 status 都改为 0
             await self.updateSessionId()
-            logger.info(
-                f" 用户{self.id} 同意 志愿者{two_request_result['end_id']} 给的时间里面的一个")
-            await umengPushApi.sendUnicastByUserID(
-                self.id, two_request_result['end_id'], True)
+            logger.info(f" 用户{self.id} 同意 志愿者{two_request_result['end_id']} 给的时间里面的一个")
+            await umengPushApi.sendUnicastByUserID(self.id, two_request_result['end_id'], True)
             return {'code': 200}
 
         if self.request_type == 5:
@@ -90,10 +88,8 @@ class MeetingRequesterRequest:
             if result['code'] == 200:
                 # 请求者已经 同意/拒绝 会议，将本次 session_id 相关的记录 status 都改为 0
                 await self.updateSessionId()
-            logger.info(
-                f"  用户{self.id} 拒绝  志愿者{two_request_result['end_id']} 的时间")
-            await umengPushApi.sendUnicastByUserID(
-                self.id, two_request_result['end_id'], True)
+            logger.info(f"  用户{self.id} 拒绝  志愿者{two_request_result['end_id']} 的时间")
+            await umengPushApi.sendUnicastByUserID(self.id, two_request_result['end_id'], True)
             return result
 
     # 请求者回复 - 接受志愿者预约时间
@@ -111,6 +107,7 @@ class MeetingRequesterRequest:
             'id': get_id_result['update_id'],
             'reservation_company_id': two_request_result['reservation_company_id'],
             'reservation_company_name': two_request_result['reservation_company_name'],
+            'reservation_company_icon': two_request_result['reservation_company_icon'],
             'session_id': self.session_id,
             'start_id': self.id,
             'start_user_name': two_request_result['start_user_name'],
@@ -164,6 +161,7 @@ class MeetingRequesterRequest:
             'id': get_id_result['update_id'],
             'reservation_company_id': two_request_result['reservation_company_id'],
             'reservation_company_name': two_request_result['reservation_company_name'],
+            'reservation_company_icon': two_request_result['reservation_company_icon'],
             'session_id': self.session_id,
             'start_id': self.id,
             'start_user_name': two_request_result['start_user_name'],
@@ -291,6 +289,7 @@ class MeetingRequesterRequest:
         logger.info(f"zoom 创建成功 {meetingInfo.get('Meeting_ID')}")
         dbo.resetInitConfig('test', 'meeting_list')
         logger.info(f"meetingInfo is {meetingInfo.get('Meeting_Pwd')}")
+
         document = {
 
             'id': get_id_result['update_id'],

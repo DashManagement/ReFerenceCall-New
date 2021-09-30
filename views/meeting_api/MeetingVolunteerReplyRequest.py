@@ -53,9 +53,9 @@ class MeetingVolunteerReplyRequest:
 
         if self.request_type == 2:
             logger.info(f"first_request_result is {first_request_result}")
-            # logger.info(f" 志愿者{first_request_result['end_id']} 同意  用户{first_request_result['start_id']} 的 refCall")
+            logger.info(f" 志愿者{first_request_result['end_id']} 同意  用户{first_request_result['start_id']} 的 refCall")
             
-            # await umengPushApi.sendUnicastByUserID(first_request_result['start_id'], first_request_result['end_id'], False)
+            await umengPushApi.sendUnicastByUserID(first_request_result['start_id'], first_request_result['end_id'], False)
             return await self.returnBookingTime(first_request_result)
 
         if self.request_type == 4:
@@ -176,6 +176,7 @@ class MeetingVolunteerReplyRequest:
             'id': get_id_result['update_id'],
             'reservation_company_id': first_request_result['reservation_company_id'],
             'reservation_company_name': first_request_result['reservation_company_name'],
+            'reservation_company_icon': first_request_result['reservation_company_icon'],
             'session_id': self.session_id,
             'start_id': first_request_result['start_id'],
             'start_user_name': first_request_result['start_user_name'],
