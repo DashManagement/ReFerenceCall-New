@@ -14,9 +14,8 @@ from views.Base import *
 from views.ThirdParty.UMengPushAPI import umengPushApi
 from config.log_config import logger
 
+
 # meeting 预约会议 - 志愿者回复请求
-
-
 class MeetingVolunteerReplyRequest:
 
     id = ''
@@ -44,6 +43,7 @@ class MeetingVolunteerReplyRequest:
         if is_perform_step_two['action'] is False:
             return is_perform_step_two['data']
 
+        # 查询已经预约成功的会议中是否有未结束的会议 - 如果有则返回需要先完成已经预约成功的会议
         if await self.isUnexecutedMeeting() is False:
             return {'code': 202, 'message': '请先完成已经预约的会议'}
 
@@ -53,10 +53,9 @@ class MeetingVolunteerReplyRequest:
 
         if self.request_type == 2:
             logger.info(f"first_request_result is {first_request_result}")
-            logger.info(
-                f" 志愿者{first_request_result['end_id']} 同意  用户{first_request_result['start_id']} 的 refCall")
-            await umengPushApi.sendUnicastByUserID(
-                first_request_result['start_id'], first_request_result['end_id'], False)
+            # logger.info(f" 志愿者{first_request_result['end_id']} 同意  用户{first_request_result['start_id']} 的 refCall")
+            
+            # await umengPushApi.sendUnicastByUserID(first_request_result['start_id'], first_request_result['end_id'], False)
             return await self.returnBookingTime(first_request_result)
 
         if self.request_type == 4:
@@ -123,6 +122,7 @@ class MeetingVolunteerReplyRequest:
             'id': get_id_result['update_id'],
             'reservation_company_id': first_request_result['reservation_company_id'],
             'reservation_company_name': first_request_result['reservation_company_name'],
+            'reservation_company_icon': first_request_result['reservation_company_icon'],
             'session_id': self.session_id,
             'start_id': first_request_result['start_id'],
             'start_user_name': first_request_result['start_user_name'],
@@ -144,6 +144,7 @@ class MeetingVolunteerReplyRequest:
             'national_area_code': "-",
             'national_area_name': "-",
             'request_num': 2,
+            'volunteer_reply_number': 1,
             'is_create_meeting': 0,
             'status': 1,
             "create_time": common.getTime(),
@@ -160,8 +161,8 @@ class MeetingVolunteerReplyRequest:
 
         return {'code': 200}
 
-    # 志愿者回复 - 拒绝
 
+    # 志愿者回复 - 拒绝
     async def returnRefused(self, first_request_result):
 
         # 获取自增 ID
@@ -212,8 +213,8 @@ class MeetingVolunteerReplyRequest:
 
         return {'code': 200}
 
-    # 查询 预约会议过程中的 - 会话id记录 session_id 和志愿者id 是否存在，并且已经执行到第二步 - 等待志愿者回复
 
+    # 查询 预约会议过程中的 - 会话id记录 session_id 和志愿者id 是否存在，并且已经执行到第二步 - 等待志愿者回复
     async def isPerformStepTwo(self):
 
         data = {'action': '', 'data': ''}
@@ -254,8 +255,8 @@ class MeetingVolunteerReplyRequest:
         data['action'] = True
         return data
 
-    # 查询 请求者第一次发送请求时的预议会议记录
 
+    # 查询 请求者第一次发送请求时的预议会议记录
     async def findFirstMeetingRequest(self):
 
         dbo.resetInitConfig('test', 'reservation_meeting')
@@ -269,8 +270,8 @@ class MeetingVolunteerReplyRequest:
 
         return result
 
-    # 查询已经预约成功的会议中是否有未结束的会议 - 如果有则返回需要先完成已经预约成功的会议
 
+    # 查询已经预约成功的会议中是否有未结束的会议 - 如果有则返回需要先完成已经预约成功的会议
     async def isUnexecutedMeeting(self):
 
         dbo.resetInitConfig('test', 'meeting_list')
@@ -284,8 +285,8 @@ class MeetingVolunteerReplyRequest:
 
         return True
 
-    # 志愿者已经 同意/拒绝 会议，将本次 session_id 相关的记录 status 都改为 0
 
+    # 志愿者已经 同意/拒绝 会议，将本次 session_id 相关的记录 status 都改为 0
     async def updateSessionId(self):
 
         dbo.resetInitConfig('test', 'reservation_meeting')
