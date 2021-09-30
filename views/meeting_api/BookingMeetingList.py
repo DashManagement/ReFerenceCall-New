@@ -178,6 +178,26 @@ class BookingMeetingList:
             if is_complete is True:
                 booking_meeting_list.insert(0, session_id_record[0])
 
+        # 添加用户的匿名字段到数据中
+        for value in booking_meeting_list:
+
+            if self.request_type == 1:
+                search_user_id = value['end_id']
+
+            if self.request_type == 2:
+                search_user_id = value['start_id']
+
+            condition = {'id': search_user_id}
+            field = {'is_anonymous':1, '_id':0}
+            result = self.db.dash_users.find_one(condition, field)
+
+            if result is None or len(result) == 0:
+                return {'code': 209, 'message':'用户是否匿名的属性不存在'}
+
+            # 增加匿名属性字段
+            value['is_anonymous'] = result['is_anonymous']
+
+
         return booking_meeting_list
 
 
