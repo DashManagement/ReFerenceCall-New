@@ -19,6 +19,7 @@ from routers import ReferenceCall
 from routers import Search
 from routers import Meeting
 from routers import DefaultConfig
+from routers import RedisOperation
 
 from starlette.middleware.cors import CORSMiddleware
 
@@ -77,3 +78,6 @@ app.include_router(Meeting.router)
 
 # APP 默认配置路由
 app.include_router(DefaultConfig.router)
+
+# Redis 自用缓存调试路由
+app.include_router(RedisOperation.router)
