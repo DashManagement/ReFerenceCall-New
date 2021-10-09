@@ -2,9 +2,8 @@
 @Description:
 @Author: michael
 @Date: 2021-08-02 10:16:20
-
-LastEditTime: 2021-08-14 14:47:01
-LastEditors: fanshaoqiang
+LastEditTime: 2021-10-08 80:00:00
+LastEditors: michael
 '''
 
 # coding=utf-8
@@ -49,26 +48,75 @@ class MeetingVolunteerReplyRequest:
 
         first_request_result = await self.findFirstMeetingRequest()
         if first_request_result is False:
-            return {'code': 202, 'message': '没有被请求记录'}
+            return {'code': 203, 'message': '没有被请求记录'}
 
+        # 查看是否已经有请求者或志愿者的回复信息
+        volunteer_result = await self.checkVolunteerLastRecord()
+
+        # 请求者或志愿者回复预约时间
         if self.request_type == 2:
-            logger.info(f"first_request_result is {first_request_result}")
-            logger.info(f" 志愿者{first_request_result['end_id']} 同意  用户{first_request_result['start_id']} 的 refCall")
-            
-            await umengPushApi.sendUnicastByUserID(first_request_result['start_id'], first_request_result['end_id'], False)
-            return await self.returnBookingTime(first_request_result)
 
+            # 判断志愿者是否为第一次回复
+            if len(volunteer_result) < 1:
+
+                # 如果第一次回复的是第一次预约的发起人，将提示错误
+                if first_request_result['start_id'] == self.id:
+                    return {'code':301, 'message':'第一次回复的不能是预约发起的用户'}
+
+                logger.info(f"first_request_result is {first_request_result}")
+                logger.info(f" 志愿者{first_request_result['end_id']} 同意  用户{first_request_result['start_id']} 的 refCall")            
+                # await umengPushApi.sendUnicastByUserID(first_request_result['start_id'], first_request_result['end_id'], False)
+                return await self.returnBookingTime(first_request_result, 1)
+
+            else:
+
+                '''关于传入 id 错误的判断'''
+                if volunteer_result[0]['last_id'] == self.id:
+
+                    if volunteer_result[0]['start_id'] == self.id:
+                        return {'code':302, 'message':'请求者已经回复过志愿者预约时间'}
+
+                    if volunteer_result[0]['end_id'] == self.id:
+                        return {'code':303, 'message':'志愿者已经回复过请求者预约时间'}
+
+                '''添加多次回复记录'''
+                logger.info(f"first_request_result is {first_request_result}")
+                logger.info(f" 志愿者{first_request_result['end_id']} 同意  用户{first_request_result['start_id']} 的 refCall")
+                # await umengPushApi.sendUnicastByUserID(first_request_result['start_id'], first_request_result['end_id'], False)
+                return await self.returnBookingTime(first_request_result, volunteer_result[0]['discuss_number']+1 )
+
+        # 请求者或者志愿者拒绝会议邀请
         if self.request_type == 4:
+
+            # 判断是否为未曾回复过的预约
+            if len(volunteer_result) < 1:
+                return {'code':302, 'message': '错误，没有回复记录！'}
+
+            # 如果拒绝的是最后一条记录是回复者发送，返回错误提示
+            if volunteer_result[0]['last_id'] == self.id:
+                return {'code':301, 'message':'拒绝的不能是最后一次回复的用户'}
 
             result = await self.returnRefused(first_request_result)
             if result['code'] == 200:
                 # 志愿者已经 同意/拒绝 会议，将本次 session_id 相关的记录 status 都改为 0
                 await self.updateSessionId()
-            logger.info(
-                f" 志愿者{first_request_result['end_id']} 拒绝  用户{first_request_result['start_id']} 的 refCall")
-            await umengPushApi.sendUnicastByUserID(
-                first_request_result['start_id'], first_request_result['end_id'], False)
+
+            logger.info(f"请求者或志愿者{first_request_result['end_id']} 拒绝  用户{first_request_result['start_id']} 的 refCall")
+            # await umengPushApi.sendUnicastByUserID(first_request_result['start_id'], first_request_result['end_id'], False)
+
             return result
+
+
+    # 查看是否已经有请求者或志愿者的回复信息
+    async def checkVolunteerLastRecord(self):
+
+        dbo.resetInitConfig('test','reservation_meeting')
+        condition = {'session_id':self.session_id, 'request_type':2, 'request_num':2}
+        field = {'_id':0}
+        sort = [('create_time', -1)]
+        skip = 0
+        num = 1
+        return await dbo.findSort(condition, field, sort, skip, num)
 
 
     # 按时间戳大小重新排列时间
@@ -109,7 +157,7 @@ class MeetingVolunteerReplyRequest:
 
 
     # 志愿者回复 - 预约时间
-    async def returnBookingTime(self, first_request_result):
+    async def returnBookingTime(self, first_request_result, discuss_number):
         print(first_request_result)
         # 获取自增 ID
         get_id_result = await dbo.getNextIdtoUpdate('reservation_meeting', db='test')
@@ -144,7 +192,8 @@ class MeetingVolunteerReplyRequest:
             'national_area_code': "-",
             'national_area_name': "-",
             'request_num': 2,
-            'volunteer_reply_number': 1,
+            'discuss_number': discuss_number,
+            'last_id':self.id,
             'is_create_meeting': 0,
             'status': 1,
             "create_time": common.getTime(),
@@ -157,7 +206,24 @@ class MeetingVolunteerReplyRequest:
 
         # 判断添加记录是否成功
         if insert_result.inserted_id is None:
-            return {'code': 202, 'message': '志愿者回复请求失败'}
+            return {'code': 204, 'message': '志愿者回复请求失败'}
+
+        return {'code': 200}
+
+
+    # 请求者和志愿者多次修改回复预约时间
+    async def returnUpdateBookingTime(self):
+
+        dbo.resetInitConfig('test', 'reservation_meeting')
+
+        condition = {'session_id':self.session_id, 'request_type':self.request_type, 'request_num':2}
+        set_fields = {'$set':{'last_id':self.id, 'update_time':common.getTime()}, '$inc':{'discuss_number':1}}
+
+        update_result = await dbo.updateOne(condition, set_fields)
+
+        if update_result.modified_count != 1:
+            logger.info('error: update volunteer_reply_request failure')
+            return {'code': 205, 'message': '多次回复请求失败'}
 
         return {'code': 200}
 
@@ -210,7 +276,7 @@ class MeetingVolunteerReplyRequest:
 
         # 判断添加记录是否成功
         if insert_result.inserted_id is None:
-            return {'code': 203, 'message': '志愿者拒绝请求失败'}
+            return {'code': 206, 'message': '志愿者拒绝请求失败'}
 
         return {'code': 200}
 
@@ -234,24 +300,24 @@ class MeetingVolunteerReplyRequest:
 
             data['action'] = False
             if result[0]['is_create_meeting'] == 1:
-                data['data'] = {'code': 201,
+                data['data'] = {'code': 207,
                                 'message': '已经成功创建会议，不能再次回复请求者预约时间'}
                 return data
 
             if result[0]['is_create_meeting'] == 2:
-                data['data'] = {'code': 204, 'message': '预约会议已经被拒绝，志愿者不能再次操作'}
+                data['data'] = {'code': 208, 'message': '预约会议已经被拒绝，志愿者不能再次操作'}
                 return data
 
         # 查看是否有志愿者回复记录
-        condition = {'end_id': self.id, 'session_id': self.session_id,
-                     'request_num': 2, 'is_create_meeting': 0}
-        field = {'_id': 0}
-        result = await dbo.findOne(condition, field)
+        # condition = {'end_id': self.id, 'session_id': self.session_id,
+        #              'request_num': 2, 'is_create_meeting': 0}
+        # field = {'_id': 0}
+        # result = await dbo.findOne(condition, field)
 
-        if result is not None:
-            data['action'] = False
-            data['data'] = {'code': 202, 'message': '请先执行未完成的预约会议记录流程'}
-            return data
+        # if result is not None:
+        #     data['action'] = False
+        #     data['data'] = {'code': 202, 'message': '请先执行未完成的预约会议记录流程'}
+        #     return data
 
         data['action'] = True
         return data
@@ -261,8 +327,10 @@ class MeetingVolunteerReplyRequest:
     async def findFirstMeetingRequest(self):
 
         dbo.resetInitConfig('test', 'reservation_meeting')
-        condition = {'end_id': self.id, 'session_id': self.session_id,
-                     'request_num': 1, 'is_create_meeting': 0, 'status': 1}
+        condition = {'$or':[
+            {'start_id': self.id, 'session_id': self.session_id,'request_num': 1, 'is_create_meeting': 0, 'status': 1},
+            {'end_id': self.id, 'session_id': self.session_id,'request_num': 1, 'is_create_meeting': 0, 'status': 1}
+        ]}
         field = {'_id': 0}
         result = await dbo.findOne(condition, field)
 
@@ -312,6 +380,10 @@ class MeetingVolunteerReplyRequest:
             time_list.append({value['zero_stamp']:tmp_list})
 
         self.time = time_list
+
+
+
+
 
 
 
