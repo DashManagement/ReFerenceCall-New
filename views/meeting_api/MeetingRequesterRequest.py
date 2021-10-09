@@ -281,7 +281,7 @@ class MeetingRequesterRequest:
         if get_id_result['action'] == False:
             logger.info('获取 id 自增失败')
             return {'code': 209, 'message': '获取 id 自增失败'}
-        meetingModel = await self.getMeetingModelFromTwoResult(two_request_result, selectTime)
+        meetingModel = await self.getMeetingModelFromTwoResult(two_request_result, str(selectTime))
         meetingInfo = zoomapi.createMeeting(meetingModel)
         if meetingInfo == None:
             logger.info('Zoom创建会议失败')
