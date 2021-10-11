@@ -64,9 +64,14 @@ class MeetingRequesterRequest:
         if two_request_result is False:
             return {'code': 203, 'message': '没有志愿者回复记录'}
 
+        # 这边需要修改成和 volunteerReplyRequest 接口类型的，同意或者拒绝的判断条件
+        # 判断同意或拒绝者是否为上一次预约会议时间的人，不能同意或拒绝自己发出的会议预约邀请
+        if two_request_result['last_id'] == self.id:
+            return {'code': 209, 'message':'不能同意或拒绝自己发出的会议预约邀请'}
+
         if self.request_type == 3:
             self.time = selectTime
-            
+
             # 添加请求者同意记录
             if await self.acceptBookingTime(two_request_result) is False:
                 return {'code': 204, 'message': '请求者接受志愿者预约时间失败'}
@@ -130,6 +135,7 @@ class MeetingRequesterRequest:
             'national_area_code': "-",
             'national_area_name': "-",
             'request_num': 3,
+            'last_id': self.id,
             'is_create_meeting': 1,
             'status': 0,
             "create_time": common.getTime(),
@@ -183,6 +189,7 @@ class MeetingRequesterRequest:
             'national_area_code': "-",
             'national_area_name': "-",
             'request_num': 3,
+            'last_id': self.id,
             'is_create_meeting': 2,
             'status': 0,
             "create_time": common.getTime(),
@@ -239,24 +246,37 @@ class MeetingRequesterRequest:
         data['action'] = True
         return data
 
-    # 查询 志愿者是否有回复预约会议时间的记录
 
+    # 查询 志愿者是否有回复预约会议时间的记录
     async def volunteersRequestTwo(self):
 
         dbo.resetInitConfig('test', 'reservation_meeting')
-        condition = {'start_id': self.id, 'session_id': self.session_id,
-                     'request_num': 2, 'is_create_meeting': 0, 'status': 1}
-        field = {'_id': 0}
-        result = await dbo.findOne(condition, field)
-        logger.info(f"condition is {condition}")
 
-        if result is None:
+        condition = {'session_id': self.session_id,'request_num': 2, 'is_create_meeting': 0, 'status': 1}
+        field = {'_id':0}
+        sort = [('create_time', -1)]
+        skip = 0
+        num = 1
+        result = await dbo.findSort(condition, field, sort, skip, num)
+
+        if len(result) < 1:
             return False
+        
+        return result[0]
 
-        return result
+        # dbo.resetInitConfig('test', 'reservation_meeting')
+        # condition = {'start_id': self.id, 'session_id': self.session_id,'request_num': 2, 'is_create_meeting': 0, 'status': 1}
+        # field = {'_id': 0}
+        # result = await dbo.findOne(condition, field)
+        # logger.info(f"condition is {condition}")
+
+        # if result is None:
+        #     return False
+
+        # return result
+
 
     # 查询已经预约成功的会议中是否有未结束的会议 - 如果有则返回需要先完成已经预约成功的会议
-
     async def isUnexecutedMeeting(self):
 
         # await dbo.insert(document)
