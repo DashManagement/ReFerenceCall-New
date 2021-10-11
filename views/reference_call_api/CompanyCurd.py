@@ -486,7 +486,20 @@ class CompanyCurd:
         # 查询 uid 用户的 session_id 相关的全部记录
         dbo.resetInitConfig('test', 'reservation_meeting')
         condition = {'session_id': int(session_id)}
-        field = {'_id':0}
+        field = {
+            'id':1,
+            'reservation_company_id':1,
+            'reservation_company_name':1,
+            'session_id':1,
+            'start_id':1,
+            'end_id':1,
+            'request_type':1,
+            'request_num':1,
+            'last_id':1,
+            'is_create_meeting':1,
+            'status':1,
+            '_id':0
+        }
         result = await dbo.getData(condition, field)
 
         if result is None:
