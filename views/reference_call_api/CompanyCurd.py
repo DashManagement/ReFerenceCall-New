@@ -475,6 +475,24 @@ class CompanyCurd:
         return {'all_list':all_list, 'meeting_list': meeting_list, 'booking_list': booking_list}
 
 
+    # 查看当前用户的 session_id 相关的 reference 的历史记录
+    async def checkReferenceHistoryList(self, uid, session_id):
+
+        # 查看用户是否存在
+        user_info = await base.verifyUserReturnInfo(int(uid))
+        if user_info is False:
+            return {'code': 201, 'message': '用户不存在'}
+
+        # 查询 uid 用户的 session_id 相关的全部记录
+        dbo.resetInitConfig('test', 'reservation_meeting')
+        condition = {'session_id': int(session_id)}
+        field = {'_id':0}
+        result = await dbo.getData(condition, field)
+
+        if result is None:
+            return {'code': 200, 'count':0, 'data':[]}
+
+        return {'code': 200, 'count':len(result), 'data':result}
 
 
 

@@ -62,13 +62,16 @@ class ReferenceCall:
         return await companyCurd.checkRemainingVolunteersTime(id)
 
 
+    # 测试，暂时无用
     def testCreateZoomMeeting(self):
         meetingTest = MeetingModel(
             fundName="123", fromUserName="fanshaoqiang", toUserName="123")
         zoomapi.createMeeting(meetingTest)
 
 
-
+    # 查看当前用户的 session_id 相关的 reference 的历史记录
+    async def checkReferenceHistoryList(self, uid, session_id):
+        return await companyCurd.checkReferenceHistoryList(uid, session_id)
 
 
 
