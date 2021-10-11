@@ -497,6 +497,7 @@ class CompanyCurd:
             'end_user_name':1,
             'request_type':1,
             'request_num':1,
+            'discuss_number':1,
             'last_id':1,
             'is_create_meeting':1,
             'status':1,
