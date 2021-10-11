@@ -500,6 +500,7 @@ class CompanyCurd:
             'last_id':1,
             'is_create_meeting':1,
             'status':1,
+            'create_time':1,
             '_id':0
         }
         result = await dbo.getData(condition, field)
