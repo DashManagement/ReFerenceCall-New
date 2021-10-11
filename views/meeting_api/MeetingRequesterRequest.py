@@ -317,7 +317,7 @@ class MeetingRequesterRequest:
             'reservation_company_name': two_request_result['reservation_company_name'],
             'reservation_company_icon': two_request_result['reservation_company_icon'],
             'session_id': self.session_id,
-            'start_id': self.id,
+            'start_id': two_request_result['start_id'],
             'start_user_name': two_request_result['start_user_name'],
             'start_head_portrait': two_request_result['start_head_portrait'],
             'start_working_fixed_year': two_request_result['start_working_fixed_year'],
