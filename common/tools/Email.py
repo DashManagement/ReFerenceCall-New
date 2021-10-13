@@ -16,19 +16,33 @@ class Email:
         :param eamil string 接收者邮箱地址
         :param content string 需要发送的内容
         '''
-        # 第三方 SMTP 服务
-        mail_host="smtp.qq.com"  #设置服务器
-        mail_user="26152462@qq.com" #    #用户名
-        mail_pass="qzmlnvtojjkgbhbb"   #口令 - 腾讯授权
 
-        sender = '26152462@qq.com'      # 发送者邮箱地址
-        receivers = [email]  # 接收邮件，可设置为你的QQ邮箱或者其他邮箱
+        logger.info(email)
+
+        # 第三方 SMTP 服务
+        is_smtp = 1
+
+        sender = 'test'
+
+        if is_smtp == 0:
+            mail_host="smtp.qq.com"          # 设置服务器
+            mail_user="26152462@qq.com"      # 用户名
+            mail_pass="qzmlnvtojjkgbhbb"     # 口令 - 腾讯授权
+            sender = "26152462@qq.com"       # 发送者邮箱地址
+        else:
+            mail_host="smtpout.secureserver.net"
+            # mail_host="smtpout.asia.secureserver.net"
+            mail_user="sfan@dash-management.com"
+            mail_pass="Dash2019@@"
+            sender = "sfan@dash-management.com"       # 发送者邮箱地址
+
+        receivers = [email]                           # 接收邮件，可设置为你的QQ邮箱或者其他邮箱
 
         # 三个参数：第一个为文本内容，第二个 plain 设置文本格式，第三个 utf-8 设置编码
         message = MIMEText(content, 'plain', 'utf-8')
 
-        message['From'] = Header(send_name, 'utf-8')   # 发送者
-        message['To'] =  Header(email, 'utf-8')        # 接收者
+        message['From'] = Header(sender, 'utf-8')   # 发送者
+        message['To'] =  Header(email, 'utf-8')     # 接收者
 
         title = header_name
         message['Subject'] = Header(title, 'utf-8')

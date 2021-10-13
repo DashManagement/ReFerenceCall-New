@@ -20,7 +20,22 @@ class Fund:
 
     # 基金公司列表
     async def fundList(self, uid):
-        return await fundList.returnFundList(uid)
+
+        # 加入 redis 列表缓存
+        await redis.init_cache()
+        fund_data = await redis.get('fund_data')
+
+        # 判断是否有缓存基金列表，如果没有则获取数据库数据并缓存基金列表
+        if fund_data is None:
+            '''将基金列表加入 redis 缓存(转换成字符串 str)，将返回数据'''
+            fund_data = await fundList.returnFundList(uid)
+            await redis.set('fund_data',str(fund_data))
+            logger.info('fund_list is not redis')
+            return fund_data
+        else:
+            '''将缓存中的基金列表字符串 str 转换为 dict 数据类型'''
+            logger.info('fund_list is redis')
+            return eval(fund_data)
 
 
     # 基金公司详情

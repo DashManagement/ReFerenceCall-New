@@ -20,9 +20,11 @@ class UserRegisterModel(BaseModel):
     fund_type: str = 1
     company_address: str = 1
     user_name: str
+    alias: str
     userToken: str
     platForm: str
     localTimeZone: str
+    is_anonymous: str = 1
 
 
 # 用户登陆验证模型
@@ -36,3 +38,9 @@ class UpdateUserTokenModel(BaseModel):
     uid: str
     user_token: str
     plat_form: str
+
+
+# 更新用户机器的 userToken
+class IsAnonymousModel(BaseModel):
+    id: str
+    is_anonymous: str = 1

@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-08-12 10:16:20
-LastEditTime: 2021-08-12 20:00:00
+LastEditTime: 2021-09-26 18:19:00
 LastEditors: michael
 '''
 # coding=utf-8
@@ -17,13 +17,29 @@ class DefaultConfig:
 
     # app端 启动时的默认配置
     async def appStartConfig(self):
-        
+
         dbo.resetInitConfig('test', 'default_config')
-        return await dbo.findOne({},{'_id':0})
+
+        condition = {'id': 1}
+        field = {
+            'company_volunteers_num': 1,
+            'request_volunteers_num': 1,
+            'volunteers_reply_time_num': 1, 
+            '_id': 0
+        }
+        result = await dbo.findOne(condition, field)
+        return {'code':200, 'data':result}
 
 
+    # APP端 时区设置
+    async def timeZone(self):
 
+        dbo.resetInitConfig('test', 'default_config')
 
+        condition = {'id': 2}
+        field = {'time_zone':1, '_id': 0}
+        result = await dbo.findOne(condition, field)
+        return {'code':200, 'data':result['time_zone']}
 
 
 

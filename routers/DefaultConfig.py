@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2020-08-12 10:10:20
-LastEditTime: 2021-08-12 00:13:11
+LastEditTime: 2021-09-26 18:19:00
 LastEditors: michael
 '''
 # coding=utf-8
@@ -21,5 +21,10 @@ router = APIRouter()
 async def appStartConfig():
     return await defaultConfig.appStartConfig()
 
+
+# APP端 时区设置
+@router.get('/api/time_zone')
+async def timeZone():
+    return await defaultConfig.timeZone()
 
 

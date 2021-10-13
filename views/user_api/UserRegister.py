@@ -2,8 +2,8 @@
 @Description:
 @Author: michael
 @Date: 2021-07-08 10:16:20
-LastEditTime: 2021-08-08 00:22:05
-LastEditors: fanshaoqiang
+LastEditTime: 2021-09-28 18:00:00
+LastEditors: michael
 '''
 # coding=utf-8
 
@@ -22,14 +22,16 @@ class UserRegister:
     fund_name = ''
     company_address = ''
     user_name = ''
+    alias = ''
     userToken = ''
     platForm = ''
     localTimeZone = ''
+    is_anonymous = ''
+
 
     # 返回登陆后的首页信息 lp/gp
-
     async def returnUserRegister(self, account='', password='', email='', fund_type='', fund_name='',
-                                 company_address='', user_name='', userToken='', platForm='', timeZone=''):
+                                 company_address='', user_name='', alias = '', userToken='', platForm='', timeZone='', is_anonymous=''):
 
         self.account = account
         self.password = password
@@ -38,14 +40,21 @@ class UserRegister:
         self.fund_name = fund_name
         self.company_address = company_address
         self.user_name = user_name
+        self.alias = alias
         self.userToken = userToken
         self.platForm = platForm
         self.localTimeZone = timeZone
+        self.is_anonymous = int(is_anonymous)
 
         return await self.resultData()
 
+
     # 返回注册响应数据
     async def resultData(self):
+
+        # 检测传入的匿名状态是否有效
+        if self.is_anonymous != 1 and self.is_anonymous != 0:
+            return {'code':201, 'message':'匿名参数错误'}
 
         # 判断用户是否存在
         result = await self.isUser()
@@ -59,8 +68,8 @@ class UserRegister:
 
         return {'code': 200, 'data': adduser_result}
 
-    # 查找用户名称是否存在
 
+    # 查找用户名称是否存在
     async def isUser(self):
 
         # 连接数据库
@@ -77,6 +86,7 @@ class UserRegister:
 
         return False
 
+
     # 查找用户基金公司是否存在 - 不存在返回 false，存在返回公司 id，公司名称 fund_name， 管理员 id
     # async def isFund(self):
 
@@ -92,6 +102,7 @@ class UserRegister:
     #         return False
 
     #     return result
+
 
     # 添加用户
     async def addUser(self):
@@ -112,7 +123,7 @@ class UserRegister:
             'platForm': self.platForm,
             'localTimeZone': self.localTimeZone,
             'name': self.user_name,
-            'alias': "-",
+            'alias': self.alias,
             'head_portrait': "-",
             'position': "-",
             'working_fixed_year': "-",
@@ -128,6 +139,7 @@ class UserRegister:
             'account': self.account,
             'password': self.password,
             'is_email_verify': "0",
+            'is_anonymous': self.is_anonymous,
             'login_num': 0,
             'last_login_time': 0,
             "create_time": common.getTime(),
@@ -146,10 +158,16 @@ class UserRegister:
             'id': get_id_result['update_id'],
             'account': self.account,
             'user_name': self.user_name,
+            'alias': self.alias,
+            'is_anonymous': self.is_anonymous,
             'fund_name': self.fund_name
         }
 
         return data
+
+
+
+
 
 
 userRegister = UserRegister()

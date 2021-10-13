@@ -17,6 +17,7 @@ from models.ReferenceCallModel import DeleteCompanyModel
 from models.ReferenceCallModel import CompanyListModel
 from models.ReferenceCallModel import CompanyVolunteersListModel
 from models.ReferenceCallModel import VolunteersTimeModel
+from models.ReferenceCallModel import CheckReferenceHistoryListModel
 
 from config.log_config import logger
 # 创建 APIRouter 实例
@@ -98,3 +99,23 @@ async def volunteersTime(volunteers_time: VolunteersTimeModel):
     '''
     params = volunteers_time.__dict__
     return await referenceCall.volunteersTime(int(params['id']))
+
+
+# 查看志愿者可预约的时间
+@router.post('/api/referencecall/remaining_volunteers_time')
+async def remainingVolunteersTime(volunteers_time: VolunteersTimeModel):
+    '''
+    非测试数据：{"id": 23} 
+    '''
+    params = volunteers_time.__dict__
+    return await referenceCall.remainingVolunteersTime(int(params['id']))
+
+
+# 查看当前用户的 session_id 相关的 reference 的历史记录
+@router.post('/api/referencecall/check_reference_history')
+async def checkReferenceHistoryList(check_reference_history: CheckReferenceHistoryListModel):
+    '''
+    非测试数据：{"uid": 23, "session_id": 255} 
+    '''
+    params = check_reference_history.__dict__
+    return await referenceCall.checkReferenceHistoryList(int(params['uid']), int(params['session_id']))

@@ -38,3 +38,9 @@ class CompanyVolunteersListModel(BaseModel):
 # 查看志愿者可预订时间的模型验证
 class VolunteersTimeModel(BaseModel):
     id: str
+
+
+# 查看志愿者可预订时间的模型验证
+class CheckReferenceHistoryListModel(BaseModel):
+    uid: str
+    session_id: str

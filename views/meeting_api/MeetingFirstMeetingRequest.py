@@ -2,10 +2,8 @@
 @Description:
 @Author: michael
 @Date: 2021-08-02 10:16:20
-
-LastEditTime: 2021-08-08 11:44:00
-LastEditors: fanshaoqiang
-
+LastEditTime: 2021-09-26 18:19:00
+LastEditors: michael
 '''
 
 # coding=utf-8
@@ -15,10 +13,10 @@ from views.Base import *
 from config.log_config import logger
 from views.ThirdParty.UMengPushAPI import umengPushApi
 
+
 # meeting 第一次预约会议
-
-
 class MeetingFirstMeetingRequest:
+
 
     # 第一次预约会议
     # TODO by fsq  给志愿者发送UMeng Push通知
@@ -36,25 +34,25 @@ class MeetingFirstMeetingRequest:
             '''如果没有未完成预约会议，则添加一条预约信息'''
 
             # 查询请求者和志愿者是否存在
-
             users_info = await self.is_users(id, volunteers_id)
             if users_info is False:
                 return {'code': 201, 'message': '用户不存在'}
 
+            # 查询是否有未结束的会议
             if await self.isUnexecutedMeeting(id, volunteers_id, reservation_company_id) is False:
                 return {'code': 202, 'message': '请先完成已经预约的会议'}
 
             first_request_result = await self.findFirstMeetingRequest(id, volunteers_id, reservation_company_id)
             if first_request_result is True:
-
                 return {'code': 206, 'message': '已经向该志愿者发送过预约会议邀请，不能再次发送，请等待志愿者回复。'}
 
             # 查询预约沟通的公司是否有此志愿者
-            if await self.is_company_and_volunteer(volunteers_id, reservation_company_id) is False:
-                return {'code': 203, 'message': '被预约的公司不存在'}
+            company_info = await self.is_company_and_volunteer(volunteers_id, reservation_company_id)
+            if company_info is False:
+                return {'code': 203, 'message': '被预约的公司或志愿者不存在'}
 
             # 添加一条预约信息
-            insert_result = await self.insertFirstMeetingRequest(id, volunteers_id, request_type, reservation_company_id, reservation_company_name, users_info)
+            insert_result = await self.insertFirstMeetingRequest(id, volunteers_id, request_type, reservation_company_id, reservation_company_name, company_info['rc_company_icon'], users_info)
             if insert_result is False:
                 return {'code': 204, 'message': '预约记录添加失败'}
             logger.info(f"用户{id} 第一次向{volunteers_id} 请求refCall")
@@ -69,8 +67,8 @@ class MeetingFirstMeetingRequest:
         # 给志愿者推送信息
         # push 信息
 
-    # 查询请求者和志愿者是否存在
 
+    # 查询请求者和志愿者是否存在
     async def is_users(self, id, volunteers_id):
         dbo.resetInitConfig('test', 'users')
         condition = {'$or': [{'id': int(id)}, {'id': int(volunteers_id)}]}
@@ -83,22 +81,20 @@ class MeetingFirstMeetingRequest:
         return False
 
     # 查询预约沟通的公司是否有此志愿者
-
     async def is_company_and_volunteer(self, volunteers_id, reservation_company_id):
 
         dbo.resetInitConfig('test', 'reference_call_company')
-        condition = {'uid': int(volunteers_id),
-                     'rc_company_id': int(reservation_company_id)}
-        field = {'id': 1, '_id': 0}
+        condition = {'uid': int(volunteers_id), 'rc_company_id': int(reservation_company_id)}
+        field = {'id': 1, 'rc_company_icon':1, '_id': 0}
         result = await dbo.findOne(condition, field)
         if result is None:
             return False
 
-        return True
+        return result
+
 
     # 添加第一次预约会议的请求记录
-
-    async def insertFirstMeetingRequest(self, id, volunteers_id, request_type, reservation_company_id, reservation_company_name, users_info):
+    async def insertFirstMeetingRequest(self, id, volunteers_id, request_type, reservation_company_id, reservation_company_name, company_icon, users_info):
 
         # 获取自增 ID
         get_id_result = await dbo.getNextIdtoUpdate('reservation_meeting', db='test')
@@ -127,6 +123,7 @@ class MeetingFirstMeetingRequest:
             'id': get_id_result['update_id'],
             'reservation_company_id': int(reservation_company_id),
             'reservation_company_name': reservation_company_name,
+            'reservation_company_icon': company_icon,
             'session_id': get_session_id_result['update_id'],
             'start_id': int(id),
             'start_user_name': start_user_info['name'],
@@ -164,8 +161,8 @@ class MeetingFirstMeetingRequest:
 
         return True
 
-    # 查询 请求者第一次发送请求时的预议会议记录
 
+    # 查询 请求者第一次发送请求时的预议会议记录
     async def findFirstMeetingRequest(self, id, volunteers_id, reservation_company_id):
 
         dbo.resetInitConfig('test', 'reservation_meeting')
@@ -179,8 +176,8 @@ class MeetingFirstMeetingRequest:
 
         return True
 
-    # 查询已经预约成功的会议中是否有未结束的会议 - 如果有则返回需要先完成已经预约成功的会议
 
+    # 查询已经预约成功的会议中是否有未结束的会议 - 如果有则返回需要先完成已经预约成功的会议
     async def isUnexecutedMeeting(self, id, volunteers_id, reservation_company_id):
 
         dbo.resetInitConfig('test', 'meeting_list')
@@ -193,6 +190,10 @@ class MeetingFirstMeetingRequest:
             return False
 
         return True
+
+
+
+
 
 
 meetingFirstMeetingRequest = MeetingFirstMeetingRequest()

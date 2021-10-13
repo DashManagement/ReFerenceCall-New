@@ -28,6 +28,43 @@ class TimeOperation:
         return time_list
 
 
+    # 传入时间戳，计算 时间戳 的 年-月-日-时-分-秒-星-期-几
+    async def newCalculatedTimeCycle(self, time_stamp_list):
+        '''
+        :param time_stamp_list list 传入一个小时中的整数时间两端的时间戳列表
+        '''
+
+        tmp_data = []
+
+        for value in time_stamp_list:
+
+            tmp = {}
+
+            # 计算时间为星期几
+            tmp['time_info'] = await self.weekWhatDay(value[0], 0)
+
+            tmp['time_stamp'] = value
+
+            # 转换并添加时间格式为  ["2021-08-10T09:00:00","2021-08-10T10:00:00"]
+            tmp['time_clock'] = [datetime.fromtimestamp(int(value[0])), datetime.fromtimestamp(int(value[1]))]
+
+            # 转换并添加时间格式为 ["09:00:00","10:00:00"],
+            tmp_1 = datetime.time(datetime.fromtimestamp(int(value[0])))
+            new_time_1 = tmp_1.strftime('%H:%M')
+            tmp_2 = datetime.time(datetime.fromtimestamp(int(value[1])))
+            new_time_2 = tmp_2.strftime('%H:%M')
+            tmp['time'] = [new_time_1, new_time_2]
+
+            # 组合查看时间段 - 以小时为区间 如：9点到10点查示方式为 "09:00-10:00",
+            tmp_str = str(new_time_1) + '-' + str(new_time_2)
+            tmp['check_time'] = [tmp_str]
+
+            tmp_data.append(tmp)
+
+
+        return tmp_data
+
+
     # 计算当天 早9点 到 晚6点 的时间段列表
     async def calculatedTimeCycle(self, number_day=0):
         '''

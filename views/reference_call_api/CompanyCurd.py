@@ -2,8 +2,8 @@
 @Description:
 @Author: michael
 @Date: 2021-07-27 10:10:20
-LastEditTime: 2021-08-14 21:49:11
-LastEditors: fanshaoqiang
+LastEditTime: 2021-09-26 18:19:00
+LastEditors: michael
 '''
 # coding=utf-8
 
@@ -13,10 +13,10 @@ from config.log_config import logger
 from views.reference_call_api.CommonReferenceCall import commonReferenceCall
 from views.reference_call_api.TimeOperation import timeOperation
 
+
 # reference call 对于 公司的 增/删/改/查/操作
-
-
 class CompanyCurd:
+
 
     # 添加多个公司
     async def addManyCompany(self, uid='', company_id=''):
@@ -37,8 +37,8 @@ class CompanyCurd:
 
         return ret
 
-    # 添加单个 公司
 
+    # 添加单个 公司
     async def addCompany(self, uid='', company_id=''):
 
         # 验证是否有此用户和需要添加的公司 - 返回用户和公司信息
@@ -58,8 +58,8 @@ class CompanyCurd:
 
         return {'code': 200}
 
-    # 添加用户的 reference call 公司
 
+    # 添加用户的 reference call 公司
     async def addUserReferenceCall(self, user_info, company_info):
 
         # 获取自增 ID
@@ -98,8 +98,8 @@ class CompanyCurd:
 
         return True
 
-    # 删除单个公司
 
+    # 删除单个公司
     async def deleteCompany(self, id, uid):
 
         now_time = common.getTime()
@@ -116,7 +116,6 @@ class CompanyCurd:
 
 
     # 志愿者已经添加的公司列表接口
-
     async def companyList(self, uid):
 
         dbo.resetInitConfig('test', 'reference_call_company')
@@ -156,8 +155,8 @@ class CompanyCurd:
         data['data'] = tmp_data
         return data
 
-    # 按公司查看 reference_call 的志愿者列表
 
+    # 按公司查看 reference_call 的志愿者列表
     async def companyVolunteersList(self, id, company_id):
 
         data = {
@@ -195,7 +194,7 @@ class CompanyCurd:
                 {'id': {'$ne': int(id)}}
             ]}
             field = {'id': 1, 'is_reservation': 1, 'name': 1, 'company_name': 1, 'company_icon': 1,
-                     'company_introduction': 1, 'create_time': 1, 'update_time': 1, '_id': 0}
+                     'company_introduction': 1, 'is_anonymous':1, 'create_time': 1, 'update_time': 1, '_id': 0}
             result = await dbo.findOne(condition, field)
 
             '''如果没有记录则跳过本次循环'''
@@ -214,8 +213,8 @@ class CompanyCurd:
         logger.info(f"data is {data}")
         return {'code': 200, 'data': data}
 
-    # 查看志愿者是否有多余的时间来处理预约会议
 
+    # 查看志愿者是否有多余的时间来处理预约会议
     async def is_reservation(self, volunteers_id):
 
         dbo.resetInitConfig('test', 'meeting_list')
@@ -267,8 +266,60 @@ class CompanyCurd:
 
 
     # 计算志愿者会议时间剩余可预约时间
-
     async def checkVolunteersTime(self, volunteers_id):
+        
+        # 查看志愿者是否存在
+        user_info = await base.verifyUserReturnInfo(volunteers_id)
+        if user_info is False:
+            return {'code': 201, 'message': '用户不存在'}
+
+        time_list = await timeOperation.timeList()
+        volunteers_time = await self.volunteersTime(volunteers_id)
+        # return time_list
+        # return volunteers_time
+
+        # 如果返回的长度等于 0，直接返回以下数据结构
+        if volunteers_time['all_list'] == 0:
+            return {
+                'code':200, 
+                'data': {
+                    'user_info': user_info,
+                    'volunteers': {
+                        'count': 0,
+                        'volunteers_time_list': []
+                    }
+                }
+            }
+
+        # 今天开始时间戳
+        today_stamp = common.getTimeStamp()
+
+        new_all_list = []
+        # 清除小于今天零时以前的会议
+        for value in volunteers_time['all_list']:
+            print(value[1])
+            if int(value[1]) >= today_stamp:
+                new_all_list.append(value)
+
+        # 过滤并转换时间戳数据格式
+        time_list = await timeOperation.newCalculatedTimeCycle(new_all_list)
+
+        data = {
+            'code': 200,
+            'data': {
+                'user_info': user_info,
+                'volunteers': {
+                    'count': len(time_list),
+                    'volunteers_time_list': time_list
+                }
+            }
+        }
+
+        return data
+
+
+    # 计算志愿者会议时间剩余可预约时间
+    async def checkRemainingVolunteersTime(self, volunteers_id):
 
         # 查看志愿者是否存在
         user_info = await base.verifyUserReturnInfo(volunteers_id)
@@ -337,8 +388,8 @@ class CompanyCurd:
 
         return data
 
-    # 查看志愿者处理预约会议的时间
 
+    # 查看志愿者处理预约会议的时间
     async def volunteersTime(self, volunteers_id):
 
         # return await timeOperation.timeList()
@@ -362,6 +413,7 @@ class CompanyCurd:
                 "id": 1,
                 "reservation_company_id": 1,
                 "reservation_company_name": 1,
+                "reservation_company_icon": 1,
                 "session_id": 1,
                 "start_id": 1,
                 "start_user_name": 1,
@@ -398,12 +450,14 @@ class CompanyCurd:
         # 将已经预约的会议 和 正在进行预约当中的会议(并且志愿者已经回复的预约时间)分成两个列表
         meeting_list = []
         booking_list = []
+        all_list = []
         for value_two in session_id_record:
             value_two = value_two[0]
 
-            '''添加已经预约的议列表'''
+            '''添加已经预约的会议列表'''
             if value_two['is_create_meeting'] == 1:
                 meeting_list.append(value_two)
+                all_list.append(value_two['requester_agree_time'])
 
             '''添加正在进行中的预约，并且状态为有效，并且者愿者已经回复了时间可用时间'''
             if value_two['is_create_meeting'] == 0 and value_two['status'] == 1 and value_two['request_num'] == 2:
@@ -414,12 +468,48 @@ class CompanyCurd:
                     value_1 = list(tmp_1.values())
                     for value_2 in value_1[0]:
                         value_two['time_stamp'].append(value_2)
+                        all_list.append(value_2)
 
                 booking_list.append(value_two)
 
-        return {'meeting_list': meeting_list, 'booking_list': booking_list}
+        return {'all_list':all_list, 'meeting_list': meeting_list, 'booking_list': booking_list}
 
 
+    # 查看当前用户的 session_id 相关的 reference 的历史记录
+    async def checkReferenceHistoryList(self, uid, session_id):
+
+        # 查看用户是否存在
+        user_info = await base.verifyUserReturnInfo(int(uid))
+        if user_info is False:
+            return {'code': 201, 'message': '用户不存在'}
+
+        # 查询 uid 用户的 session_id 相关的全部记录
+        dbo.resetInitConfig('test', 'reservation_meeting')
+        condition = {'session_id': int(session_id)}
+        field = {
+            'id':1,
+            'reservation_company_id':1,
+            'reservation_company_name':1,
+            'session_id':1,
+            'start_id':1,
+            'start_user_name':1,
+            'end_id':1,
+            'end_user_name':1,
+            'request_type':1,
+            'request_num':1,
+            'discuss_number':1,
+            'last_id':1,
+            'is_create_meeting':1,
+            'status':1,
+            'create_time':1,
+            '_id':0
+        }
+        result = await dbo.getData(condition, field)
+
+        if result is None:
+            return {'code': 200, 'count':0, 'data':[]}
+
+        return {'code': 200, 'count':len(result), 'data':result}
 
 
 
