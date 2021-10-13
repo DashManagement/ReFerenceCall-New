@@ -2,7 +2,7 @@
 Description: 
 Author: fanshaoqiang
 Date: 2021-07-27 11:52:52
-LastEditTime: 2021-09-01 11:28:13
+LastEditTime: 2021-09-24 10:12:51
 LastEditors: fanshaoqiang
 '''
 '''
@@ -72,6 +72,7 @@ class UMengPushAPI():
     def sendUnicast(self, title, content, platForm, deviceToken):
         logger.info(f"params is {title}, {content}, {platForm},{deviceToken}")
         if platForm == PlatForm.platform_IOS:
+            logger.info(f"begin ios ")
             self.iosUnicast = IOSUnicast(appKey, appMasterSecret)
             self.iosUnicast.setAppKey(appKey)
             self.iosUnicast.setDeviceToken(deviceToken)
@@ -244,5 +245,5 @@ umengPushApi = UMengPushAPI()
 
 # umengPushApi.sendUnicast(
 #     "title", "123", PlatForm.platform_Android, "AjzbDEhet8jsUe9FaQNyzPQaHZgLgpRpHdtLx8hxTJVx")
-# testUmengapi.sendUnicast("ios title", "123", PlatForm.platform_IOS,
-#                          "DEC3C97AB50F958395E0F799037C1FAF5F71CCE0869307F57785FC6C7BC78DD2")
+umengPushApi.sendUnicast("ios title", "123", PlatForm.platform_IOS,
+                         "F858C9B68B6DC5DEE870389625906BC21D1B024CCCD866E560F8BEB5F98B0039")
