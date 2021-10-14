@@ -59,7 +59,9 @@ async def sendRequest(send_request: SendRequestModel):
         params['volunteers_id'],
         params['request_type'],
         params['reservation_company_id'],
-        params['reservation_company_name']
+        params['reservation_company_name'],
+        int(params['time_zone_number']),
+        params['time_zone'],
     )
     logger.info(f"result is {result}")
     return result

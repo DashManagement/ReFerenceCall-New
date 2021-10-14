@@ -28,14 +28,14 @@ class Meeting:
         pass
 
     # 第一次预约会议
-    async def sendRequest(self, id, volunteers_id, request_type, reservation_company_id, reservation_company_name):
+    async def sendRequest(self, id, volunteers_id, request_type, reservation_company_id, reservation_company_name, time_zone_number, time_zone):
 
         if len(volunteers_id) < 1:
             return {'code':207, 'message':'预约会议列表不合法'}
 
         data = []
         for value in volunteers_id:
-            result = await meetingFirstMeetingRequest.construct(id, value, request_type, reservation_company_id, reservation_company_name)
+            result = await meetingFirstMeetingRequest.construct(id, value, request_type, reservation_company_id, reservation_company_name, time_zone_number, time_zone)
             result['send_request_info'] = {'id':id, 'volunteers_id':value}
             data.append(result)
 
