@@ -145,7 +145,9 @@ async def requesterRequest(requester_request: RequesterRequestModel):
         params['session_id'],
         params['request_type'],
         params['time_info'],
-        params['meeting_time']
+        params['meeting_time'],
+        int(params['time_zone_number']),
+        params['time_zone'],
     )
 
 

@@ -43,13 +43,18 @@ class MeetingRequesterRequest:
     request_type = ''
     time_info = ''
     time = ''
+    time_zone_number = ''
+    time_zone = ''
 
-    async def construct(self, id='', session_id='', request_type='', time_info='', selectTime=''):
+    async def construct(self, id='', session_id='', request_type='', time_info='', selectTime='', time_zone_number='', time_zone=''):
 
         self.id = int(id)
         self.session_id = int(session_id)
         self.request_type = int(request_type)
         self.time_info = time_info
+        self.time_zone_number = time_zone_number
+        self.time_zone = time_zone
+
         logger.info(f"MeetingRequesterRequest time is {selectTime}")
 
         if await self.isUnexecutedMeeting() is False:
@@ -138,6 +143,8 @@ class MeetingRequesterRequest:
             'last_id': self.id,
             'is_create_meeting': 1,
             'status': 0,
+            'time_zone_number': self.time_zone_number, 
+            'time_zone': self.time_zone,
             "create_time": common.getTime(),
             # 此处需要一个预约过期时间，后面补上。也有可能不需要
             "update_time": common.getTime()
