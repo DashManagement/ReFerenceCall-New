@@ -97,7 +97,9 @@ async def volunteerReplyRequest(volunteer_reply_request: VolunteerReplyRequestMo
         params['session_id'],
         params['request_type'],
         params['time'],
-        params['client_type']
+        params['client_type'],
+        int(params['time_zone_number']),
+        params['time_zone'],
     )
 
 

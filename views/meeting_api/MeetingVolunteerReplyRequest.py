@@ -22,14 +22,18 @@ class MeetingVolunteerReplyRequest:
     request_type = ''
     time = ''
     client_type = ''
+    time_zone_number = ''
+    time_zone = ''
 
-    async def construct(self, id='', session_id='', request_type='', time='', client_type=''):
+    async def construct(self, id='', session_id='', request_type='', time='', client_type='', time_zone_number='', time_zone=''):
 
         self.id = int(id)
         self.session_id = int(session_id)
         self.request_type = int(request_type)
         self.time = time
         self.client_type = client_type
+        self.time_zone_number = time_zone_number
+        self.time_zone = time_zone
 
         # 判断是安卓还是 ios 传入的时间戳 - 如果是 ios 传入的时间戳，则需要转换 time 的数据格式为通用格式
         if client_type == 'ios':
@@ -196,6 +200,8 @@ class MeetingVolunteerReplyRequest:
             'last_id':self.id,
             'is_create_meeting': 0,
             'status': 1,
+            'time_zone_number': self.time_zone_number, 
+            'time_zone': self.time_zone,
             "create_time": common.getTime(),
             # 此处需要一个预约过期时间，后面补上。也有可能不需要
             "update_time": common.getTime()
@@ -211,21 +217,21 @@ class MeetingVolunteerReplyRequest:
         return {'code': 200}
 
 
-    # 请求者和志愿者多次修改回复预约时间
-    async def returnUpdateBookingTime(self):
+    # 请求者和志愿者多次修改回复预约时间 - 暂时未用
+    # async def returnUpdateBookingTime(self):
 
-        dbo.resetInitConfig('test', 'reservation_meeting')
+    #     dbo.resetInitConfig('test', 'reservation_meeting')
 
-        condition = {'session_id':self.session_id, 'request_type':self.request_type, 'request_num':2}
-        set_fields = {'$set':{'last_id':self.id, 'update_time':common.getTime()}, '$inc':{'discuss_number':1}}
+    #     condition = {'session_id':self.session_id, 'request_type':self.request_type, 'request_num':2}
+    #     set_fields = {'$set':{'last_id':self.id, 'update_time':common.getTime()}, '$inc':{'discuss_number':1}}
 
-        update_result = await dbo.updateOne(condition, set_fields)
+    #     update_result = await dbo.updateOne(condition, set_fields)
 
-        if update_result.modified_count != 1:
-            logger.info('error: update volunteer_reply_request failure')
-            return {'code': 205, 'message': '多次回复请求失败'}
+    #     if update_result.modified_count != 1:
+    #         logger.info('error: update volunteer_reply_request failure')
+    #         return {'code': 205, 'message': '多次回复请求失败'}
 
-        return {'code': 200}
+    #     return {'code': 200}
 
 
     # 志愿者回复 - 拒绝

@@ -43,8 +43,8 @@ class Meeting:
 
 
     # 志愿者回复预约时间或者拒绝
-    async def volunteerReplyRequest(self, id, session_id, request_type, volunteer_reply_time, client_type):
-        return await meetingVolunteerReplyRequest.construct(id, session_id, request_type, volunteer_reply_time, client_type)
+    async def volunteerReplyRequest(self, id, session_id, request_type, volunteer_reply_time, client_type, time_zone_number, time_zone):
+        return await meetingVolunteerReplyRequest.construct(id, session_id, request_type, volunteer_reply_time, client_type, time_zone_number, time_zone)
 
 
     # 请求者同意预约时间或者拒绝
