@@ -67,7 +67,7 @@ class MeetingVolunteerReplyRequest:
 
                 logger.info(f"first_request_result is {first_request_result}")
                 logger.info(f" 志愿者{first_request_result['end_id']} 同意  用户{first_request_result['start_id']} 的 refCall")            
-                # await umengPushApi.sendUnicastByUserID(first_request_result['start_id'], first_request_result['end_id'], False)
+                await umengPushApi.sendUnicastByUserID(first_request_result['start_id'], first_request_result['end_id'], False)
                 return await self.returnBookingTime(first_request_result, 1)
 
             else:
@@ -84,7 +84,7 @@ class MeetingVolunteerReplyRequest:
                 '''添加多次回复记录'''
                 logger.info(f"first_request_result is {first_request_result}")
                 logger.info(f" 志愿者{first_request_result['end_id']} 同意  用户{first_request_result['start_id']} 的 refCall")
-                # await umengPushApi.sendUnicastByUserID(first_request_result['start_id'], first_request_result['end_id'], False)
+                await umengPushApi.sendUnicastByUserID(first_request_result['start_id'], first_request_result['end_id'], False)
                 return await self.returnBookingTime(first_request_result, volunteer_result[0]['discuss_number']+1 )
 
         # 请求者或者志愿者拒绝会议邀请
@@ -104,7 +104,7 @@ class MeetingVolunteerReplyRequest:
                 await self.updateSessionId()
 
             logger.info(f"请求者或志愿者{first_request_result['end_id']} 拒绝  用户{first_request_result['start_id']} 的 refCall")
-            # await umengPushApi.sendUnicastByUserID(first_request_result['start_id'], first_request_result['end_id'], False)
+            await umengPushApi.sendUnicastByUserID(first_request_result['start_id'], first_request_result['end_id'], False)
 
             return result
 
