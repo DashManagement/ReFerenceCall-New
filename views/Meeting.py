@@ -28,14 +28,14 @@ class Meeting:
         pass
 
     # 第一次预约会议
-    async def sendRequest(self, id, volunteers_id, request_type, reservation_company_id, reservation_company_name):
+    async def sendRequest(self, id, volunteers_id, request_type, reservation_company_id, reservation_company_name, time_zone):
 
         if len(volunteers_id) < 1:
             return {'code':207, 'message':'预约会议列表不合法'}
 
         data = []
         for value in volunteers_id:
-            result = await meetingFirstMeetingRequest.construct(id, value, request_type, reservation_company_id, reservation_company_name)
+            result = await meetingFirstMeetingRequest.construct(id, value, request_type, reservation_company_id, reservation_company_name, time_zone)
             result['send_request_info'] = {'id':id, 'volunteers_id':value}
             data.append(result)
 
@@ -43,13 +43,13 @@ class Meeting:
 
 
     # 志愿者回复预约时间或者拒绝
-    async def volunteerReplyRequest(self, id, session_id, request_type, volunteer_reply_time, client_type):
-        return await meetingVolunteerReplyRequest.construct(id, session_id, request_type, volunteer_reply_time, client_type)
+    async def volunteerReplyRequest(self, id, session_id, request_type, volunteer_reply_time, client_type, time_zone):
+        return await meetingVolunteerReplyRequest.construct(id, session_id, request_type, volunteer_reply_time, client_type, time_zone)
 
 
     # 请求者同意预约时间或者拒绝
-    async def requesterRequest(self, id, session_id, request_type, time_info, requester_agree_time):
-        return await meetingRequesterRequest.construct(id, session_id, request_type, time_info, requester_agree_time)
+    async def requesterRequest(self, id, session_id, request_type, time_info, requester_agree_time, time_zone):
+        return await meetingRequesterRequest.construct(id, session_id, request_type, time_info, requester_agree_time, time_zone)
 
 
     # 查看预约会议请求

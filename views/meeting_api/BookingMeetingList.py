@@ -135,6 +135,7 @@ class BookingMeetingList:
                 "is_create_meeting": 1,
                 "status": 1,
                 "create_time": 1,
+                "time_zone" : 1,
                 "_id": 0
             }
             # sort = [('id', -1)]

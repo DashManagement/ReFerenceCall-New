@@ -43,7 +43,7 @@ class IsAnonymous:
         dbo.resetInitConfig('test', 'users')
 
         condition = {'id': self.id}
-        set_field = {'$set':{'is_anonymous': self.is_anonymous}}
+        set_field = {'$set':{'is_anonymous': self.is_anonymous, 'update_time': common.getTime()}}
 
         update_result = await dbo.updateOne(condition, set_field)
         if update_result.modified_count != 1:
@@ -59,6 +59,8 @@ class IsAnonymous:
 
 
 isAnonymous = IsAnonymous()
+
+
 
 
 

@@ -59,7 +59,8 @@ async def sendRequest(send_request: SendRequestModel):
         params['volunteers_id'],
         params['request_type'],
         params['reservation_company_id'],
-        params['reservation_company_name']
+        params['reservation_company_name'],
+        params['time_zone'],
     )
     logger.info(f"result is {result}")
     return result
@@ -95,7 +96,8 @@ async def volunteerReplyRequest(volunteer_reply_request: VolunteerReplyRequestMo
         params['session_id'],
         params['request_type'],
         params['time'],
-        params['client_type']
+        params['client_type'],
+        params['time_zone'],
     )
 
 
@@ -141,7 +143,8 @@ async def requesterRequest(requester_request: RequesterRequestModel):
         params['session_id'],
         params['request_type'],
         params['time_info'],
-        params['meeting_time']
+        params['meeting_time'],
+        params['time_zone'],
     )
 
 

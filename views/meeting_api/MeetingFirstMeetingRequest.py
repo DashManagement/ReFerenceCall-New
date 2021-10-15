@@ -20,7 +20,7 @@ class MeetingFirstMeetingRequest:
 
     # 第一次预约会议
     # TODO by fsq  给志愿者发送UMeng Push通知
-    async def construct(self, id, volunteers_id, request_type, reservation_company_id, reservation_company_name):
+    async def construct(self, id, volunteers_id, request_type, reservation_company_id, reservation_company_name, time_zone):
 
         dbo.resetInitConfig('test', 'reservation_meeting')
 
@@ -52,7 +52,7 @@ class MeetingFirstMeetingRequest:
                 return {'code': 203, 'message': '被预约的公司或志愿者不存在'}
 
             # 添加一条预约信息
-            insert_result = await self.insertFirstMeetingRequest(id, volunteers_id, request_type, reservation_company_id, reservation_company_name, company_info['rc_company_icon'], users_info)
+            insert_result = await self.insertFirstMeetingRequest(id, volunteers_id, request_type, time_zone, reservation_company_id, reservation_company_name, company_info['rc_company_icon'], users_info)
             if insert_result is False:
                 return {'code': 204, 'message': '预约记录添加失败'}
             logger.info(f"用户{id} 第一次向{volunteers_id} 请求refCall")
@@ -94,7 +94,7 @@ class MeetingFirstMeetingRequest:
 
 
     # 添加第一次预约会议的请求记录
-    async def insertFirstMeetingRequest(self, id, volunteers_id, request_type, reservation_company_id, reservation_company_name, company_icon, users_info):
+    async def insertFirstMeetingRequest(self, id, volunteers_id, request_type, time_zone, reservation_company_id, reservation_company_name, company_icon, users_info):
 
         # 获取自增 ID
         get_id_result = await dbo.getNextIdtoUpdate('reservation_meeting', db='test')
@@ -147,6 +147,7 @@ class MeetingFirstMeetingRequest:
             'request_num': 1,
             'is_create_meeting': 0,
             'status': 1,
+            'time_zone': time_zone,
             "create_time": common.getTime(),
             # 此处需要一个预约过期时间，后面补上。也有可能不需要
             "update_time": common.getTime()
