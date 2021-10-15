@@ -19,8 +19,7 @@ class SendRequestModel(BaseModel):
     request_type: str
     reservation_company_id: str
     reservation_company_name: str
-    time_zone_number: str
-    time_zone: str
+    time_zone: str = 'Asia/Shanghai'
 
 
 # 预约会议 - 志愿者回复请求的验证模型
@@ -30,8 +29,7 @@ class VolunteerReplyRequestModel(BaseModel):
     request_type: str
     time: list = []
     client_type: str = 'android'
-    time_zone_number: str
-    time_zone: str
+    time_zone: str = 'Asia/Shanghai'
 
 
 # 预约会议 - 请求者回复请求的验证模型
@@ -41,8 +39,7 @@ class RequesterRequestModel(BaseModel):
     request_type: str
     time_info: dict = {}
     meeting_time: list = [0, 0]
-    time_zone_number: str
-    time_zone: str
+    time_zone: str = 'Asia/Shanghai'
 
 # 正在进行中的预约列表相关操作验证模型
 

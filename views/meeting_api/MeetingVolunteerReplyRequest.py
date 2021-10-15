@@ -22,17 +22,15 @@ class MeetingVolunteerReplyRequest:
     request_type = ''
     time = ''
     client_type = ''
-    time_zone_number = ''
     time_zone = ''
 
-    async def construct(self, id='', session_id='', request_type='', time='', client_type='', time_zone_number='', time_zone=''):
+    async def construct(self, id='', session_id='', request_type='', time='', client_type='', time_zone=''):
 
         self.id = int(id)
         self.session_id = int(session_id)
         self.request_type = int(request_type)
         self.time = time
         self.client_type = client_type
-        self.time_zone_number = time_zone_number
         self.time_zone = time_zone
 
         # 判断是安卓还是 ios 传入的时间戳 - 如果是 ios 传入的时间戳，则需要转换 time 的数据格式为通用格式
@@ -200,7 +198,6 @@ class MeetingVolunteerReplyRequest:
             'last_id':self.id,
             'is_create_meeting': 0,
             'status': 1,
-            'time_zone_number': self.time_zone_number, 
             'time_zone': self.time_zone,
             "create_time": common.getTime(),
             # 此处需要一个预约过期时间，后面补上。也有可能不需要
