@@ -2,7 +2,7 @@
 Description: 
 Author: fanshaoqiang
 Date: 2021-07-27 11:52:52
-LastEditTime: 2021-09-24 10:12:51
+LastEditTime: 2021-10-15 16:23:11
 LastEditors: fanshaoqiang
 '''
 '''
@@ -28,7 +28,7 @@ from config.log_config import logger
 appKey = '60dd7be426a57f1018425555'
 androidKey = '60fa83e0999517176d7a95c6'
 appMasterSecret = 'ei0ycynmvzhqybdxcgwa5zbmrxuwingo'
-deviceToken = 'DEC3C97AB50F958395E0F799037C1FAF5F71CCE0869307F57785FC6C7BC78DD2'
+deviceToken = '48B1A3A4BE6347C74973ADFE7E6E42874752C42AE64164BE1262C3BBF4CD1B1C'
 androidMasterSecret = 'rzggvkq7bhwhahetw8mweaxnc7d8mjyx'
 
 
@@ -245,5 +245,5 @@ umengPushApi = UMengPushAPI()
 
 # umengPushApi.sendUnicast(
 #     "title", "123", PlatForm.platform_Android, "AjzbDEhet8jsUe9FaQNyzPQaHZgLgpRpHdtLx8hxTJVx")
-umengPushApi.sendUnicast("ios title", "123", PlatForm.platform_IOS,
-                         "F858C9B68B6DC5DEE870389625906BC21D1B024CCCD866E560F8BEB5F98B0039")
+umengPushApi.sendUnicast("ios title", "123456", PlatForm.platform_IOS,
+                         "48B1A3A4BE6347C74973ADFE7E6E42874752C42AE64164BE1262C3BBF4CD1B1C")
