@@ -78,9 +78,9 @@ class UMengPushAPI():
             self.iosUnicast.setAlert(title)
             self.iosUnicast.setBadge(1)
             self.iosUnicast.setCustomizedField(title, content)
-            # unicast.setProductionMode()
-            self.iosUnicast.setTestMode()
-            # pushClient = PushClient()
+            self.iosUnicast.setProductionMode()
+            # self.iosUnicast.setTestMode()
+            pushClient = PushClient()
             ret = self.pushClient.send(self.iosUnicast)
             logger.info(f"ret is {ret}")
             return ret.status_code
@@ -246,3 +246,5 @@ umengPushApi = UMengPushAPI()
 #     "title", "123", PlatForm.platform_Android, "AjzbDEhet8jsUe9FaQNyzPQaHZgLgpRpHdtLx8hxTJVx")
 # testUmengapi.sendUnicast("ios title", "123", PlatForm.platform_IOS,
 #                          "DEC3C97AB50F958395E0F799037C1FAF5F71CCE0869307F57785FC6C7BC78DD2")
+# umengPushApi.sendUnicast(
+#     "title", "123", PlatForm.platform_IOS, "A7B5FFCF400E02E75F46803931ADBE3D74E17BCF978BB83F386B7DD5F71B98F8")
