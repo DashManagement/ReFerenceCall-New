@@ -87,7 +87,7 @@ class MeetingSchedule:
         '''
         # logger.info(user_meeting_list)
         schedule_list = []
-        # 获取 N 天之内的 早9点 到 晚6点 的时间列表
+        # 获取 N 天之内的 早0点 到 晚0点 的时间列表
         time_list = await timeOperation.returnTimeStamp(10)
         # 将未来 N 天的时候列表 与 会议时间匹配
         for value in time_list:
