@@ -48,6 +48,7 @@ class MeetingVolunteerReplyRequest:
         if await self.isUnexecutedMeeting() is False:
             return {'code': 202, 'message': '请先完成已经预约的会议'}
 
+        # 判断是否有被请求的记录 - 第一次发起请求
         first_request_result = await self.findFirstMeetingRequest()
         if first_request_result is False:
             return {'code': 203, 'message': '没有被请求记录'}
@@ -90,13 +91,11 @@ class MeetingVolunteerReplyRequest:
         # 请求者或者志愿者拒绝会议邀请
         if self.request_type == 4:
 
-            # 判断是否为未曾回复过的预约
-            if len(volunteer_result) < 1:
-                return {'code':302, 'message': '错误，没有回复记录！'}
+            if len(volunteer_result) < 1 and first_request_result['start_id'] == self.id:
+                return {'code':302, 'message':'拒绝的不能是请求发起的用户'}
 
-            # 如果拒绝的是最后一条记录是回复者发送，返回错误提示
-            if volunteer_result[0]['last_id'] == self.id:
-                return {'code':301, 'message':'拒绝的不能是最后一次回复的用户'}
+            if len(volunteer_result) == 1 and volunteer_result[0]['current_id'] == self.id:
+                return {'code':303, 'message':'拒绝的不能是最后一次回复的用户'}
 
             result = await self.returnRefused(first_request_result)
             if result['code'] == 200:
@@ -160,7 +159,7 @@ class MeetingVolunteerReplyRequest:
 
     # 志愿者回复 - 预约时间
     async def returnBookingTime(self, first_request_result, discuss_number):
-        print(first_request_result)
+
         # 获取自增 ID
         get_id_result = await dbo.getNextIdtoUpdate('reservation_meeting', db='test')
         if get_id_result['action'] == False:
