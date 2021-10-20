@@ -2,9 +2,8 @@
 @Description:
 @Author: michael
 @Date: 2021-08-02 10:16:20
-LastEditTime: 2021-08-08 20:19:34
-LastEditors: fanshaoqiang
-
+LastEditTime: 2021-08-02 20:00:00
+LastEditors: michael
 '''
 
 # coding=utf-8
@@ -17,25 +16,6 @@ import time
 from config.log_config import logger
 
 # meeting 预约会议 - 请求者回复请求
-
-
-class MeetingRequesterRequest:
-
-    '''
-@Description:
-@Author: michael
-@Date: 2021-08-02 10:16:20
-LastEditTime: 2021-08-02 20:00:00
-LastEditors: michael
-'''
-
-# coding=utf-8
-
-
-# 加载自己创建的包
-
-# meeting 预约会议 - 志愿者回复请求
-
 class MeetingRequesterRequest:
 
     id = ''
@@ -62,17 +42,19 @@ class MeetingRequesterRequest:
         if is_perform_step_two['action'] is False:
             return is_perform_step_two['data']
 
+        # 查询有回复记录的数据
         two_request_result = await self.volunteersRequestTwo()
-        # logger
-        if two_request_result is False:
-            return {'code': 203, 'message': '没有志愿者回复记录'}
-
-        # 这边需要修改成和 volunteerReplyRequest 接口类型的，同意或者拒绝的判断条件
-        # 判断同意或拒绝者是否为上一次预约会议时间的人，不能同意或拒绝自己发出的会议预约邀请
-        if two_request_result['last_id'] == self.id:
-            return {'code': 209, 'message':'不能同意或拒绝自己发出的会议预约邀请'}
 
         if self.request_type == 3:
+
+            # 判断是否有预约会议后的回复记录
+            if two_request_result is False:
+                return {'code': 203, 'message': '没有志愿者回复记录'}
+
+            # 不能同意自己最后一次发起预约时间的会议邀请
+            if two_request_result['last_id'] == self.id:
+                return {'code': 209, 'message':'不能同意或拒绝自己发出的会议预约邀请'}
+
             self.time = selectTime
 
             # 添加请求者同意记录
@@ -91,17 +73,74 @@ class MeetingRequesterRequest:
 
         if self.request_type == 5:
 
-            # 添加请求者拒绝记录
-            result = await self.returnRefused(two_request_result)
-            if result['code'] == 200:
-                # 请求者已经 同意/拒绝 会议，将本次 session_id 相关的记录 status 都改为 0
-                await self.updateSessionId()
-            logger.info(f"  用户{self.id} 拒绝  志愿者{two_request_result['end_id']} 的时间")
-            await umengPushApi.sendUnicastByUserID(self.id, two_request_result['end_id'], True)
-            return result
+            # 查询第一次请求的数据
+            first_request_result = await self.findFirstMeetingRequest()
+
+            # 判断是否有第一次请求的数据
+            if first_request_result is False:
+                return {'code':203, 'message': '没有被预约的会议请求'}
+
+            # 判断是否为只有第一次请求的记录，而没有被第二次回复过的记录
+            if first_request_result is not False and two_request_result is False:
+
+                # 判断拒绝者是否为第一次发起的预约会议的用户
+                if first_request_result['start_id'] == self.id:
+                    return {'code':204, 'message': '用户不能拒绝自己第一次发起的预约会议请求'}
+
+                # 添加请求者拒绝记录
+                result = await self.returnRefused(first_request_result)
+                if result['code'] == 200:
+                    # 请求者已经 拒绝 会议，将本次 session_id 相关的记录 status 都改为 0
+                    await self.updateSessionId()
+
+                logger.info(f"  用户{self.id} 拒绝  请求者{first_request_result['start_id']} 的时间")
+                await umengPushApi.sendUnicastByUserID(self.id, first_request_result['start_id'], True)
+                return result
+
+            # 如果有第二次回复记录时
+            if two_request_result is not False:
+
+                # 判断拒绝者是否为最后一次发起的预约会议时间的用户
+                if two_request_result['last_id'] == self.id:
+                    return {'code':204, 'message': '用户不能拒绝自己发起的预约会议请求'}
+
+                # 添加请求者拒绝记录
+                result = await self.returnRefused(two_request_result)
+                if result['code'] == 200:
+                    # 请求者已经 同意/拒绝 会议，将本次 session_id 相关的记录 status 都改为 0
+                    await self.updateSessionId()
+
+                # 判断拒绝者 id 是预约发起人还是会议 者愿者
+                if self.id == two_request_result['start_id']:
+                    send_umeng_user_id = two_request_result['end_id']
+                    send_umeng_user_name = '志愿者'
+                else:
+                    send_umeng_user_id = two_request_result['start_id']
+                    send_umeng_user_name = '请求者'
+                
+                logger.info(f"  用户{self.id} 拒绝  {send_umeng_user_name} {send_umeng_user_id} 的时间")
+                await umengPushApi.sendUnicastByUserID(self.id, send_umeng_user_id, True)
+                return result
+
+
+    # 查询 请求者第一次发送请求时的预议会议记录
+    async def findFirstMeetingRequest(self):
+
+        dbo.resetInitConfig('test', 'reservation_meeting')
+        condition = {'$or':[
+            {'start_id': self.id, 'session_id': self.session_id,'request_num': 1, 'is_create_meeting': 0, 'status': 1},
+            {'end_id': self.id, 'session_id': self.session_id,'request_num': 1, 'is_create_meeting': 0, 'status': 1}
+        ]}
+        field = {'_id': 0}
+        result = await dbo.findOne(condition, field)
+
+        if result is None:
+            return False
+
+        return result
+
 
     # 请求者回复 - 接受志愿者预约时间
-
     async def acceptBookingTime(self, two_request_result):
 
         # 获取自增 ID
@@ -156,8 +195,8 @@ class MeetingRequesterRequest:
 
         return True
 
-    # 请求者回复 - 拒绝
 
+    # 请求者回复 - 拒绝
     async def returnRefused(self, two_request_result):
 
         # 获取自增 ID
@@ -209,8 +248,8 @@ class MeetingRequesterRequest:
             return {'code': 206, 'message': '请求者拒绝请求失败'}
         return {'code': 200}
 
-    # 查询 预约会议过程中的 - 会话id记录 session_id 和志愿者id 是否存在，并且已经执行到第三步 - 请求者同意或者拒绝
 
+    # 查询 预约会议过程中的 - 会话id记录 session_id 和志愿者id 是否存在，并且已经执行到第三步 - 请求者同意或者拒绝
     async def isPerformStepTwo(self):
 
         data = {'action': '', 'data': ''}
@@ -265,25 +304,13 @@ class MeetingRequesterRequest:
 
         if len(result) < 1:
             return False
-        
+
         return result[0]
-
-        # dbo.resetInitConfig('test', 'reservation_meeting')
-        # condition = {'start_id': self.id, 'session_id': self.session_id,'request_num': 2, 'is_create_meeting': 0, 'status': 1}
-        # field = {'_id': 0}
-        # result = await dbo.findOne(condition, field)
-        # logger.info(f"condition is {condition}")
-
-        # if result is None:
-        #     return False
-
-        # return result
 
 
     # 查询已经预约成功的会议中是否有未结束的会议 - 如果有则返回需要先完成已经预约成功的会议
     async def isUnexecutedMeeting(self):
 
-        # await dbo.insert(document)
         dbo.resetInitConfig('test', 'meeting_list')
         condition = {'start_id': self.id,
                      'session_id': self.session_id, 'status': 1}
@@ -295,8 +322,8 @@ class MeetingRequesterRequest:
 
         return True
 
-    # 在会议列表中 - 添加一条会议记录
 
+    # 在会议列表中 - 添加一条会议记录
     async def addMeetingRecord(self, two_request_result, selectTime):
 
         logger.info(f"in add MeetingRecord the selectTime is {selectTime}")
@@ -364,8 +391,8 @@ class MeetingRequesterRequest:
             self.id, two_request_result['end_id'], False)
         return True
 
-    # 请求者已经 同意/拒绝 会议，将本次 session_id 相关的记录 status 都改为 0
 
+    # 请求者已经 同意/拒绝 会议，将本次 session_id 相关的记录 status 都改为 0
     async def updateSessionId(self):
 
         dbo.resetInitConfig('test', 'reservation_meeting')
@@ -374,6 +401,7 @@ class MeetingRequesterRequest:
         result = await dbo.updateAll(condition, set_fields)
         '''此条记录记入日志 - 不作其它处理'''
         logger.info('update all meeting status = 0')
+
 
     async def getMeetingModelFromTwoResult(self, two_request_result, selectTime):
 
@@ -402,6 +430,12 @@ class MeetingRequesterRequest:
             fundName=fundName, fromUserName=fromUserName, toEmail=toEmail, toUserName=toUserName,
             fromEmail=fromEmail, meetingZone=meetingZone, meetingTime=meetingTime, duration=duration)
         return meetingModel
+
+
+
+
+
+
 
 
 
