@@ -247,4 +247,4 @@ umengPushApi = UMengPushAPI()
 # testUmengapi.sendUnicast("ios title", "123", PlatForm.platform_IOS,
 #                          "DEC3C97AB50F958395E0F799037C1FAF5F71CCE0869307F57785FC6C7BC78DD2")
 # umengPushApi.sendUnicast(
-#     "title", "123", PlatForm.platform_IOS, "A7B5FFCF400E02E75F46803931ADBE3D74E17BCF978BB83F386B7DD5F71B98F8")
+#     "title", "123", PlatForm.platform_IOS, "C3FF323F729286E14BCC4F81EDCC1A295232C9966FF6295D7FE9C62EFB9974FA")
