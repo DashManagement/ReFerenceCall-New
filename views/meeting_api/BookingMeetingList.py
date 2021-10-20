@@ -334,6 +334,10 @@ class BookingMeetingList:
             data['message'] = '我方 - 被拒绝的请求'
             return {'action': True, 'data':data}
 
+        # 我方回复以后的请求
+        if data['start_id'] == self.id and data['request_num'] == 2 and data['status'] == 1 and data['is_create_meeting'] == 0 and data['current_id'] == self.id:
+            return {'action': True, 'data':data}
+
         return {'action': False}
 
 
@@ -368,6 +372,10 @@ class BookingMeetingList:
         if data['end_id'] == self.id and data['is_create_meeting'] == 2 and data['current_id'] != self.id:
             data['message_num'] = 9
             data['message'] = '别人发送给我方- 被拒绝的请求'
+            return {'action': True, 'data':data}
+
+        # 我方回复以后的请求
+        if data['end_id'] == self.id and data['request_num'] == 2 and data['status'] == 1 and data['is_create_meeting'] == 0 and data['current_id'] == self.id:
             return {'action': True, 'data':data}
 
         return {'action': False}
