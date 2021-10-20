@@ -129,14 +129,14 @@ class BookingMeetingList:
 
             # 判断请求是否为我发送的 request_type == 1
             if self.request_type == 1:
-                print('request_type = 1')
+                # print('request_type = 1')
                 tmp_result = self.getMyResultCount(session_result[0])
                 if tmp_result['action'] == True:
                     booking_meeting_list.insert(0, tmp_result['data'])
 
             # 判断请求是否为其它人给我发送的 request_type == 2
             if self.request_type == 2:
-                print('request_type = 2')
+                # print('request_type = 2')
                 tmp_result = self.getOtherResultCount(session_result[0])
                 if tmp_result['action'] == True:
                     booking_meeting_list.insert(0, tmp_result['data'])
