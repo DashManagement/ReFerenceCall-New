@@ -26,7 +26,7 @@ class Fund:
         fund_data = await redis.get('fund_data')
 
         # 判断是否有缓存基金列表，如果没有则获取数据库数据并缓存基金列表
-        if fund_data is None:
+        if fund_data is None or fund_data == '':
             '''将基金列表加入 redis 缓存(转换成字符串 str)，将返回数据'''
             fund_data = await fundList.returnFundList(uid)
             await redis.set('fund_data',str(fund_data))
