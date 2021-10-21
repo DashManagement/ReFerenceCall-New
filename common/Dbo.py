@@ -122,7 +122,7 @@ class Dbo:
     # 查询指定条件数据并排序
     async def getDataSort(self, condition={}, field={}, sort={}, length=None):
         '''
-        :param sort 排序字段 
+        :param sort 排序字段 例：sort = [('id',1)]
         :param length 指定获取数据的条数，默认 None 获取全部数据
         '''
         result = self.collection.find(condition, field).sort(sort)
