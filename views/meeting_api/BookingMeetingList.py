@@ -88,7 +88,10 @@ class BookingMeetingList:
         allSessionId_result = self.getAllSessionIdRecord(result)
 
         # 添加用户的匿名字段到数据中
-        return self.addIsAnonymous(allSessionId_result)
+        data_result = self.addIsAnonymous(allSessionId_result)
+
+        # 排序返回值
+        return self.sortData(data_result)
 
 
     # 获取第一次发起请求的所有数据
@@ -294,10 +297,19 @@ class BookingMeetingList:
             # 增加匿名属性字段
             value['is_anonymous'] = result['is_anonymous']
 
-
         return data
 
 
+    # 从大到小，冒泡排序数据
+    def sortData(self, data):
 
+        n = len(data)
+
+        for i in range(n):
+            for j in range(0, n-i-1):
+                if data[j]['id'] < data[j+1]['id']:
+                    data[j], data[j+1] = data[j+1], data[j]
+
+        return data
 
 
