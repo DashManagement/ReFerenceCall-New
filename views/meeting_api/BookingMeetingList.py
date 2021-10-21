@@ -2,7 +2,7 @@
 @Description:
 @Author: michael
 @Date: 2021-08-05 10:16:20
-LastEditTime: 2021-10-18 20:00:00
+LastEditTime: 2021-10-21 20:00:00
 LastEditors: michael
 '''
 
@@ -309,6 +309,7 @@ class BookingMeetingList:
         : 2 - 其它人回复给我的请求 - 待处理
         : 3 - 我方 - 拒绝的请求
         : 4 - 我方 - 被拒绝的请求
+        : 5 - 我回复给别人信息后，等待对方回复的
         '''
         # 查看我方第一次发送的请求
         if data['start_id'] == self.id and data['request_num'] == 1 and data['status'] == 1 and data['is_create_meeting'] == 0:
@@ -336,6 +337,8 @@ class BookingMeetingList:
 
         # 我方回复以后的请求
         if data['start_id'] == self.id and data['request_num'] == 2 and data['status'] == 1 and data['is_create_meeting'] == 0 and data['current_id'] == self.id:
+            data['message_num'] = 5
+            data['message'] = '我回复给别人信息后，等待对方回复的'
             return {'action': True, 'data':data}
 
         return {'action': False}
@@ -349,6 +352,7 @@ class BookingMeetingList:
         : 7 - 第二次被预约时间的请求 - 待处理
         : 8 - 别人发送给我方 - 拒绝的请求
         : 9 - 别人发送给我方- 被拒绝的请求
+        : 10 - 我回复给别人信息后，等待对方回复的
         '''
         # 查看是否有发送给我的请求
         if data['end_id'] == self.id and data['request_num'] == 1 and data['status'] == 1 and data['is_create_meeting'] == 0:
@@ -376,6 +380,8 @@ class BookingMeetingList:
 
         # 我方回复以后的请求
         if data['end_id'] == self.id and data['request_num'] == 2 and data['status'] == 1 and data['is_create_meeting'] == 0 and data['current_id'] == self.id:
+            data['message_num'] = 10
+            data['message'] = '我回复给别人信息后，等待对方回复的'
             return {'action': True, 'data':data}
 
         return {'action': False}
